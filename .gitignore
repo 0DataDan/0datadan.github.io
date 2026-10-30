@@ -1,0 +1,18 @@
+# Secrets & Environment variables
+.env
+*.env
+
+# Python virtual environment & bytecode
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Local satellite rasters & large data binaries
+data/raw/
+data/processed/
+*.TIF
+*.tif
+
+# macOS system artifacts
+.DS_Store
