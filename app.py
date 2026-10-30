@@ -3,7 +3,7 @@ app.py
 Urban Heat Island & Surface Reflectance Explorer
 Interactive Geospatial AI Dashboard for Landsat 8/9 Level-2 Analysis
 Features interactive Folium slippy maps with water-masked alpha transparencies,
-floating thermal legends, Plotly density contours, and CDC SVI equity metrics.
+floating thermal legends, Plotly density contours, and benchmark vulnerability metrics.
 """
 
 import os
@@ -63,7 +63,7 @@ st.markdown("""
         font-weight: 700;
     }
     .metric-sub {
-        color: #00FFAA;
+        color: #2DD4BF;
         font-size: 12px;
     }
     .anomaly-hotspot {
@@ -111,7 +111,7 @@ CITY_REGISTRY = {
         "svi_score": "High (0.79)",
         "canopy_equity_gap": "South/West Side industrial corridors exhibit <10% canopy vs. 35%+ in lakefront North Side neighborhoods.",
         "human_vulnerability_note": "Strong lake breeze gradient; high-density inland asphalt surfaces amplify localized heat stress."
-  },
+    },
     "nyc": {
         "name": "New York City, NY (Ultra-Dense Megacity)",
         "center": [40.76, -73.97],
@@ -122,7 +122,7 @@ CITY_REGISTRY = {
 }
 
 st.title("Urban Heat Island & Surface Reflectance Explorer")
-st.caption("Multimodal Satellite Telemetry, Interactive Slippy Maps & Environmental Justice Context")
+st.caption("Satellite Telemetry, Interactive Slippy Maps & Metropolitan Vulnerability Benchmarks")
 
 with st.container():
     c1, c2 = st.columns([3, 1])
@@ -240,7 +240,7 @@ with col4:
 
 st.write("")
 
-tab1, tab2, tab3 = st.tabs(["🗺️ Interactive Thermal Map", "📊 Biophysical & Equity Analytics", "🤖 Multimodal AI Report"])
+tab1, tab2, tab3 = st.tabs(["Interactive Thermal Map", "Biophysical & Equity Analytics", "Diagnostic Assessment"])
 
 with tab1:
     st.subheader(f"Georeferenced Land Surface Temperature Overlay: {city_meta['name']}")
@@ -307,7 +307,7 @@ with tab2:
     with pcol2:
         st.markdown(f"""
         <div class="equity-card">
-            <h4 style="margin-top:0; color:#00FFAA;">Environmental Justice & Climate Equity</h4>
+            <h4 style="margin-top:0; color:#2DD4BF;">Metropolitan Baseline & Demographic Context</h4>
             <p><strong>CDC Social Vulnerability Index (SVI):</strong> {city_meta['svi_score']}</p>
             <p><strong>Tree Equity & Canopy Disparity:</strong><br>{city_meta['canopy_equity_gap']}</p>
             <p><strong>Microclimate Vulnerability Dynamics:</strong><br>{city_meta['human_vulnerability_note']}</p>
@@ -315,14 +315,17 @@ with tab2:
             <p style="font-size:12px; color:#8E94A5;">
                 <em>Note on Sensor Physics:</em> Satellites measure <strong>Land Surface Temperature (LST)</strong> (radiant skin temperature of ground/roof materials). Human heat illness occurs in the <strong>Canopy Air Layer (CAL)</strong>, influenced by wind, shade, and humidity.
             </p>
+            <p style="font-size:11px; color:#6B7280; margin-bottom:0;">
+                Sources: CDC SVI Benchmark & Municipal Urban Forestry Assessments
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
 with tab3:
-    st.subheader(f"Multimodal AI Scene Analysis: {city_meta['name']}")
-    st.markdown("Submits dual-band geospatial rasters, environmental justice indicators, and radiometric metrics to Gemini.")
+    st.subheader(f"Scene Assessment: {city_meta['name']}")
+    st.caption("Submits calibrated false-color & thermal arrays with biophysical summary metrics to Gemini for structured environmental evaluation.")
 
-    if st.button("Generate Environmental Assessment", type="primary"):
+    if st.button("Run Gemini Scene Evaluation", type="primary"):
         active_key = os.getenv("GEMINI_API_KEY", "")
         if not active_key:
             st.error("No Gemini API key detected in .env.")
@@ -347,7 +350,7 @@ with tab3:
                             st.markdown(f"""
                             <div class="{css_class}">
                                 <strong>[{a.feature_type.upper()}] {a.feature_name}</strong><br>
-                                Estimated Surface Temp: ~{a.estimated_temp_c}°C<br>
+                                Model Estimated Surface Temp: ~{a.estimated_temp_c}°C<br>
                                 <span style="font-size: 12px; color: #BBB;">Biophysical Driver: {a.cooling_factor}</span>
                             </div>
                             """, unsafe_allow_html=True)
