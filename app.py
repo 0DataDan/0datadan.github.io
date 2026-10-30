@@ -2,13 +2,16 @@
 app.py
 Urban Heat Island & Surface Reflectance Explorer
 Interactive Geospatial AI Dashboard for Landsat 8/9 Level-2 Analysis
-Fully consolidated main-canvas architecture without sidebar or visible API key inputs.
+Features interactive Folium slippy maps with water-masked alpha transparencies,
+floating thermal legends, Plotly density contours, and CDC SVI equity metrics.
 """
 
 import os
 import streamlit as st
 import numpy as np
 import rasterio
+import folium
+from streamlit_folium import st_folium
 from dotenv import load_dotenv
 
 from src.indices import (
@@ -19,8 +22,11 @@ from src.indices import (
 )
 from src.visualizer import (
     array_to_colormap_image,
+    array_to_rgba_overlay,
+    create_folium_legend,
     generate_true_color,
-    render_correlation_scatter,
+    get_raster_wgs84_bounds,
+    create_interactive_scatter_density,
 )
 from src.ai_analyst import analyze_satellite_scene
 
@@ -35,7 +41,6 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Completely hide sidebar and collapse toggle icon */
     [data-testid="stSidebarCollapseButton"], section[data-testid="stSidebar"] {
         display: none !important;
     }
@@ -75,53 +80,75 @@ st.markdown("""
         border-radius: 4px;
         margin-bottom: 8px;
     }
+    .equity-card {
+        background: #141721;
+        border: 1px solid #2E334D;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-CITY_OPTIONS = {
-    "phoenix": "Phoenix, AZ (Arid Desert)",
-    "atlanta": "Atlanta, GA (Humid Canopy Forest)",
-    "chicago": "Chicago, IL (Temperate Lakefront)",
+CITY_REGISTRY = {
+    "phoenix": {
+        "name": "Phoenix, AZ (Arid Desert)",
+        "center": [33.46, -112.06],
+        "svi_score": "High (0.84)",
+        "canopy_equity_gap": "Neighborhood canopy ranges from 4% (South Phoenix) to 19% (Paradise Valley).",
+        "human_vulnerability_note": "Arid biomes exhibit extreme diurnal surface heating where high NDBI industrial corridors create nighttime heat traps."
+    },
+    "atlanta": {
+        "name": "Atlanta, GA (Humid Forest)",
+        "center": [33.77, -84.39],
+        "svi_score": "Moderate-High (0.71)",
+        "canopy_equity_gap": "Significant tree loss along I-20 and SW industrial zones; canopy drops below 20% in low-income corridors.",
+        "human_vulnerability_note": "Canopy transpiration buffers daytime heat, but high humidity elevates the Canopy Air Layer heat index."
+    },
+    "chicago": {
+        "name": "Chicago, IL (Temperate Lakefront)",
+        "center": [41.88, -87.64],
+        "svi_score": "High (0.79)",
+        "canopy_equity_gap": "South/West Side industrial corridors exhibit <10% canopy vs. 35%+ in lakefront North Side neighborhoods.",
+        "human_vulnerability_note": "Strong lake breeze gradient; high-density inland asphalt surfaces amplify localized heat stress."
+  },
+    "nyc": {
+        "name": "New York City, NY (Ultra-Dense Megacity)",
+        "center": [40.76, -73.97],
+        "svi_score": "High (0.81)",
+        "canopy_equity_gap": "South Bronx and East New York lack mature street trees (<12% canopy) compared to Upper Manhattan and Brownstone Brooklyn (>30%).",
+        "human_vulnerability_note": "Extreme vertical thermal mass and canyon trapping; Central Park acts as an intense 4°C–6°C cooling oasis amidst midtown concrete."
+    },
 }
 
 st.title("Urban Heat Island & Surface Reflectance Explorer")
-st.caption("Landsat 8/9 Level-2 Multimodal Computer Vision & Earth Observation Telemetry")
+st.caption("Multimodal Satellite Telemetry, Interactive Slippy Maps & Environmental Justice Context")
 
-# --- Top Control Bar ---
 with st.container():
     c1, c2 = st.columns([3, 1])
     with c1:
         selected_city = st.selectbox(
             "Target Metropolitan Biome",
-            options=list(CITY_OPTIONS.keys()),
-            format_func=lambda k: CITY_OPTIONS[k],
+            options=list(CITY_REGISTRY.keys()),
+            format_func=lambda k: CITY_REGISTRY[k]["name"],
             key="main_city_select"
         )
     with c2:
-        st.caption("**Sensor Suite:** Landsat 9 OLI/TIRS (Collection 2)")
-        st.caption("**Spatial Resolution:** 30m / pixel | **Grid:** 600×600 px")
+        st.caption("**Sensor Suite:** Landsat 9 OLI/TIRS")
+        st.caption("**Spatial Resolution:** 30m / pixel (EPSG:UTM)")
 
 st.divider()
 
 
 @st.cache_data
 def load_and_process_scene(city_key: str):
-    """Dynamically ingests GeoTIFFs for the selected metropolitan region."""
+    """Dynamically ingests GeoTIFFs, computing indices and georeferenced spatial bounds."""
     city_dir = os.path.join("data", "raw", city_key)
     
     b4_path = os.path.join(city_dir, f"{city_key}_B4.TIF")
     b5_path = os.path.join(city_dir, f"{city_key}_B5.TIF")
     b6_path = os.path.join(city_dir, f"{city_key}_B6.TIF")
     b10_path = os.path.join(city_dir, f"{city_key}_B10.TIF")
-
-    # Fallback to default root directory if city subdirectory is not populated
-    if not all(os.path.exists(p) for p in [b4_path, b5_path, b6_path, b10_path]):
-        b4_path, b5_path, b6_path, b10_path = (
-            "data/raw/sample_B4.TIF",
-            "data/raw/sample_B5.TIF",
-            "data/raw/sample_B6.TIF",
-            "data/raw/sample_B10.TIF"
-        )
 
     if not all(os.path.exists(p) for p in [b4_path, b5_path, b6_path, b10_path]):
         return None
@@ -131,16 +158,17 @@ def load_and_process_scene(city_key: str):
         nir = n.read(1)
         swir = s.read(1)
         thermal = t.read(1)
+        bounds_wgs84 = get_raster_wgs84_bounds(t.transform, t.width, t.height, t.crs)
 
     ndvi = calculate_ndvi(red, nir)
     ndbi = calculate_ndbi(nir, swir)
     _, lst_c = scale_surface_temperature(thermal)
-    metrics = extract_thermal_metrics(lst_c, ndvi)
+    metrics = extract_thermal_metrics(lst_c, ndvi, ndbi, biome=city_key)
 
     img_comp = generate_true_color(red, nir, swir)
     img_lst = array_to_colormap_image(lst_c, cmap_name="magma")
     img_ndvi = array_to_colormap_image(ndvi, cmap_name="YlGn")
-    img_scatter = render_correlation_scatter(ndvi, lst_c)
+    rgba_lst, vmin_c, vmax_c = array_to_rgba_overlay(lst_c, ndvi_data=ndvi, cmap_name="magma", opacity=0.75)
 
     os.makedirs("data/processed", exist_ok=True)
     lst_cache = f"data/processed/{city_key}_lst.png"
@@ -153,37 +181,42 @@ def load_and_process_scene(city_key: str):
         "img_comp": img_comp,
         "img_lst": img_lst,
         "img_ndvi": img_ndvi,
-        "img_scatter": img_scatter,
+        "rgba_lst": rgba_lst,
+        "vmin_c": vmin_c,
+        "vmax_c": vmax_c,
+        "bounds_wgs84": bounds_wgs84,
+        "ndvi": ndvi,
+        "lst_c": lst_c,
         "lst_cache": lst_cache,
         "comp_cache": comp_cache,
     }
 
 
 scene = load_and_process_scene(selected_city)
-
 if scene is None:
     st.error(f"Datasets for `{selected_city}` not found in `data/raw/{selected_city}/`.")
     st.stop()
 
 metrics = scene["metrics"]
+city_meta = CITY_REGISTRY[selected_city]
 
-# KPI Metrics
+# Telemetry KPIs
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown(f"""
     <div class="metric-card">
         <div class="metric-title">UHI INTENSITY DELTA</div>
         <div class="metric-val">+{metrics['uhi_intensity_delta_c']} °C</div>
-        <div class="metric-sub">Urban Core vs. Canopy</div>
+        <div class="metric-sub">Built Grid vs. Vegetated Canopy</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-title">URBAN CORE MEAN TEMP</div>
+        <div class="metric-title">BUILT CORE MEAN TEMP</div>
         <div class="metric-val">{metrics['urban_mean_temp_c']} °C</div>
-        <div class="metric-sub">Peak: {metrics['max_temp_c']} °C</div>
+        <div class="metric-sub">Peak LST: {metrics['max_temp_c']} °C</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -192,7 +225,7 @@ with col3:
     <div class="metric-card">
         <div class="metric-title">CANOPY MEAN TEMP</div>
         <div class="metric-val">{metrics['canopy_mean_temp_c']} °C</div>
-        <div class="metric-sub">Min: {metrics['min_temp_c']} °C</div>
+        <div class="metric-sub">Min LST: {metrics['min_temp_c']} °C</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -201,49 +234,100 @@ with col4:
     <div class="metric-card">
         <div class="metric-title">NDVI-LST CORRELATION</div>
         <div class="metric-val">{metrics['ndvi_lst_correlation']}</div>
-        <div class="metric-sub">Negative Thermal Buffering</div>
+        <div class="metric-sub">Biophysical Cooling Efficiency</div>
     </div>
     """, unsafe_allow_html=True)
 
 st.write("")
 
-tab1, tab2 = st.tabs(["🛰️ Spatial Visualizations", "📊 Biophysical Telemetry & Analysis"])
+tab1, tab2, tab3 = st.tabs(["🗺️ Interactive Thermal Map", "📊 Biophysical & Equity Analytics", "🤖 Multimodal AI Report"])
 
 with tab1:
-    vcol1, vcol2 = st.columns(2)
-    with vcol1:
-        st.subheader("SWIR / NIR / Red Composite")
-        st.caption("Cyan/Grey: Built Concrete | Green: Canopy | Dark Blue/Black: Water")
-        st.image(scene["img_comp"], use_container_width=True)
+    st.subheader(f"Georeferenced Land Surface Temperature Overlay: {city_meta['name']}")
+    st.caption("Pan, zoom, and inspect underlying street networks, building density, and park infrastructure.")
 
-    with vcol2:
-        st.subheader("Calibrated Land Surface Temp (LST)")
-        st.caption("Thermal Infrared (Band 10) mapped to Magma colormap (°C)")
-        st.image(scene["img_lst"], use_container_width=True)
+    bounds = scene["bounds_wgs84"]
+    center_lat = (bounds[0][0] + bounds[1][0]) / 2.0
+    center_lon = (bounds[0][1] + bounds[1][1]) / 2.0
 
-    st.divider()
+    m = folium.Map(
+        location=[center_lat, center_lon],
+        tiles=None,
+        control_scale=True
+    )
 
-    bcol1, bcol2 = st.columns(2)
-    with bcol1:
-        st.subheader("Normalized Difference Vegetation Index (NDVI)")
-        st.caption("Chlorophyll absorption: Yellow = Impervious/Barren | Deep Green = Dense Canopy")
-        st.image(scene["img_ndvi"], use_container_width=True)
+    folium.TileLayer(
+        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        attr="Esri, HERE, Garmin, © OpenStreetMap contributors",
+        name="Dark Canvas (Esri)",
+        control=True
+    ).add_to(m)
 
-    with bcol2:
-        st.subheader("Thermal Density vs. Vegetation Scatter")
-        st.caption("Hexbin density correlation showing temperature reduction across NDVI gradients")
-        st.image(scene["img_scatter"], use_container_width=True)
+    folium.TileLayer(
+        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        attr="Esri, Maxar, Earthstar Geographics",
+        name="Satellite Imagery (Esri)",
+        control=True
+    ).add_to(m)
+
+    folium.TileLayer(
+        tiles="OpenStreetMap",
+        name="OpenStreetMap",
+        control=True
+    ).add_to(m)
+
+    # Add water-masked thermal raster
+    folium.raster_layers.ImageOverlay(
+        image=scene["rgba_lst"],
+        bounds=bounds,
+        opacity=0.75,
+        name="Calibrated Surface Temperature (°C)",
+        interactive=True,
+        cross_origin=False,
+        zindex=2
+    ).add_to(m)
+
+    # Add floating radiometric colorbar legend
+    legend = create_folium_legend(scene["vmin_c"], scene["vmax_c"])
+    legend.add_to(m)
+
+    m.fit_bounds(bounds)
+
+    folium.LayerControl(position="topright").add_to(m)
+    st_folium(m, width="100%", height=580, returned_objects=[])
 
 with tab2:
-    st.subheader(f"Multimodal AI Scene Analysis: {CITY_OPTIONS[selected_city]}")
-    st.markdown("Submits dual-band geospatial rasters and calibrated sensor metrics to Gemini using structured JSON schema output.")
+    st.subheader("Biophysical Gradient Analysis & Social Equity Context")
+
+    pcol1, pcol2 = st.columns([3, 2])
+    with pcol1:
+        scatter_fig = create_interactive_scatter_density(scene["ndvi"], scene["lst_c"])
+        st.plotly_chart(scatter_fig, use_container_width=True)
+
+    with pcol2:
+        st.markdown(f"""
+        <div class="equity-card">
+            <h4 style="margin-top:0; color:#00FFAA;">Environmental Justice & Climate Equity</h4>
+            <p><strong>CDC Social Vulnerability Index (SVI):</strong> {city_meta['svi_score']}</p>
+            <p><strong>Tree Equity & Canopy Disparity:</strong><br>{city_meta['canopy_equity_gap']}</p>
+            <p><strong>Microclimate Vulnerability Dynamics:</strong><br>{city_meta['human_vulnerability_note']}</p>
+            <hr style="border-color:#2E334D;">
+            <p style="font-size:12px; color:#8E94A5;">
+                <em>Note on Sensor Physics:</em> Satellites measure <strong>Land Surface Temperature (LST)</strong> (radiant skin temperature of ground/roof materials). Human heat illness occurs in the <strong>Canopy Air Layer (CAL)</strong>, influenced by wind, shade, and humidity.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+with tab3:
+    st.subheader(f"Multimodal AI Scene Analysis: {city_meta['name']}")
+    st.markdown("Submits dual-band geospatial rasters, environmental justice indicators, and radiometric metrics to Gemini.")
 
     if st.button("Generate Environmental Assessment", type="primary"):
         active_key = os.getenv("GEMINI_API_KEY", "")
         if not active_key:
-            st.error("No Gemini API key detected. Please define GEMINI_API_KEY in your .env environment file.")
+            st.error("No Gemini API key detected in .env.")
         else:
-            with st.spinner(f"Evaluating thermal distribution and biophysical dynamics for {selected_city}..."):
+            with st.spinner(f"Evaluating thermal distribution and vulnerability for {selected_city}..."):
                 try:
                     report = analyze_satellite_scene(
                         lst_image_path=scene["lst_cache"],
