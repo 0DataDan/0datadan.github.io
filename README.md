@@ -1,5 +1,7 @@
 # Urban Heat Island (UHI) & Surface Reflectance Explorer
 
+![Dashboard Demo](assets/demo.gif)
+
 An interactive geospatial analytics dashboard and multimodal LLM diagnostic tool for urban microclimate analysis. Built with Streamlit, Rasterio, Folium, and Google Gemini, the application pulls Landsat 8/9 Level-2 (Collection 2) imagery directly from Microsoft Planetary Computer to analyze surface temperature anomalies across four distinct metropolitan biomes.
 
 ---
