@@ -17,6 +17,23 @@
         code, .font-mono {
             font-family: 'JetBrains Mono', monospace;
         }
+        .terminal-header {
+            font-family: 'JetBrains Mono', monospace !important;
+            letter-spacing: -0.04em;
+            display: inline-flex;
+            align-items: baseline;
+        }
+        .terminal-cursor {
+            color: #2dd4bf;
+            font-weight: 800;
+            margin-left: 2px;
+            user-select: none;
+            animation: blinkUnderscore 1s step-start infinite;
+        }
+        @keyframes blinkUnderscore {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
@@ -29,9 +46,7 @@
                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
                 Applied Geospatial AI & Evaluation
             </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
-                Daniel Perez
-            </h1>
+            <h1 class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">danielperez<span class="terminal-cursor">_</span></h1>
 
             <p class="text-lg text-slate-300 font-medium max-w-2xl leading-relaxed mb-4">
                 Background in AI data analysis, Multimodal Evaluation, and machine learning quality. Currently expanding into satellite remote sensing, vector search, and geospatial data workflows.
