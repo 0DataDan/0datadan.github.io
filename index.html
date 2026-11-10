@@ -180,5 +180,168 @@
 
     </div>
 
+
+<style>
+  *, *::before, *::after, html, body, canvas, div, span, a, button {
+    cursor: none !important;
+  }
+  #tooltip, .tooltip, [id*="tooltip"], [class*="tooltip"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #nova-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    pointer-events: none !important;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.8),
+                0 0 16px 4px rgba(56, 189, 248, 0.35);
+    transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #nova-cursor-halo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    pointer-events: none !important;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s ease, background-color 0.25s ease;
+  }
+
+  body.nova-cursor-hover #nova-cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #38bdf8;
+    box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.9);
+  }
+
+  body.nova-cursor-hover #nova-cursor-halo {
+    width: 40px;
+    height: 40px;
+    border-color: rgba(56, 189, 248, 0.65);
+    background-color: rgba(56, 189, 248, 0.06);
+  }
+
+  #nova-trail-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none !important;
+    z-index: 99997;
+  }
+</style>
+
+<div id="nova-cursor-dot"></div>
+<div id="nova-cursor-halo"></div>
+<canvas id="nova-trail-canvas"></canvas>
+
+<script>
+  (function() {
+    const dot = document.getElementById('nova-cursor-dot');
+    const halo = document.getElementById('nova-cursor-halo');
+    const canvas = document.getElementById('nova-trail-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    let mouse = { x: width / 2, y: height / 2 };
+    let haloPos = { x: width / 2, y: height / 2 };
+    const particles = [];
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      dot.style.left = `${mouse.x}px`;
+      dot.style.top = `${mouse.y}px`;
+
+      if (Math.random() > 0.25) {
+        particles.push({
+          x: mouse.x + (Math.random() - 0.5) * 4,
+          y: mouse.y + (Math.random() - 0.5) * 4,
+          size: Math.random() * 1.6 + 0.4,
+          alpha: 0.55,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25
+        });
+      }
+    });
+
+    const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest(interactiveSelectors)) {
+        document.body.classList.add('nova-cursor-hover');
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest(interactiveSelectors)) {
+        document.body.classList.remove('nova-cursor-hover');
+      }
+    });
+
+    function animateCursor() {
+      ctx.clearRect(0, 0, width, height);
+      haloPos.x += (mouse.x - haloPos.x) * 0.16;
+      haloPos.y += (mouse.y - haloPos.y) * 0.16;
+      halo.style.left = `${haloPos.x}px`;
+      halo.style.top = `${haloPos.y}px`;
+
+      const dx = mouse.x - haloPos.x;
+      const dy = mouse.y - haloPos.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 4) {
+        ctx.beginPath();
+        ctx.moveTo(mouse.x, mouse.y);
+        ctx.lineTo(haloPos.x, haloPos.y);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(dist / 120, 0.2)})`;
+        ctx.lineWidth = 0.75;
+        ctx.stroke();
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.018;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(220, 240, 255, ${p.alpha})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animateCursor);
+    }
+
+    animateCursor();
+  })();
+</script>
+
 </body>
 </html>
