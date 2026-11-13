@@ -38,6 +38,131 @@
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
+    <!-- Atmospheric Geospatial Background (Three.js Topography & Data Nodes) -->
+    <div id="geospatial-canvas-container" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #0b0f19;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      (function() {
+        const container = document.getElementById('geospatial-canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0b0f19, 0.022);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, -18, 25);
+        camera.rotation.x = 0.55;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // 1. Topographic Elevation Grid (Geospatial Wireframe Mesh)
+        const width = 60, height = 60, segments = 40;
+        const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
+        const posAttribute = geometry.attributes.position;
+
+        for (let i = 0; i < posAttribute.count; i++) {
+          const x = posAttribute.getX(i);
+          const y = posAttribute.getY(i);
+          const z = Math.sin(x * 0.15) * Math.cos(y * 0.15) * 2.2 + Math.sin(x * 0.05) * 1.5;
+          posAttribute.setZ(i, z);
+        }
+        geometry.computeVertexNormals();
+
+        const wireMaterial = new THREE.MeshBasicMaterial({
+          color: 0x2dd4bf,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.10
+        });
+        const terrain = new THREE.Mesh(geometry, wireMaterial);
+        terrain.position.z = -5;
+        scene.add(terrain);
+
+        // 2. Floating Data Annotation & Geospatial Node Particles
+        const particleCount = 400;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleSpeeds = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+          particlePositions[i] = (Math.random() - 0.5) * 70;
+          particlePositions[i + 1] = (Math.random() - 0.5) * 70;
+          particlePositions[i + 2] = (Math.random() * 15) - 2;
+          particleSpeeds[i / 3] = 0.012 + Math.random() * 0.025;
+        }
+
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+        const canvasNode = document.createElement('canvas');
+        canvasNode.width = 32; canvasNode.height = 32;
+        const ctxNode = canvasNode.getContext('2d');
+        ctxNode.beginPath();
+        ctxNode.arc(16, 16, 12, 0, Math.PI * 2);
+        ctxNode.fillStyle = '#2dd4bf';
+        ctxNode.fill();
+        const spriteTex = new THREE.CanvasTexture(canvasNode);
+
+        const particleMat = new THREE.PointsMaterial({
+          color: 0x2dd4bf,
+          size: 0.4,
+          map: spriteTex,
+          transparent: true,
+          opacity: 0.38,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+
+        const dataNodes = new THREE.Points(particleGeo, particleMat);
+        scene.add(dataNodes);
+
+        // Mouse Parallax Interaction
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX - window.innerWidth / 2) * 0.0008;
+          mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
+        });
+
+        let clock = new THREE.Clock();
+        function animateTerrain() {
+          requestAnimationFrame(animateTerrain);
+          const elapsedTime = clock.getElapsedTime();
+
+          targetX += (mouseX - targetX) * 0.05;
+          targetY += (mouseY - targetY) * 0.05;
+          camera.position.x = targetX * 12;
+          camera.position.y = -18 - targetY * 12;
+          camera.lookAt(0, 0, 0);
+
+          const posArr = geometry.attributes.position.array;
+          for (let i = 0; i < posArr.length; i += 3) {
+            const px = posArr[i];
+            const py = posArr[i + 1];
+            posArr[i + 2] = Math.sin(px * 0.12 + elapsedTime * 0.4) * Math.cos(py * 0.12 + elapsedTime * 0.4) * 1.6;
+          }
+          geometry.attributes.position.needsUpdate = true;
+
+          const positions = particleGeo.attributes.position.array;
+          for (let i = 1; i < particleCount * 3; i += 3) {
+            positions[i] += particleSpeeds[Math.floor(i / 3)];
+            if (positions[i] > 35) positions[i] = -35;
+          }
+          particleGeo.attributes.position.needsUpdate = true;
+
+          renderer.render(scene, camera);
+        }
+        animateTerrain();
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      })();
+    </script>
+
     <div class="max-w-4xl mx-auto px-6 py-16 sm:py-24">
 
         <!-- Header / Intro -->
