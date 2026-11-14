@@ -470,58 +470,64 @@
   })();
 </script>
 
-    <!-- DYNAMIC FAVICON ANIMATION SCRIPT -->
     <script>
-      (function() {
-        const linkTag = document.getElementById('dynamic-favicon');
-        if (!linkTag) return;
+  (function() {
+    const linkTag = document.getElementById('dynamic-favicon');
+    if (!linkTag) return;
 
-        const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
 
-        const baseImage = new Image();
-        baseImage.crossOrigin = 'anonymous';
-        baseImage.src = 'faviconR1.ico';
+    const baseImage = new Image();
+    baseImage.crossOrigin = 'anonymous';
+    baseImage.src = 'faviconR1.ico';
 
-        let angle = 0;
+    let time = 0;
 
-        baseImage.onload = function() {
-          function animateFavicon() {
-            angle += 0.12; // Speed of the orbiting node
+    baseImage.onload = function() {
+      function animateFavicon() {
+        time += 0.08; // Pulse speed
 
-            ctx.clearRect(0, 0, 64, 64);
-            ctx.drawImage(baseImage, 0, 0, 64, 64);
+        ctx.clearRect(0, 0, 64, 64);
+        ctx.drawImage(baseImage, 0, 0, 64, 64);
 
-            // Coordinates for the orbiting teal telemetry node
-            const orbitRadius = 8;
-            const centerX = 44;
-            const centerY = 20;
-            
-            const x = centerX + Math.cos(angle) * orbitRadius;
-            const y = centerY + Math.sin(angle) * orbitRadius;
+        // Exact locked coordinates matching your static teal dot
+        const x = 48;
+        const y = 16;
 
-            // Draw glowing outer aura
-            ctx.beginPath();
-            ctx.arc(x, y, 7, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(45, 212, 191, 0.4)';
-            ctx.fill();
+        // Calculate pulsing aura size and opacity
+        const pulse = Math.sin(time);
+        const radius = 4 + pulse * 2.5; // Expands and contracts cleanly
+        const alpha = 0.3 + (pulse + 1) * 0.25; // Fades glow in and out
 
-            // Draw solid teal core
-            ctx.beginPath();
-            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-            ctx.fillStyle = '#2dd4bf';
-            ctx.fill();
+        // Draw outer radar aura ring
+        ctx.beginPath();
+        ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(45, 212, 191, ${alpha * 0.5})`;
+        ctx.fill();
 
-            linkTag.href = canvas.toDataURL('image/png');
-            requestAnimationFrame(animateFavicon);
-          }
+        // Draw mid-ring glow
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(45, 212, 191, ${alpha})`;
+        ctx.fill();
 
-          requestAnimationFrame(animateFavicon);
-        };
-      })();
-    </script>
+        // Draw solid bright core node
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        linkTag.href = canvas.toDataURL('image/png');
+        requestAnimationFrame(animateFavicon);
+      }
+
+      requestAnimationFrame(animateFavicon);
+    };
+  })();
+</script>
     
 </body>
 </html>
