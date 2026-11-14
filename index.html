@@ -139,6 +139,24 @@
         .card-filtered-active {
             border-color: rgba(45, 212, 191, 0.65) !important;
         }
+
+        /* Interactive Terminal Log Animations */
+        .term-log.is-typing::after {
+            content: "█";
+            color: #2dd4bf;
+            margin-left: 4px;
+            animation: blinkUnderscore 0.8s step-start infinite;
+        }
+        .term-log-title::before {
+            content: "> ";
+            opacity: 0.5;
+        }
+        .term-log-desc.typing-done::after {
+            content: " [OK]";
+            color: #0f766e;
+            font-weight: 600;
+            margin-left: 6px;
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
@@ -391,7 +409,7 @@
                 </div>
             </article>
 
-            <!-- Minimalist Project Architecture Index -->
+            <!-- Minimalist Project Architecture Index (Now with Terminal Logs) -->
             <article data-card-cat="geo webgl" data-tilt="0.45" class="hud-card md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
@@ -406,6 +424,7 @@
 
                     <div class="divide-y divide-slate-800/70">
 
+                        <!-- Row 01 -->
                         <div data-project-row="webgl" class="py-3.5 first:pt-1">
                             <div onclick="toggleProjectRow('p1')" class="interactive group/row flex items-center justify-between gap-4 cursor-pointer">
                                 <div class="flex items-baseline gap-3">
@@ -419,22 +438,23 @@
                                 </div>
                             </div>
 
-                            <div id="p1-body" class="mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">Scene Graph</span>
-                                    <span class="text-slate-300">Custom particle buffers and procedural shaders running at 60fps.</span>
+                            <div id="p1-body" class="mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Scene Graph</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">Custom particle buffers and procedural shaders running at 60fps.</span>
                                 </div>
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">Backend API</span>
-                                    <span class="text-slate-300">FastAPI endpoints serving astronomical coordinates and tour states.</span>
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Backend API</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">FastAPI endpoints serving astronomical coordinates and tour states.</span>
                                 </div>
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">Camera Control</span>
-                                    <span class="text-slate-300">Smooth orbital interpolation and interactive object picking.</span>
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Camera Control</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">Smooth orbital interpolation and interactive object picking.</span>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Row 02 -->
                         <div data-project-row="geo" class="py-3.5 last:pb-1">
                             <div onclick="toggleProjectRow('p2')" class="interactive group/row flex items-center justify-between gap-4 cursor-pointer">
                                 <div class="flex items-baseline gap-3">
@@ -448,18 +468,18 @@
                                 </div>
                             </div>
 
-                            <div id="p2-body" class="hidden mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">STAC Query</span>
-                                    <span class="text-slate-300">Fetches low-cloud Landsat Level-2 rasters and reprojects via PyProj.</span>
+                            <div id="p2-body" class="hidden mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">STAC Query</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">Fetches low-cloud Landsat Level-2 rasters and reprojects via PyProj.</span>
                                 </div>
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">Spectral Indices</span>
-                                    <span class="text-slate-300">Calculates NDVI and NDBI arrays from NIR and SWIR bands.</span>
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Spectral Indices</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">Calculates NDVI and NDBI arrays from NIR and SWIR bands.</span>
                                 </div>
-                                <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
-                                    <span class="font-mono text-[10px] text-teal-400 block mb-0.5">Thermal Map</span>
-                                    <span class="text-slate-300">Converts Band 10 surface temperature to Celsius on Folium layers.</span>
+                                <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
+                                    <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Thermal Map</span>
+                                    <span class="term-log term-log-desc text-slate-400 inline">Converts Band 10 surface temperature to Celsius on Folium layers.</span>
                                 </div>
                             </div>
                         </div>
@@ -480,7 +500,6 @@
         </footer>
 
     </div>
-
 
 <style>
   *, *::before, *::after, html, body, canvas, div, span, a, button {
@@ -564,12 +583,10 @@
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
     
-    // Anchor coordinates (where the particle naturally lives in the flowing grid)
     const baseX = new Float32Array(particleCount);
     const baseY = new Float32Array(particleCount);
     const baseZ = new Float32Array(particleCount);
     
-    // Physics arrays for heavy momentum
     const particleSpeeds = new Float32Array(particleCount);
     const velX = new Float32Array(particleCount);
     const velY = new Float32Array(particleCount);
@@ -612,12 +629,10 @@
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
-    // EXACT 3D-TO-2D RAYCASTER FOR PERFECT CURSOR ALIGNMENT
     const raycaster = new THREE.Raycaster();
     const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     const cursorWorld = new THREE.Vector3();
 
-    // Cursor & Wave State
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
     let pointerScreenY = window.innerHeight / 2;
@@ -745,23 +760,18 @@
         if (t - clickWaves[i].startTime > 4.0) clickWaves.splice(i, 1);
       }
 
-      // 1. Update Three.js Camera
       targetX += (mouseX - targetX) * 0.032;
       targetY += (mouseY - targetY) * 0.032;
       camera.position.x = targetX * 14;
       camera.position.y = -18 - targetY * 14;
       camera.lookAt(0, 0, 0);
-
-      // Force camera matrix update so Raycaster is perfectly accurate
       camera.updateMatrixWorld();
 
-      // Ensure cursorWorld is exactly where the physical mouse is in 3D space
       raycaster.setFromCamera(new THREE.Vector2(pointerNormX, pointerNormY), camera);
       const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
       const cursorWX = intersectResult ? cursorWorld.x : pointerNormX * 24 + camera.position.x;
       const cursorWY = intersectResult ? cursorWorld.y : pointerNormY * 18 + camera.position.y + 18;
 
-      // Update Terrain Vertices
       const posArr = geometry.attributes.position.array;
       for (let i = 0; i < posArr.length; i += 3) {
         const px = posArr[i];
@@ -770,18 +780,16 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // 2. Heavy, Targeted Spring Physics (Strictly 4 closest particles)
       const positions = particleGeo.attributes.position.array;
 
       for (let i = 0; i < particleCount; i++) {
         baseY[i] += particleSpeeds[i];
         if (baseY[i] > 35) {
           baseY[i] -= 70;
-          positions[i * 3 + 1] -= 70; // Wrap particle position instantly
+          positions[i * 3 + 1] -= 70;
         }
       }
 
-      // Locate the 4 absolute closest anchor points to the EXACT cursor coordinate
       let closest = [
         { id: -1, d: Infinity }, { id: -1, d: Infinity },
         { id: -1, d: Infinity }, { id: -1, d: Infinity }
@@ -798,10 +806,8 @@
         }
       }
 
-      // Filter to nearby particles only
       const targetIds = closest.filter(c => c.d < 500).map(c => c.id);
 
-      // Apply Spring Hooke's Law (F = -kX)
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         const isTarget = targetIds.includes(i);
@@ -810,20 +816,17 @@
         let ty = baseY[i];
         let tz = baseZ[i];
         
-        // Fluid, heavy glide back to original grid position
         let stiffness = 0.0035; 
         let damping = 0.88;    
         
         if (isTarget) {
-          // Slow, heavy magnetic acceleration toward cursor
           tx = cursorWX;
           ty = cursorWY;
-          tz = baseZ[i] + 4.5; // Lift up toward glass
-          stiffness = 0.0018;  // Lower stiffness = heavier, slower acceleration
-          damping = 0.94;      // Higher damping = smoother momentum, no slingshot
+          tz = baseZ[i] + 4.5; 
+          stiffness = 0.0018;  
+          damping = 0.94;      
         }
 
-        // Apply Spring Force
         const fx = (tx - positions[i3]) * stiffness;
         const fy = (ty - positions[i3 + 1]) * stiffness;
         const fz = (tz - positions[i3 + 2]) * stiffness;
@@ -840,7 +843,6 @@
 
       renderer.render(scene, camera);
 
-      // 3. Kinetic Header Characters
       waveChars.forEach((ch) => {
         const rect = ch.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -852,7 +854,6 @@
         ch.style.transform = `translate3d(0, ${-lift.toFixed(2)}px, 0) rotateZ(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       });
 
-      // 4. Floating Pills Buoyancy
       floatingPills.forEach((pill, idx) => {
         const rect = pill.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -876,7 +877,6 @@
         pill.style.transform = `translate3d(${pState.curX.toFixed(2)}px, ${pState.curY.toFixed(2)}px, 0) rotateZ(${pState.curRot.toFixed(2)}deg) scale(${pState.curScale.toFixed(3)})`;
       });
 
-      // 5. Bento Panels Wave Coupling
       const vh = window.innerHeight;
       hudCards.forEach(card => {
         const rect = card.getBoundingClientRect();
@@ -1066,7 +1066,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT (Cyan to Dark Gray Blink) -->
+<!-- DYNAMIC FAVICON SCRIPT -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -1085,7 +1085,7 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        time += 0.18; // Fast blink speed
+        time += 0.18; 
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
@@ -1094,43 +1094,36 @@
         const y = 16;
         const radius = 5;
 
-        // Sharp on/off blink condition
         const isCyan = Math.sin(time) > 0;
 
         if (isCyan) {
           const auraAlpha = 0.75;
-
           ctx.beginPath();
           ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
           ctx.fill();
-
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
           ctx.fill();
-
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgb(45, 212, 191)`;
           ctx.fill();
         } else {
-          // Draw dark gray over the baked-in cyan dot to "turn it off"
           ctx.beginPath();
           ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
           ctx.fillStyle = '#1e202e';
           ctx.fill();
         }
-
         linkTag.href = canvas.toDataURL('image/png');
       }
-
       setInterval(animateFavicon, 33);
     };
   })();
 </script>
 
-<!-- UNIFIED TYPEWRITER & KPI COUNTER SCRIPT -->
+<!-- UNIFIED TYPEWRITER, KPI COUNTER & TERMINAL LOG SCRIPT -->
 <script>
   (function() {
     // 1. Unified Typewriter Engine
@@ -1152,12 +1145,12 @@
           let speed = isDeleting ? 22 : 42;
 
           if (!isDeleting && charIdx === currentPhrase.length) {
-            speed = 2200; // Pause at end of phrase
+            speed = 2200; 
             isDeleting = true;
           } else if (isDeleting && charIdx === 0) {
             isDeleting = false;
             phraseIdx = (phraseIdx + 1) % phrases.length;
-            speed = 350; // Pause before typing new phrase
+            speed = 350; 
           }
 
           setTimeout(tick, speed);
@@ -1189,6 +1182,65 @@
       }
       requestAnimationFrame(updateCounter);
     });
+
+    // 3. Interactive Terminal Log Engine
+    window.__typewriterTimeouts = window.__typewriterTimeouts || {};
+
+    window.playTerminalLog = function(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        if (window.__typewriterTimeouts[containerId]) {
+            window.__typewriterTimeouts[containerId].forEach(clearTimeout);
+        }
+        window.__typewriterTimeouts[containerId] = [];
+
+        const nodes = container.querySelectorAll('.term-log');
+        
+        nodes.forEach(node => {
+            if (node.dataset.orig === undefined) {
+                node.dataset.orig = node.textContent; // Cache the original HTML text text
+            }
+            node.textContent = ''; 
+            node.classList.remove('typing-done', 'is-typing');
+        });
+
+        let currentDelay = 0;
+
+        nodes.forEach((node) => {
+            const text = node.dataset.orig;
+            
+            const tId = setTimeout(() => {
+                node.classList.add('is-typing');
+                let charIdx = 0;
+                
+                function typeChar() {
+                    if (charIdx < text.length) {
+                        node.textContent += text.charAt(charIdx);
+                        charIdx++;
+                        const nextTid = setTimeout(typeChar, 8 + Math.random() * 12);
+                        window.__typewriterTimeouts[containerId].push(nextTid);
+                    } else {
+                        node.classList.remove('is-typing');
+                        node.classList.add('typing-done');
+                    }
+                }
+                typeChar();
+            }, currentDelay);
+            
+            window.__typewriterTimeouts[containerId].push(tId);
+            currentDelay += 50 + (text.length * 10); 
+        });
+    };
+
+    // Auto-play the open accordion row when the page loads
+    setTimeout(() => {
+        const p1 = document.getElementById('p1-body');
+        if (p1 && !p1.classList.contains('hidden')) {
+            window.playTerminalLog('p1-body');
+        }
+    }, 600);
+
   })();
 </script>
 
@@ -1430,6 +1482,11 @@
       body.classList.toggle('hidden', !open);
       icon.innerHTML = open ? '&minus;' : '+';
       icon.className = `font-mono text-xs w-4 text-right ${open ? 'text-teal-400' : 'text-slate-500'}`;
+
+      // Trigger terminal log animation
+      if (open) {
+          window.playTerminalLog(`${id}-body`);
+      }
     };
 
     const sparkCanvases = document.querySelectorAll('.sparkline-canvas');
