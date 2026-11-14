@@ -39,7 +39,7 @@
             50% { opacity: 0; }
         }
 
-        /* Minimalist 3D Card Depth & Subtle Corner Accents */
+        /* 3D Card Depth, Corner Reticles & Scanline Styles */
         .hud-card {
             position: relative;
             transform-style: preserve-3d;
@@ -53,7 +53,7 @@
             border-radius: 1rem;
             background: radial-gradient(
                 500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(45, 212, 191, 0.07),
+                rgba(45, 212, 191, 0.08),
                 transparent 45%
             );
             opacity: 0;
@@ -66,23 +66,53 @@
         }
         .hud-corner {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            border-color: rgba(45, 212, 191, 0.65);
+            width: 14px;
+            height: 14px;
+            border-color: #2dd4bf;
             opacity: 0;
             pointer-events: none;
             z-index: 30;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .hud-tl { top: 14px; left: 14px; border-top: 1.5px solid; border-left: 1.5px solid; }
-        .hud-tr { top: 14px; right: 14px; border-top: 1.5px solid; border-right: 1.5px solid; }
-        .hud-bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
-        .hud-br { bottom: 14px; right: 14px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+        .hud-tl { top: 18px; left: 18px; border-top: 2px solid; border-left: 2px solid; }
+        .hud-tr { top: 18px; right: 18px; border-top: 2px solid; border-right: 2px solid; }
+        .hud-bl { bottom: 18px; left: 18px; border-bottom: 2px solid; border-left: 2px solid; }
+        .hud-br { bottom: 18px; right: 18px; border-bottom: 2px solid; border-right: 2px solid; }
 
         .hud-card:hover .hud-tl { top: 8px; left: 8px; opacity: 1; }
         .hud-card:hover .hud-tr { top: 8px; right: 8px; opacity: 1; }
         .hud-card:hover .hud-bl { bottom: 8px; left: 8px; opacity: 1; }
         .hud-card:hover .hud-br { bottom: 8px; right: 8px; opacity: 1; }
+
+        .hud-telemetry-bar {
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.25s ease-out;
+        }
+        .hud-card:hover .hud-telemetry-bar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hud-scanline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.75), transparent);
+            box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 25;
+        }
+        .hud-card:hover .hud-scanline {
+            opacity: 1;
+            animation: hudScan 2.4s linear infinite;
+        }
+        @keyframes hudScan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
 
         /* Filter Highlight & Dimming Transitions */
         .skill-chip {
@@ -326,14 +356,27 @@
         <!-- Bento Grid Section -->
         <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <!-- NOVA Observatory Card (Full Width) -->
-            <article data-card-cat="webgl" data-tilt="0.4" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/40">
+            <!-- NOVA Observatory Card (Full Width with Scanline & Reticle Preview) -->
+            <article data-card-cat="webgl" data-tilt="0.4" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)]">
+                <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
                 <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
+                    <!-- Laser Scanline -->
+                    <div class="hud-scanline"></div>
+
+                    <!-- Top Hover Preview Bar -->
+                    <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                            THREE.JS + FASTAPI // 60FPS WEBGL
+                        </span>
+                        <span class="text-slate-400 hidden sm:inline">RA: 17h 45m 40.04s | DEC: -29° 00' 28.1"</span>
+                    </div>
+
                     <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg">
                         <source src="SR10.mp4" type="video/mp4">
                     </video>
@@ -344,54 +387,71 @@
 
                 <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
                     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                        <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
-                        <span class="text-xs font-mono text-teal-400 bg-teal-950/60 border border-teal-800/50 px-2.5 py-0.5 rounded-full">
-                            Three.js · FastAPI
-                        </span>
+                        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+                            NOVA Observatory
+                            <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/60 px-3 py-1 rounded-full">
+                                Full-Stack / 3D &amp; FastAPI
+                            </span>
+                        </h2>
                     </div>
 
-                    <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-2xl">
-                        Interactive 3D cosmic map with procedural shaders, planetary tiers, and automated camera tours.
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                        Interactive 3D cosmic map featuring procedural shaders, planetary tiers, orbital mechanics, and automated guided tours powered by FastAPI and Three.js.
                     </p>
 
-                    <div class="flex items-center gap-6 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1 transition">
-                            Live App <span>↗</span>
-                        </a>
-                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="text-slate-400 hover:text-white transition flex items-center gap-1">
-                            Source <span>&rarr;</span>
-                        </a>
+                    <div class="flex flex-wrap items-center justify-between gap-6 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                        <div class="flex gap-6">
+                            <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold flex items-center gap-1.5 transition">
+                                Live App <span>↗</span>
+                            </a>
+                            <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="text-slate-400 hover:text-white transition flex items-center gap-1 py-1.5">
+                                GitHub Repo <span>&rarr;</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </article>
             
-            <!-- Urban Heat Explorer Card -->
-            <article data-card-cat="geo" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/40 flex flex-col">
+            <!-- Urban Heat Explorer Card (With Scanline & Reticle Preview) -->
+            <article data-card-cat="geo" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] flex flex-col">
+                <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
                 <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center">
+                    <!-- Laser Scanline -->
+                    <div class="hud-scanline"></div>
+
+                    <!-- Top Hover Preview Bar -->
+                    <div class="hud-telemetry-bar absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-2.5 py-1 rounded backdrop-blur-md">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                            LANDSAT 8/9 L2
+                        </span>
+                        <span class="text-slate-400">BAND 10 · 30m RES</span>
+                    </div>
+
                     <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
                 </div>
 
                 <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow">
                     <div class="flex items-baseline justify-between gap-2 mb-3">
                         <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                        <span class="text-xs font-mono text-teal-400 bg-teal-950/60 border border-teal-800/50 px-2 py-0.5 rounded">
-                            Landsat 8/9
+                        <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/50 px-2 py-0.5 rounded">
+                            Geospatial
                         </span>
                     </div>
 
                     <p class="text-sm text-slate-300 leading-relaxed mb-6">
-                        Processes satellite thermal bands to map surface temperature, NDVI, and urban heat islands.
+                        Processes Landsat 8/9 thermal bands to map land surface temperature, NDVI, and urban heat islands across metropolitan biomes.
                     </p>
 
                     <div class="mt-auto pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
                         <span class="text-slate-500">Rasterio · Folium · Streamlit</span>
-                        <div class="flex items-center gap-4">
-                            <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="text-teal-400 hover:text-teal-300 font-semibold">
+                        <div class="flex items-center gap-3">
+                            <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold transition">
                                 Demo ↗
                             </a>
                             <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="text-slate-400 hover:text-white transition">
@@ -403,7 +463,7 @@
             </article>
 
             <!-- Interactive 3D Skills & Credentials Graph -->
-            <article data-card-cat="ai geo webgl" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/40 overflow-hidden">
+            <article data-card-cat="ai geo webgl" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -447,7 +507,7 @@
                 </div>
             </article>
 
-            <!-- Minimalist Interactive Project Index (Projects Only, Expandable Architecture) -->
+            <!-- Minimalist Project Architecture Index (Projects Only) -->
             <article data-card-cat="geo webgl" data-tilt="0.3" class="hud-card md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col hover:border-teal-500/40">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
@@ -918,7 +978,6 @@
       });
 
       window.setConstellationFilter = function(filter) {
-        // Toggle off if clicking already active filter
         activeGraphFilter = (activeGraphFilter === filter) ? 'all' : filter;
 
         ['ai', 'geo', 'webgl'].forEach(k => {
@@ -1031,7 +1090,7 @@
       renderConstellation();
     }
 
-    // 3. Toggleable Domain Filter Buttons (No "ALL" button required)
+    // 3. Toggleable Domain Filter Buttons
     let currentDomain = null;
     window.applyPortfolioFilter = function(cat) {
       currentDomain = (currentDomain === cat) ? null : cat;
