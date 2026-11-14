@@ -1066,7 +1066,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT (Original Fast-Blinking Cyan Circle) -->
+<!-- DYNAMIC FAVICON SCRIPT (Cyan to Dark Gray Blink) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -1092,12 +1092,12 @@
 
         const x = 48;
         const y = 16;
+        const radius = 5;
 
         // Sharp on/off blink condition
-        const isVisible = Math.sin(time) > 0;
+        const isCyan = Math.sin(time) > 0;
 
-        if (isVisible) {
-          const radius = 5;
+        if (isCyan) {
           const auraAlpha = 0.75;
 
           ctx.beginPath();
@@ -1113,6 +1113,12 @@
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgb(45, 212, 191)`;
+          ctx.fill();
+        } else {
+          // Draw dark gray over the baked-in cyan dot to "turn it off"
+          ctx.beginPath();
+          ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#1e202e';
           ctx.fill();
         }
 
