@@ -17,6 +17,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #0b0f19;
             color: #cbd5e1;
+            overflow-x: hidden;
         }
         code, .font-mono {
             font-family: 'JetBrains Mono', monospace;
@@ -26,6 +27,10 @@
             letter-spacing: -0.04em;
             display: flex;
             align-items: baseline;
+        }
+        .wave-char {
+            display: inline-block;
+            will-change: transform, color;
         }
         .terminal-cursor {
             color: #2dd4bf;
@@ -39,12 +44,12 @@
             50% { opacity: 0; }
         }
 
-        /* 3D Card Depth, Corner Reticles & Scanline Styles */
+        /* Wave-Reactive 3D Card Depth, Corner Reticles & Scanline Styles */
         .hud-card {
             position: relative;
             transform-style: preserve-3d;
-            will-change: transform, opacity;
-            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.35s ease;
+            will-change: transform, border-color, box-shadow, opacity;
+            transition: opacity 0.35s ease;
         }
         .hud-card::before {
             content: "";
@@ -52,12 +57,12 @@
             inset: 0;
             border-radius: 1rem;
             background: radial-gradient(
-                500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(45, 212, 191, 0.08),
+                520px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(45, 212, 191, 0.10),
                 transparent 45%
             );
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            opacity: var(--wave-glow, 0);
+            transition: opacity 0.2s ease;
             pointer-events: none;
             z-index: 1;
         }
@@ -114,151 +119,33 @@
             100% { top: 100%; }
         }
 
-        /* Filter Highlight & Dimming Transitions */
+        /* Filter Highlight & Wave-Reactive Skill Chips */
         .skill-chip {
-            transition: all 0.25s ease;
+            will-change: transform, border-color;
+            transition: background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
         }
         .skill-chip.chip-active {
-            border-color: rgba(45, 212, 191, 0.7);
-            background-color: rgba(45, 212, 191, 0.12);
+            border-color: rgba(45, 212, 191, 0.75) !important;
+            background-color: rgba(45, 212, 191, 0.14);
             color: #5eead4;
-            transform: translateY(-1px);
         }
         .skill-chip.chip-dim {
-            opacity: 0.28;
+            opacity: 0.25;
         }
         .card-filtered-dim {
             opacity: 0.28;
             filter: saturate(0.35);
         }
         .card-filtered-active {
-            border-color: rgba(45, 212, 191, 0.5) !important;
+            border-color: rgba(45, 212, 191, 0.6) !important;
         }
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
-    <!-- Atmospheric Geospatial Background -->
+    <!-- Atmospheric Geospatial Background + Concentric Wave Field -->
     <div id="geospatial-canvas-container" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #0b0f19;"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-      (function() {
-        const container = document.getElementById('geospatial-canvas-container');
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0b0f19, 0.022);
-
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, -18, 25);
-        camera.rotation.x = 0.55;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        const width = 60, height = 60, segments = 40;
-        const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
-        const posAttribute = geometry.attributes.position;
-
-        for (let i = 0; i < posAttribute.count; i++) {
-          const x = posAttribute.getX(i);
-          const y = posAttribute.getY(i);
-          const z = Math.sin(x * 0.15) * Math.cos(y * 0.15) * 2.2 + Math.sin(x * 0.05) * 1.5;
-          posAttribute.setZ(i, z);
-        }
-        geometry.computeVertexNormals();
-
-        const wireMaterial = new THREE.MeshBasicMaterial({
-          color: 0x2dd4bf,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.10
-        });
-        const terrain = new THREE.Mesh(geometry, wireMaterial);
-        terrain.position.z = -5;
-        scene.add(terrain);
-
-        const particleCount = 400;
-        const particleGeo = new THREE.BufferGeometry();
-        const particlePositions = new Float32Array(particleCount * 3);
-        const particleSpeeds = new Float32Array(particleCount);
-
-        for (let i = 0; i < particleCount * 3; i += 3) {
-          particlePositions[i] = (Math.random() - 0.5) * 70;
-          particlePositions[i + 1] = (Math.random() - 0.5) * 70;
-          particlePositions[i + 2] = (Math.random() * 15) - 2;
-          particleSpeeds[i / 3] = 0.012 + Math.random() * 0.025;
-        }
-
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-
-        const canvasNode = document.createElement('canvas');
-        canvasNode.width = 32; canvasNode.height = 32;
-        const ctxNode = canvasNode.getContext('2d');
-        ctxNode.beginPath();
-        ctxNode.arc(16, 16, 12, 0, Math.PI * 2);
-        ctxNode.fillStyle = '#2dd4bf';
-        ctxNode.fill();
-        const spriteTex = new THREE.CanvasTexture(canvasNode);
-
-        const particleMat = new THREE.PointsMaterial({
-          color: 0x2dd4bf,
-          size: 0.42,
-          map: spriteTex,
-          transparent: true,
-          opacity: 0.52,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        });
-
-        const dataNodes = new THREE.Points(particleGeo, particleMat);
-        scene.add(dataNodes);
-
-        let mouseX = 0, mouseY = 0;
-        let targetX = 0, targetY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-          mouseX = (e.clientX - window.innerWidth / 2) * 0.0008;
-          mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
-        });
-
-        let clock = new THREE.Clock();
-        function animateTerrain() {
-          requestAnimationFrame(animateTerrain);
-          const elapsedTime = clock.getElapsedTime();
-
-          targetX += (mouseX - targetX) * 0.025;
-          targetY += (mouseY - targetY) * 0.025;
-          camera.position.x = targetX * 14;
-          camera.position.y = -18 - targetY * 14;
-          camera.lookAt(0, 0, 0);
-
-          const posArr = geometry.attributes.position.array;
-          for (let i = 0; i < posArr.length; i += 3) {
-            const px = posArr[i];
-            const py = posArr[i + 1];
-            posArr[i + 2] = Math.sin(px * 0.12 + elapsedTime * 0.4) * Math.cos(py * 0.12 + elapsedTime * 0.4) * 1.6;
-          }
-          geometry.attributes.position.needsUpdate = true;
-
-          const positions = particleGeo.attributes.position.array;
-          for (let i = 1; i < particleCount * 3; i += 3) {
-            positions[i] += particleSpeeds[Math.floor(i / 3)];
-            if (positions[i] > 35) positions[i] = -35;
-          }
-          particleGeo.attributes.position.needsUpdate = true;
-
-          renderer.render(scene, camera);
-        }
-        animateTerrain();
-
-        window.addEventListener('resize', () => {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-      })();
-    </script>
 
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
@@ -268,7 +155,9 @@
                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
                 Applied AI &amp; Geospatial
             </div>
-            <h1 class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3">danielperez<span class="terminal-cursor">_</span></h1>
+            <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3" aria-label="danielperez">
+                <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
+            </h1>
 
             <!-- Minimal Typewriter Prompt -->
             <div class="mt-2 mb-5 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm">
@@ -320,33 +209,33 @@
                     </button>
                 </div>
 
-                <!-- Concise Skill & Credential Pills -->
+                <!-- Concise Wave-Reactive Skill & Credential Pills -->
                 <div class="flex flex-wrap gap-1.5 text-xs font-mono">
-                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-300">
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-300">
                         <span class="text-teal-400">Cert:</span> NASA ARSET
                     </span>
-                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-300">
+                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-300">
                         <span class="text-teal-400">Cert:</span> Google AI
                     </span>
-                    <span data-chip-cat="geo ai webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="geo ai webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         Python
                     </span>
-                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         Rasterio
                     </span>
-                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         Folium
                     </span>
-                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         ChromaDB
                     </span>
-                    <span data-chip-cat="webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         Three.js
                     </span>
-                    <span data-chip-cat="webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         FastAPI
                     </span>
-                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/50 border border-slate-800/80 text-slate-400">
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/80 text-slate-400">
                         Streamlit
                     </span>
                 </div>
@@ -357,18 +246,15 @@
         <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- NOVA Observatory Card (Full Width with Scanline & Reticle Preview) -->
-            <article data-card-cat="webgl" data-tilt="0.4" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)]">
-                <!-- HUD Corner Reticles -->
+            <article data-card-cat="webgl" data-tilt="0.45" class="hud-card group md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
                 <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
-                    <!-- Laser Scanline -->
                     <div class="hud-scanline"></div>
 
-                    <!-- Top Hover Preview Bar -->
                     <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
                         <span class="flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
@@ -413,18 +299,15 @@
             </article>
             
             <!-- Urban Heat Explorer Card (With Scanline & Reticle Preview) -->
-            <article data-card-cat="geo" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] flex flex-col">
-                <!-- HUD Corner Reticles -->
+            <article data-card-cat="geo" data-tilt="0.75" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
                 <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center">
-                    <!-- Laser Scanline -->
                     <div class="hud-scanline"></div>
 
-                    <!-- Top Hover Preview Bar -->
                     <div class="hud-telemetry-bar absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-2.5 py-1 rounded backdrop-blur-md">
                         <span class="flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
@@ -463,7 +346,7 @@
             </article>
 
             <!-- Interactive 3D Skills & Credentials Graph -->
-            <article data-card-cat="ai geo webgl" data-tilt="0.75" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
+            <article data-card-cat="ai geo webgl" data-tilt="0.75" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between overflow-hidden">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -485,12 +368,10 @@
                         </div>
                     </div>
 
-                    <!-- 3D Canvas -->
                     <div class="relative w-full h-56 sm:h-60 rounded-xl bg-slate-950/75 border border-slate-800/80 overflow-hidden mb-3">
                         <canvas id="constellation-canvas" class="interactive w-full h-full block"></canvas>
                     </div>
 
-                    <!-- Minimal Node Readout -->
                     <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5">
                         <div class="flex items-baseline justify-between gap-2">
                             <h4 id="inspector-title" class="text-xs font-bold text-white font-mono">
@@ -508,7 +389,7 @@
             </article>
 
             <!-- Minimalist Project Architecture Index (Projects Only) -->
-            <article data-card-cat="geo webgl" data-tilt="0.3" class="hud-card md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col hover:border-teal-500/40">
+            <article data-card-cat="geo webgl" data-tilt="0.35" class="hud-card md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -670,6 +551,253 @@
 <div id="nova-cursor-halo"></div>
 <canvas id="nova-trail-canvas"></canvas>
 
+<!-- UNIFIED WAVE-UI COUPLING ENGINE (Three.js Terrain + DOM Buoyancy & Ripples) -->
+<script>
+  (function() {
+    const container = document.getElementById('geospatial-canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x0b0f19, 0.022);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, -18, 25);
+    camera.rotation.x = 0.55;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const width = 64, height = 64, segments = 48;
+    const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
+
+    const wireMaterial = new THREE.MeshBasicMaterial({
+      color: 0x2dd4bf,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.13
+    });
+    const terrain = new THREE.Mesh(geometry, wireMaterial);
+    terrain.position.z = -5;
+    scene.add(terrain);
+
+    // Floating Data Nodes coupled to wave elevation
+    const particleCount = 380;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleSpeeds = new Float32Array(particleCount);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePositions[i] = (Math.random() - 0.5) * 70;
+      particlePositions[i + 1] = (Math.random() - 0.5) * 70;
+      particlePositions[i + 2] = (Math.random() * 14) - 2;
+      particleSpeeds[i / 3] = 0.012 + Math.random() * 0.022;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+    const canvasNode = document.createElement('canvas');
+    canvasNode.width = 32; canvasNode.height = 32;
+    const ctxNode = canvasNode.getContext('2d');
+    ctxNode.beginPath();
+    ctxNode.arc(16, 16, 12, 0, Math.PI * 2);
+    ctxNode.fillStyle = '#2dd4bf';
+    ctxNode.fill();
+    const spriteTex = new THREE.CanvasTexture(canvasNode);
+
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x2dd4bf,
+      size: 0.44,
+      map: spriteTex,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const dataNodes = new THREE.Points(particleGeo, particleMat);
+    scene.add(dataNodes);
+
+    // Interactive Concentric Wave Sources (Inspired by SR2.mov)
+    let pointerNormX = 0, pointerNormY = 0;
+    let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+    const clickWaves = [];
+
+    window.addEventListener('mousemove', (e) => {
+      pointerNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+      pointerNormY = -(e.clientY / window.innerHeight - 0.5) * 2;
+      mouseX = (e.clientX - window.innerWidth / 2) * 0.0008;
+      mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
+    });
+
+    // Clicking anywhere spawns an expanding concentric shockwave that lifts the 3D mesh & DOM elements
+    window.addEventListener('mousedown', (e) => {
+      clickWaves.push({
+        wx: ((e.clientX / window.innerWidth) - 0.5) * width * 0.75,
+        wy: -((e.clientY / window.innerHeight) - 0.5) * height * 0.75,
+        startTime: performance.now() * 0.001
+      });
+      if (clickWaves.length > 5) clickWaves.shift();
+    });
+
+    // Shared Mathematical Wave Field Function (used by BOTH Three.js vertices AND HTML elements)
+    function sampleWaveField(wx, wy, t) {
+      // 1. Primary Concentric Radial Pulse (SR2.mov style)
+      const cursorWX = pointerNormX * 16;
+      const cursorWY = pointerNormY * 12;
+      const distCursor = Math.hypot(wx - cursorWX, wy - cursorWY);
+      const concentricRipple = Math.sin(distCursor * 0.38 - t * 2.6) * Math.exp(-distCursor * 0.032) * 1.35;
+
+      // 2. Ambient Harmonic Swell
+      const ambientSwell = Math.sin(wx * 0.13 + t * 0.55) * Math.cos(wy * 0.13 + t * 0.45) * 1.25;
+
+      // 3. Expanding Click Shockwaves
+      let shockwave = 0;
+      for (let i = clickWaves.length - 1; i >= 0; i--) {
+        const cw = clickWaves[i];
+        const age = t - cw.startTime;
+        if (age > 4.5) {
+          clickWaves.splice(i, 1);
+          continue;
+        }
+        const d = Math.hypot(wx - cw.wx, wy - cw.wy);
+        const radius = age * 16;
+        const band = Math.exp(-Math.pow(d - radius, 2) * 0.09);
+        shockwave += Math.sin((d - radius) * 0.8) * band * Math.max(0, 1 - age / 4.5) * 2.2;
+      }
+
+      return concentricRipple + ambientSwell + shockwave;
+    }
+
+    // Cache DOM elements for real-time wave buoyancy coupling
+    const hudCards = Array.from(document.querySelectorAll('.hud-card'));
+    const skillChips = Array.from(document.querySelectorAll('.skill-chip'));
+    const waveChars = Array.from(document.querySelectorAll('.wave-char'));
+
+    // Track per-card cursor hover tilt so wave buoyancy blends seamlessly with mouse hover
+    const cardHoverState = new Map();
+    hudCards.forEach(card => {
+      cardHoverState.set(card, { hoverRx: 0, hoverRy: 0, isHovered: false });
+      const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.6;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+
+        const state = cardHoverState.get(card);
+        state.isHovered = true;
+        state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -2.2 * intensity;
+        state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 2.2 * intensity;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        const state = cardHoverState.get(card);
+        state.isHovered = false;
+        state.hoverRx = 0;
+        state.hoverRy = 0;
+      });
+    });
+
+    const clock = new THREE.Clock();
+
+    function animateTerrainAndDOM() {
+      requestAnimationFrame(animateTerrainAndDOM);
+      const t = clock.getElapsedTime();
+
+      // 1. Update Three.js Camera & Terrain Vertices
+      targetX += (mouseX - targetX) * 0.03;
+      targetY += (mouseY - targetY) * 0.03;
+      camera.position.x = targetX * 14;
+      camera.position.y = -18 - targetY * 14;
+      camera.lookAt(0, 0, 0);
+
+      const posArr = geometry.attributes.position.array;
+      for (let i = 0; i < posArr.length; i += 3) {
+        const px = posArr[i];
+        const py = posArr[i + 1];
+        posArr[i + 2] = sampleWaveField(px, py, t);
+      }
+      geometry.attributes.position.needsUpdate = true;
+
+      const positions = particleGeo.attributes.position.array;
+      for (let i = 1; i < particleCount * 3; i += 3) {
+        positions[i] += particleSpeeds[Math.floor(i / 3)];
+        if (positions[i] > 35) positions[i] = -35;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
+
+      renderer.render(scene, camera);
+
+      // 2. Couple Header Characters to Concentric Wave (SR2.mov Kinetic Typography)
+      waveChars.forEach((ch, idx) => {
+        const charWave = sampleWaveField(-14 + idx * 2.2, 12, t);
+        const lift = charWave * 1.8;
+        const scale = 1 + Math.max(0, charWave) * 0.045;
+        ch.style.transform = `translate3d(0, ${-lift.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
+      });
+
+      // 3. Couple Skill Pills to Passing Wave Crest
+      skillChips.forEach((chip, idx) => {
+        const chipWave = sampleWaveField(-12 + (idx * 3.1), 6, t);
+        const yOffset = -chipWave * 1.35;
+        chip.style.transform = `translate3d(0, ${yOffset.toFixed(2)}px, 0)`;
+      });
+
+      // 4. Couple Bento Cards to Underlying Wave Elevation, Slope & Border Glow
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+
+      hudCards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        // Skip off-screen cards for performance
+        if (rect.bottom < -50 || rect.top > vh + 50) return;
+
+        // Map card center screen position to wave-field coordinates
+        const cx = ((rect.left + rect.width / 2) / vw - 0.5) * 34;
+        const cy = -((rect.top + rect.height / 2) / vh - 0.5) * 28;
+
+        // Sample wave height at center and edges to compute physical wave slope (pitch & roll)
+        const hCenter = sampleWaveField(cx, cy, t);
+        const hRight = sampleWaveField(cx + 3.5, cy, t);
+        const hTop = sampleWaveField(cx, cy + 3.5, t);
+
+        const wavePitch = (hTop - hCenter) * 0.55;
+        const waveRoll = (hRight - hCenter) * -0.55;
+        const waveLift = -hCenter * 2.4;
+
+        const state = cardHoverState.get(card);
+        const totalRx = state.hoverRx + wavePitch;
+        const totalRy = state.hoverRy + waveRoll;
+
+        card.style.transform = `perspective(1100px) translate3d(0, ${waveLift.toFixed(2)}px, 0) rotateX(${totalRx.toFixed(2)}deg) rotateY(${totalRy.toFixed(2)}deg)`;
+
+        // Modulate border luminance & internal glow as wave crest passes beneath the card
+        const normalizedCrest = Math.max(0, Math.min(1, (hCenter + 1.8) / 3.6));
+        card.style.setProperty('--wave-glow', (normalizedCrest * 0.65).toFixed(2));
+
+        if (!state.isHovered && !card.classList.contains('card-filtered-active')) {
+          const borderAlpha = 0.12 + normalizedCrest * 0.34;
+          const shadowAlpha = normalizedCrest * 0.07;
+          card.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
+          card.style.boxShadow = `0 18px 45px rgba(45, 212, 191, ${shadowAlpha.toFixed(3)})`;
+        } else if (state.isHovered) {
+          card.style.borderColor = 'rgba(45, 212, 191, 0.55)';
+          card.style.boxShadow = '0 20px 50px rgba(45, 212, 191, 0.11)';
+        }
+      });
+    }
+
+    animateTerrainAndDOM();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  })();
+</script>
+
+<!-- CUSTOM CURSOR SCRIPT -->
 <script>
   (function() {
     const dot = document.getElementById('nova-cursor-dot');
@@ -880,32 +1008,10 @@
   })();
 </script>
 
-<!-- 3D TILT + 3D GRAPH + TOGGLEABLE FILTERS + PROJECT INDEX -->
+<!-- 3D GRAPH + TOGGLEABLE FILTERS + PROJECT INDEX -->
 <script>
   (function() {
-    // 1. Subtle 3D Perspective Tilt on Cards
-    const cards = document.querySelectorAll('.hud-card');
-    cards.forEach(card => {
-      const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.6;
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-
-        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -2.2 * intensity;
-        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 2.2 * intensity;
-
-        card.style.transform = `perspective(1100px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg)';
-      });
-    });
-
-    // 2. Interactive 3D Skills & Credentials Graph
+    // 1. Interactive 3D Skills & Credentials Graph
     const canvas = document.getElementById('constellation-canvas');
     let activeGraphFilter = 'all';
 
@@ -1090,7 +1196,7 @@
       renderConstellation();
     }
 
-    // 3. Toggleable Domain Filter Buttons
+    // 2. Toggleable Domain Filter Buttons
     let currentDomain = null;
     window.applyPortfolioFilter = function(cat) {
       currentDomain = (currentDomain === cat) ? null : cat;
@@ -1129,7 +1235,7 @@
       if (currentDomain === 'geo') window.toggleProjectRow('p2', true);
     };
 
-    // 4. Minimalist Project Architecture Accordion & Subtle Waveforms
+    // 3. Minimalist Project Architecture Accordion & Subtle Waveforms
     window.toggleProjectRow = function(id, forceOpen) {
       const body = document.getElementById(`${id}-body`);
       const icon = document.getElementById(`${id}-icon`);
