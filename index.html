@@ -44,16 +44,30 @@
             50% { opacity: 0; }
         }
 
-        /* Bio Container Expansion */
+        /* Hover-Triggered Bio Container Expansion */
+        #header-interaction-zone {
+            cursor: default;
+        }
+        
         #bio-container {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+            transition: max-height 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
         }
-        #bio-container.bio-expanded {
+        
+        #header-interaction-zone:hover #bio-container,
+        #bio-container.bio-force-open {
             max-height: 500px;
             opacity: 1;
+        }
+
+        /* Bio Typewriter FX */
+        .bio-log.is-typing::after {
+            content: "█";
+            color: #2dd4bf;
+            margin-left: 4px;
+            animation: blinkUnderscore 0.8s step-start infinite;
         }
 
         /* Wave-Reactive 3D Card Depth, Elastic Wobble & Scanline Styles */
@@ -64,7 +78,6 @@
             transition: opacity 0.35s ease;
         }
         
-        /* Inner Parallax Content Layer */
         .glass-content {
             transform: translateZ(1px);
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -74,7 +87,6 @@
             transform: translateZ(28px);
         }
 
-        /* Base Teal Wave Glow */
         .hud-card::before {
             content: "";
             position: absolute;
@@ -91,7 +103,6 @@
             z-index: 1;
         }
         
-        /* Specular White Glass Glare */
         .hud-card::after {
             content: "";
             position: absolute;
@@ -113,7 +124,6 @@
             opacity: 1;
         }
 
-        /* 3D Floating Corners */
         .hud-corner {
             position: absolute;
             width: 14px;
@@ -165,7 +175,6 @@
             100% { top: 100%; }
         }
 
-        /* Filter Highlight & Wave-Reactive Floating Pills */
         .skill-chip, .domain-pill {
             will-change: transform, border-color, box-shadow;
             transition: background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
@@ -213,37 +222,29 @@
 
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
-        <!-- Header / Intro -->
-        <header class="mb-14">
+        <!-- Header / Intro Interaction Zone -->
+        <header id="header-interaction-zone" class="mb-14 pb-2" onmouseenter="playBioLog()" onmouseleave="resetBioLog()">
             <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3" aria-label="danielperez">
                 <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
             </h1>
 
-            <!-- Hero Typewriter Prompt & Execute Button -->
-            <div class="mt-2 mb-6 flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm">
+            <!-- Hero Typewriter Prompt -->
+            <div class="mt-2 mb-6 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm shadow-sm">
                 <span class="text-slate-500 select-none">&gt;</span>
                 <span class="typewriter-fx text-teal-300" data-phrases='["Python · Rasterio · Folium · Streamlit", "Three.js · WebGL · FastAPI", "Multimodal AI Evaluation & QA", "Satellite Remote Sensing Pipelines"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
-                
-                <button onclick="toggleBio()" id="run-bio-btn" class="interactive ml-2 sm:ml-4 bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/60 rounded px-2.5 py-1 text-[10px] tracking-widest transition-colors flex items-center gap-1 shadow-sm">
-                    EXEC ↵
-                </button>
             </div>
 
-            <!-- Terminal Output Bio (Hidden by default) -->
+            <!-- Hover-Triggered Terminal Output Bio -->
             <div id="bio-container">
                 <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-2 mb-2">
-                    <p class="text-lg text-slate-300 font-medium max-w-2xl leading-relaxed mb-4">
-                        Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
-                    </p>
-                    <p class="text-sm text-slate-400 max-w-2xl leading-relaxed">
-                        After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
-                    </p>
+                    <p class="bio-log text-lg text-slate-300 font-medium max-w-2xl leading-relaxed mb-4 min-h-[3.5rem]" data-orig="Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows."></p>
+                    <p class="bio-log text-sm text-slate-400 max-w-2xl leading-relaxed min-h-[4rem]" data-orig="After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools."></p>
                 </div>
             </div>
 
             <!-- Minimalist Metrics Strip -->
-            <div class="mb-6 grid grid-cols-3 gap-4 max-w-lg border-y border-slate-800/70 py-3.5 px-1">
+            <div class="mb-6 grid grid-cols-3 gap-4 max-w-lg border-y border-slate-800/70 py-3.5 px-1 relative z-10 bg-[#0b0f19]/40 backdrop-blur-sm rounded">
                 <div>
                     <div class="text-[11px] font-mono text-slate-500">AI Evaluation</div>
                     <div class="text-xl font-bold font-mono text-white mt-0.5">
@@ -265,15 +266,15 @@
             </div>
 
             <!-- Minimalist Wave-Coupled Domain Filter Bar & Skill Pills -->
-            <div class="space-y-3 max-w-2xl">
+            <div class="space-y-3 max-w-2xl relative z-10">
                 <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-                    <button onclick="applyPortfolioFilter('geo')" data-filter-btn="geo" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700">
+                    <button onclick="applyPortfolioFilter('geo')" data-filter-btn="geo" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
                         Geospatial
                     </button>
-                    <button onclick="applyPortfolioFilter('ai')" data-filter-btn="ai" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700">
+                    <button onclick="applyPortfolioFilter('ai')" data-filter-btn="ai" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
                         AI &amp; Evaluation
                     </button>
-                    <button onclick="applyPortfolioFilter('webgl')" data-filter-btn="webgl" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700">
+                    <button onclick="applyPortfolioFilter('webgl')" data-filter-btn="webgl" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
                         3D &amp; Web
                     </button>
                 </div>
@@ -1188,20 +1189,70 @@
 
 <!-- UNIFIED TYPEWRITER, KPI COUNTER & TERMINAL LOG SCRIPT -->
 <script>
-  window.toggleBio = function() {
-      const bio = document.getElementById('bio-container');
-      const btn = document.getElementById('run-bio-btn');
-      const isExpanded = bio.classList.contains('bio-expanded');
+  // Hover-Triggered Bio Animation Engine
+  let bioTimeoutIds = [];
+  
+  window.playBioLog = function() {
+      // Clear any fading/resetting timeouts
+      bioTimeoutIds.forEach(clearTimeout);
+      bioTimeoutIds = [];
       
-      if (isExpanded) {
-          bio.classList.remove('bio-expanded');
-          btn.innerHTML = 'EXEC ↵';
-          btn.classList.remove('bg-slate-700', 'text-slate-200', 'border-slate-500');
-      } else {
-          bio.classList.add('bio-expanded');
-          btn.innerHTML = 'HIDE ↑';
-          btn.classList.add('bg-slate-700', 'text-slate-200', 'border-slate-500');
+      const nodes = document.querySelectorAll('.bio-log');
+      
+      // Only type if it isn't already typed/typing to prevent stuttering
+      if (nodes[0].classList.contains('typing-done') || nodes[0].classList.contains('is-typing')) {
+          return; 
       }
+      
+      nodes.forEach(node => {
+          node.textContent = ''; 
+          node.classList.remove('typing-done', 'is-typing');
+      });
+
+      let currentDelay = 0;
+
+      nodes.forEach((node) => {
+          const text = node.dataset.orig;
+          
+          const tId = setTimeout(() => {
+              node.classList.add('is-typing');
+              let charIdx = 0;
+              
+              function typeChar() {
+                  // Check if user moused away mid-typing
+                  if (!document.getElementById('header-interaction-zone').matches(':hover')) {
+                      return; 
+                  }
+                  
+                  if (charIdx < text.length) {
+                      node.textContent += text.charAt(charIdx);
+                      charIdx++;
+                      const nextTid = setTimeout(typeChar, 4 + Math.random() * 8); // Fast typing speed
+                      bioTimeoutIds.push(nextTid);
+                  } else {
+                      node.classList.remove('is-typing');
+                      node.classList.add('typing-done');
+                  }
+              }
+              typeChar();
+          }, currentDelay);
+          
+          bioTimeoutIds.push(tId);
+          currentDelay += (text.length * 8) + 150; // Delay next paragraph until first is done
+      });
+  };
+
+  window.resetBioLog = function() {
+      // Allow the CSS opacity transition to fade out the text before wiping it
+      const wipeTid = setTimeout(() => {
+          const nodes = document.querySelectorAll('.bio-log');
+          nodes.forEach(node => {
+              node.textContent = ''; 
+              node.classList.remove('typing-done', 'is-typing');
+          });
+      }, 800); // Matches the 0.8s CSS opacity transition
+      
+      bioTimeoutIds.push(wipeTid);
   };
 
   (function() {
@@ -1262,7 +1313,7 @@
       requestAnimationFrame(updateCounter);
     });
 
-    // 3. Interactive Terminal Log Engine
+    // 3. Interactive Terminal Log Engine (For Architecture Section)
     window.__typewriterTimeouts = window.__typewriterTimeouts || {};
 
     window.playTerminalLog = function(containerId) {
