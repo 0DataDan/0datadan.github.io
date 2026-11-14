@@ -972,62 +972,122 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT -->
+<!-- DYNAMIC FAVICON SCRIPT (Exact 'dp' Contour Laser Trace, No Circle) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
     if (!linkTag) return;
 
+    const size = 64;
     const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = size;
+    canvas.height = size;
     const ctx = canvas.getContext('2d');
 
-    const baseImage = new Image();
-    baseImage.crossOrigin = 'anonymous';
-    baseImage.src = 'faviconR1.ico';
+    function roundedRectPath(c, x, y, w, h, r) {
+      c.beginPath();
+      c.moveTo(x + r, y);
+      c.arcTo(x + w, y, x + w, y + h, r);
+      c.arcTo(x + w, y + h, x, y + h, r);
+      c.arcTo(x, y + h, x, y, r);
+      c.arcTo(x, y, x + w, y, r);
+      c.closePath();
+    }
 
-    let time = 0;
+    // Exact outer & inner contours of your custom 'd' and 'p' letterforms
+    const dOuter = new Path2D("M 23.3 0 L 29.5 0 L 29.5 41.3 L 23.3 41.3 L 23.3 38.2 A 13.5 13.5 0 1 1 23.3 18.8 Z");
+    const dInner = new Path2D("M 16.5 21.0 A 7.5 7.5 0 1 0 16.5 36.0 A 7.5 7.5 0 1 0 16.5 21.0 Z");
+    const pOuter = new Path2D("M 34.0 64 L 34.0 27.6 L 40.2 27.6 L 40.2 30.7 A 13.5 13.5 0 1 1 40.2 50.1 L 40.2 64 Z");
+    const pInner = new Path2D("M 47.0 32.9 A 7.5 7.5 0 1 0 47.0 47.9 A 7.5 7.5 0 1 0 47.0 32.9 Z");
 
-    baseImage.onload = function() {
-      function animateFavicon() {
-        time += 0.04;
+    const traceContours = [
+      { path: dOuter, len: 148 },
+      { path: dInner, len: 47 },
+      { path: pOuter, len: 148 },
+      { path: pInner, len: 47 }
+    ];
 
-        ctx.clearRect(0, 0, 64, 64);
-        ctx.drawImage(baseImage, 0, 0, 64, 64);
+    let progress = 0;
 
-        const x = 48;
-        const y = 16;
+    function animateFavicon() {
+      progress = (progress + 0.014) % 1;
+      ctx.clearRect(0, 0, size, size);
 
-        const wave = (Math.sin(time) + 1) / 2; 
+      ctx.save();
+      roundedRectPath(ctx, 1, 1, 62, 62, 13);
+      ctx.clip();
 
-        const radius = 3 + wave * 3;
-        const auraAlpha = wave * 0.6;
+      // 1. Slate-blue background (without the top-right cyan circle)
+      ctx.fillStyle = '#243b55';
+      ctx.fillRect(0, 0, size, size);
 
-        ctx.beginPath();
-        ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
-        ctx.fill();
-
-        const r = Math.round(30 + wave * 15);
-        const g = Math.round(41 + wave * 171);
-        const b = Math.round(59 + wave * 132);
-
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-        ctx.fill();
-
-        linkTag.href = canvas.toDataURL('image/png');
+      // 2. Subtle teal coordinate grid lines
+      ctx.strokeStyle = 'rgba(45, 212, 191, 0.16)';
+      ctx.lineWidth = 1;
+      for (let i = 8; i < size; i += 8) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, size); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i); ctx.stroke();
       }
 
-      setInterval(animateFavicon, 33);
-    };
+      // 3. White 'd' and 'p' negative-space cutout shapes
+      ctx.fillStyle = '#ffffff';
+      ctx.fill(dOuter);
+      ctx.fill(pOuter);
+
+      ctx.fillStyle = '#243b55';
+      ctx.fill(dInner);
+      ctx.fill(pInner);
+      // Redraw grid inside the letter counters so the background shows through cleanly
+      ctx.save();
+      ctx.clip(new Path2D("M 16.5 21.0 A 7.5 7.5 0 1 0 16.5 36.0 A 7.5 7.5 0 1 0 16.5 21.0 Z M 47.0 32.9 A 7.5 7.5 0 1 0 47.0 47.9 A 7.5 7.5 0 1 0 47.0 32.9 Z"));
+      for (let i = 8; i < size; i += 8) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, size); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i); ctx.stroke();
+      }
+      ctx.restore();
+
+      // 4. Animated thin cyan glow line tracing the exact edges of 'd' and 'p'
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      traceContours.forEach((item, idx) => {
+        const dir = idx % 2 === 0 ? -1 : 1;
+        const offset = dir * progress * item.len;
+        const cometLen = item.len * 0.28;
+        const gapLen = item.len - cometLen;
+
+        // Outer cyan glow pass
+        ctx.save();
+        ctx.strokeStyle = '#2dd4bf';
+        ctx.lineWidth = 2.6;
+        ctx.shadowColor = '#2dd4bf';
+        ctx.shadowBlur = 6;
+        ctx.setLineDash([cometLen, gapLen]);
+        ctx.lineDashOffset = offset;
+        ctx.stroke(item.path);
+
+        // Bright cyan-white core filament pass
+        ctx.strokeStyle = '#99f6e4';
+        ctx.lineWidth = 1.2;
+        ctx.shadowBlur = 2;
+        ctx.setLineDash([cometLen * 0.45, item.len]);
+        ctx.lineDashOffset = offset;
+        ctx.stroke(item.path);
+        ctx.restore();
+      });
+
+      ctx.restore();
+
+      // 5. Outer rounded border frame
+      roundedRectPath(ctx, 1, 1, 62, 62, 13);
+      ctx.strokeStyle = '#3b5978';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      linkTag.href = canvas.toDataURL('image/png');
+    }
+
+    setInterval(animateFavicon, 40);
   })();
 </script>
 
