@@ -972,7 +972,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT -->
+<!-- DYNAMIC FAVICON SCRIPT (Fast Blink) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -991,7 +991,8 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        time += 0.04;
+        // Increase speed for a faster blink
+        time += 0.18;
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
@@ -999,29 +1000,28 @@
         const x = 48;
         const y = 16;
 
-        const wave = (Math.sin(time) + 1) / 2; 
+        // Sharp on/off blink condition instead of a smooth pulse wave
+        const isVisible = Math.sin(time) > 0;
 
-        const radius = 3 + wave * 3;
-        const auraAlpha = wave * 0.6;
+        if (isVisible) {
+          const radius = 5;
+          const auraAlpha = 0.75;
 
-        ctx.beginPath();
-        ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
-        ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
+          ctx.fill();
 
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
-        ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
+          ctx.fill();
 
-        const r = Math.round(30 + wave * 15);
-        const g = Math.round(41 + wave * 171);
-        const b = Math.round(59 + wave * 132);
-
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-        ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgb(45, 212, 191)`;
+          ctx.fill();
+        }
 
         linkTag.href = canvas.toDataURL('image/png');
       }
