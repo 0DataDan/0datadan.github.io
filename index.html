@@ -44,7 +44,7 @@
             50% { opacity: 0; }
         }
 
-        /* Smooth Rolling 3D Card Depth & Scanline Styles */
+        /* Wave-Reactive 3D Card Depth, Elastic Wobble & Scanline Styles */
         .hud-card {
             position: relative;
             transform-style: preserve-3d;
@@ -58,11 +58,11 @@
             border-radius: 1rem;
             background: radial-gradient(
                 560px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(45, 212, 191, 0.11),
+                rgba(45, 212, 191, 0.12),
                 transparent 48%
             );
             opacity: var(--wave-glow, 0);
-            transition: opacity 0.25s ease;
+            transition: opacity 0.18s ease;
             pointer-events: none;
             z-index: 1;
         }
@@ -143,7 +143,7 @@
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
-    <!-- Atmospheric Geospatial Background + Slow Rolling Wave Field -->
+    <!-- Atmospheric Geospatial Background + Concentric Wave Field -->
     <div id="geospatial-canvas-container" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #0b0f19;"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -242,7 +242,7 @@
         <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- NOVA Observatory Card (Full Width with Scanline & Reticle Preview) -->
-            <article data-card-cat="webgl" data-tilt="0.45" class="hud-card group md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col">
+            <article data-card-cat="webgl" data-tilt="0.5" class="hud-card group md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -295,7 +295,7 @@
             </article>
             
             <!-- Urban Heat Explorer Card (With Scanline & Reticle Preview) -->
-            <article data-card-cat="geo" data-tilt="0.7" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md flex flex-col">
+            <article data-card-cat="geo" data-tilt="0.8" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -342,7 +342,7 @@
             </article>
 
             <!-- Interactive 3D Skills & Credentials Graph -->
-            <article data-card-cat="ai geo webgl" data-tilt="0.7" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between overflow-hidden">
+            <article data-card-cat="ai geo webgl" data-tilt="0.8" class="hud-card group bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between overflow-hidden">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -385,7 +385,7 @@
             </article>
 
             <!-- Minimalist Project Architecture Index (Projects Only) -->
-            <article data-card-cat="geo webgl" data-tilt="0.4" class="hud-card md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col">
+            <article data-card-cat="geo webgl" data-tilt="0.45" class="hud-card md:col-span-2 bg-slate-900/65 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col">
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
@@ -547,7 +547,7 @@
 <div id="nova-cursor-halo"></div>
 <canvas id="nova-trail-canvas"></canvas>
 
-<!-- UNIFIED SLOW-ROLLING WAVE & FLUID BUOYANCY ENGINE -->
+<!-- UNIFIED WAVE-UI COUPLING ENGINE (Balanced Sweet Spot: Active Buoyancy + Smooth Elastic Ripple) -->
 <script>
   (function() {
     const container = document.getElementById('geospatial-canvas-container');
@@ -570,7 +570,7 @@
       color: 0x2dd4bf,
       wireframe: true,
       transparent: true,
-      opacity: 0.13
+      opacity: 0.14
     });
     const terrain = new THREE.Mesh(geometry, wireMaterial);
     terrain.position.z = -5;
@@ -586,7 +586,7 @@
       particlePositions[i] = (Math.random() - 0.5) * 70;
       particlePositions[i + 1] = (Math.random() - 0.5) * 70;
       particlePositions[i + 2] = (Math.random() * 14) - 2;
-      particleSpeeds[i / 3] = 0.01 + Math.random() * 0.02;
+      particleSpeeds[i / 3] = 0.012 + Math.random() * 0.022;
     }
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
@@ -604,14 +604,14 @@
       size: 0.44,
       map: spriteTex,
       transparent: true,
-      opacity: 0.52,
+      opacity: 0.55,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
-    // Interactive Wave & Gentle Click Swell State
+    // Interactive Concentric Wave & Balanced Shockwave State
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
     let pointerScreenY = window.innerHeight / 2;
@@ -628,7 +628,7 @@
       mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
     });
 
-    // Clicking spawns a slow, wide ocean swell rather than a sharp shockwave
+    // Clicking anywhere spawns a balanced radial wave in BOTH 3D world space & 2D screen space
     window.addEventListener('mousedown', (e) => {
       clickWaves.push({
         sx: e.clientX,
@@ -637,71 +637,70 @@
         wy: -((e.clientY / window.innerHeight) - 0.5) * 36,
         startTime: performance.now() * 0.001
       });
-      if (clickWaves.length > 4) clickWaves.shift();
+      if (clickWaves.length > 5) clickWaves.shift();
     });
 
-    // 1. 3D Terrain Wave Equation (Slow, Deep Rolling Swell + Soft Click Ripple)
+    // 1. 3D Terrain Wave Equation
     function sampleTerrainWave(wx, wy, t) {
-      const cursorWX = pointerNormX * 16;
-      const cursorWY = pointerNormY * 12;
+      const cursorWX = pointerNormX * 17;
+      const cursorWY = pointerNormY * 13;
       const distCursor = Math.hypot(wx - cursorWX, wy - cursorWY);
-      const concentricRipple = Math.sin(distCursor * 0.28 - t * 1.5) * Math.exp(-distCursor * 0.035) * 0.95;
+      const concentricRipple = Math.sin(distCursor * 0.35 - t * 2.3) * Math.exp(-distCursor * 0.031) * 1.35;
 
-      const ambientSwell = Math.sin(wx * 0.11 + t * 0.45) * Math.cos(wy * 0.11 + t * 0.38) * 1.4;
+      const ambientSwell = Math.sin(wx * 0.13 + t * 0.58) * Math.cos(wy * 0.13 + t * 0.48) * 1.3;
 
-      let clickSwell = 0;
+      let shockwave = 0;
       for (let i = clickWaves.length - 1; i >= 0; i--) {
         const cw = clickWaves[i];
         const age = t - cw.startTime;
-        if (age > 4.5) continue;
+        if (age > 4.0) continue;
         const d = Math.hypot(wx - cw.wx, wy - cw.wy);
-        const radius = age * 9.5; // Slow radial expansion
-        const envelope = Math.exp(-Math.pow(d - radius, 2) * 0.045) * Math.pow(Math.max(0, 1 - age / 4.5), 1.4);
-        clickSwell += Math.sin((d - radius) * 0.45) * envelope * 1.35;
+        const radius = age * 15;
+        const envelope = Math.exp(-Math.pow(d - radius, 2) * 0.07) * Math.max(0, 1 - age / 4.0);
+        shockwave += Math.sin((d - radius) * 0.7) * envelope * 2.25;
       }
 
-      return concentricRipple + ambientSwell + clickSwell;
+      return concentricRipple + ambientSwell + shockwave;
     }
 
-    // 2. Screen-Space Slow Rolling Wave Field for DOM Panels, Pills & Text
+    // 2. Screen-Space Wave & Shockwave Field for DOM Panels, Pills & Text
+    // Calibrated to the sweet spot between Update 1 and Update 2
     function sampleScreenWave(px, py, t) {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const nx = (px / vw - 0.5) * 14;
-      const ny = -(py / vh - 0.5) * 11;
+      const nx = (px / vw - 0.5) * 22;
+      const ny = -(py / vh - 0.5) * 17;
 
-      // Long-wavelength, slow-rolling diagonal ocean swell
-      const swell = Math.sin(nx * 0.24 + ny * 0.16 - t * 0.85) * 0.95
-                  + Math.cos(nx * 0.15 - ny * 0.22 + t * 0.62) * 0.65;
+      // Active traveling swell across the layout
+      const swell = Math.sin(nx * 0.21 + t * 1.25) * Math.cos(ny * 0.21 + t * 1.0) * 1.05;
 
-      // Gentle cursor wake
+      // Concentric ripple radiating from cursor position
       const dCursorPx = Math.hypot(px - pointerScreenX, py - pointerScreenY);
-      const cursorWake = Math.sin(dCursorPx * 0.012 - t * 1.7) * Math.exp(-dCursorPx * 0.0025) * 0.45;
+      const cursorRipple = Math.sin(dCursorPx * 0.018 - t * 2.6) * Math.exp(-dCursorPx * 0.0023) * 0.85;
 
-      // Soft, wide rolling swell when clicking the background
-      let clickRoll = 0;
+      // Balanced elastic wave when clicking anywhere on the background or page
+      let clickImpulse = 0;
       for (let i = 0; i < clickWaves.length; i++) {
         const cw = clickWaves[i];
         const age = t - cw.startTime;
-        if (age > 4.2) continue;
+        if (age > 3.5) continue;
 
         const distPx = Math.hypot(px - cw.sx, py - cw.sy);
-        const waveFrontPx = age * 240; // Slow, graceful 240px/sec roll across the layout
+        const waveFrontPx = age * 380; // 380px/sec (middle ground between 520 and 240)
         const distFromFront = distPx - waveFrontPx;
 
-        // Wide, smooth bell curve (280px width) so the panel rises and settles gently
-        const packet = Math.exp(-(distFromFront * distFromFront) / (2 * 280 * 280));
-        const fadeIn = Math.min(1, age / 0.35);
-        const fadeOut = Math.pow(Math.max(0, 1 - age / 4.2), 1.6);
+        // Smooth 175px wave packet
+        const packet = Math.exp(-(distFromFront * distFromFront) / (2 * 175 * 175));
+        const decay = Math.pow(Math.max(0, 1 - age / 3.5), 1.4);
 
-        // Long wavelength (0.011) creates a single smooth crest & trough roll
-        clickRoll += Math.cos(distFromFront * 0.011) * packet * fadeIn * fadeOut * 1.45;
+        // Balanced wavelength (0.024) and amplitude (2.15) for a clear, organic roll & fold
+        clickImpulse += Math.sin(distFromFront * 0.024) * packet * decay * 2.15;
       }
 
-      return swell + cursorWake + clickRoll;
+      return swell + cursorRipple + clickImpulse;
     }
 
-    // Cache DOM elements & initialize smoothed interpolation states (prevents rigid shaking)
+    // Cache DOM elements for real-time wave coupling
     const hudCards = Array.from(document.querySelectorAll('.hud-card'));
     const floatingPills = Array.from(document.querySelectorAll('.skill-chip, .domain-pill'));
     const waveChars = Array.from(document.querySelectorAll('.wave-char'));
@@ -710,9 +709,9 @@
     hudCards.forEach(card => {
       cardState.set(card, {
         hoverRx: 0, hoverRy: 0, isHovered: false,
-        curX: 0, curY: 0, curZ: 0, curRx: 0, curRy: 0, curGlow: 0
+        curX: 0, curY: 0, curZ: 0, curRx: 0, curRy: 0, curSkewX: 0, curSkewY: 0
       });
-      const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.55;
+      const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.65;
 
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
@@ -723,8 +722,8 @@
 
         const state = cardState.get(card);
         state.isHovered = true;
-        state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -2.0 * intensity;
-        state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 2.0 * intensity;
+        state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -2.4 * intensity;
+        state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 2.4 * intensity;
       });
 
       card.addEventListener('mouseleave', () => {
@@ -737,7 +736,7 @@
 
     const pillState = new Map();
     floatingPills.forEach(pill => {
-      pillState.set(pill, { curX: 0, curY: 0, curRot: 0 });
+      pillState.set(pill, { curX: 0, curY: 0, curRot: 0, curScale: 1 });
     });
 
     function animateTerrainAndDOM() {
@@ -745,12 +744,12 @@
       const t = performance.now() * 0.001;
 
       for (let i = clickWaves.length - 1; i >= 0; i--) {
-        if (t - clickWaves[i].startTime > 4.5) clickWaves.splice(i, 1);
+        if (t - clickWaves[i].startTime > 4.0) clickWaves.splice(i, 1);
       }
 
       // 1. Update Three.js Camera & Terrain Vertices
-      targetX += (mouseX - targetX) * 0.03;
-      targetY += (mouseY - targetY) * 0.03;
+      targetX += (mouseX - targetX) * 0.032;
+      targetY += (mouseY - targetY) * 0.032;
       camera.position.x = targetX * 14;
       camera.position.y = -18 - targetY * 14;
       camera.lookAt(0, 0, 0);
@@ -772,34 +771,43 @@
 
       renderer.render(scene, camera);
 
-      // 2. Smooth Rolling Header Characters
-      waveChars.forEach((ch, idx) => {
-        const wVal = Math.sin(t * 1.15 - idx * 0.35) * 1.6;
-        ch.style.transform = `translate3d(0, ${wVal.toFixed(2)}px, 0)`;
+      // 2. Kinetic Header Characters (Ripple & Scale with Screen Wave)
+      waveChars.forEach((ch) => {
+        const rect = ch.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const wVal = sampleScreenWave(cx, cy, t);
+        const lift = wVal * 2.1;
+        const rot = wVal * 1.3;
+        const scale = 1 + Math.max(-0.03, wVal * 0.03);
+        ch.style.transform = `translate3d(0, ${-lift.toFixed(2)}px, 0) rotateZ(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       });
 
-      // 3. Fluid, Damped Buoyancy on Floating Domain & Skill Pills
+      // 3. Lively Buoyancy & Tilt on Domain Buttons and Skill/Cert Pills
       floatingPills.forEach((pill, idx) => {
         const rect = pill.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
 
-        const wCenter = sampleScreenWave(cx, cy, t - idx * 0.06);
-        const wRight  = sampleScreenWave(cx + 45, cy, t - idx * 0.06);
+        const wCenter = sampleScreenWave(cx, cy, t + idx * 0.08);
+        const wRight  = sampleScreenWave(cx + 30, cy, t + idx * 0.08);
 
-        const targetY = -wCenter * 2.2;
-        const targetX = (wRight - wCenter) * 1.2;
-        const targetRot = (wRight - wCenter) * 1.8;
+        const targetX = (wRight - wCenter) * 1.5;
+        const targetY = -wCenter * 2.8;
+        const targetRot = (wRight - wCenter) * 3.1;
+        const targetScale = 1 + wCenter * 0.018;
 
         const pState = pillState.get(pill);
-        pState.curX += (targetX - pState.curX) * 0.07;
-        pState.curY += (targetY - pState.curY) * 0.07;
-        pState.curRot += (targetRot - pState.curRot) * 0.07;
+        const pEase = 0.18;
+        pState.curX += (targetX - pState.curX) * pEase;
+        pState.curY += (targetY - pState.curY) * pEase;
+        pState.curRot += (targetRot - pState.curRot) * pEase;
+        pState.curScale += (targetScale - pState.curScale) * pEase;
 
-        pill.style.transform = `translate3d(${pState.curX.toFixed(2)}px, ${pState.curY.toFixed(2)}px, 0) rotateZ(${pState.curRot.toFixed(2)}deg)`;
+        pill.style.transform = `translate3d(${pState.curX.toFixed(2)}px, ${pState.curY.toFixed(2)}px, 0) rotateZ(${pState.curRot.toFixed(2)}deg) scale(${pState.curScale.toFixed(3)})`;
       });
 
-      // 4. Slow Rolling Wave Buoyancy on Bento Panels (Heavily Damped for Liquid Inertia)
+      // 4. Bento Panels: Multi-Point Wave Sampling for 3D Buoyancy, Wobble & Subtle Fold Distortion
       const vh = window.innerHeight;
       hudCards.forEach(card => {
         const rect = card.getBoundingClientRect();
@@ -807,46 +815,55 @@
 
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const spanX = Math.min(rect.width * 0.35, 180);
-        const spanY = Math.min(rect.height * 0.35, 140);
+        const spanX = Math.min(rect.width * 0.38, 160);
+        const spanY = Math.min(rect.height * 0.38, 120);
 
-        // Sample wave across wide points for a gradual, rolling slope
+        // Sample wave at center, cardinal edges, and diagonal corners
         const hCenter = sampleScreenWave(cx, cy, t);
         const hLeft   = sampleScreenWave(cx - spanX, cy, t);
         const hRight  = sampleScreenWave(cx + spanX, cy, t);
         const hTop    = sampleScreenWave(cx, cy - spanY, t);
         const hBottom = sampleScreenWave(cx, cy + spanY, t);
+        const hTL     = sampleScreenWave(cx - spanX, cy - spanY, t);
+        const hBR     = sampleScreenWave(cx + spanX, cy + spanY, t);
 
         const state = cardState.get(card);
 
-        // Gentle target lift and 3D pitch/roll angles
-        const targetY = -hCenter * 3.2;
-        const targetX = (hLeft - hRight) * 1.1;
-        const targetZ = hCenter * 4.5;
-        const targetRx = state.hoverRx + (hTop - hBottom) * 1.15;
-        const targetRy = state.hoverRy + (hRight - hLeft) * -1.15;
-        const targetGlow = Math.max(0, Math.min(1, (hCenter + 1.6) / 3.4));
+        // Balanced target lift, Z-depth, 3D Pitch/Roll, and Diagonal Fold Skew
+        const targetX = (hLeft - hRight) * 1.4;
+        const targetY = -hCenter * 3.6;
+        const targetZ = hCenter * 6.5;
+        const targetRx = state.hoverRx + (hTop - hBottom) * 1.5;
+        const targetRy = state.hoverRy + (hRight - hLeft) * -1.5;
 
-        // Low-pass fluid interpolation (0.055 factor eliminates any fast/rigid shaking)
-        const ease = 0.055;
+        const twistDelta = (hTL + hBR) - 2 * hCenter;
+        const targetSkewX = twistDelta * 0.32;
+        const targetSkewY = (hRight - hLeft - (hBottom - hTop)) * 0.16;
+
+        // Responsive 0.16 interpolation: preserves the expressive wave & fold while smoothing out raw jitter
+        const ease = 0.16;
         state.curX += (targetX - state.curX) * ease;
         state.curY += (targetY - state.curY) * ease;
         state.curZ += (targetZ - state.curZ) * ease;
         state.curRx += (targetRx - state.curRx) * ease;
         state.curRy += (targetRy - state.curRy) * ease;
-        state.curGlow += (targetGlow - state.curGlow) * ease;
+        state.curSkewX += (targetSkewX - state.curSkewX) * ease;
+        state.curSkewY += (targetSkewY - state.curSkewY) * ease;
 
-        card.style.transform = `perspective(1200px) translate3d(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px, ${state.curZ.toFixed(2)}px) rotateX(${state.curRx.toFixed(2)}deg) rotateY(${state.curRy.toFixed(2)}deg)`;
-        card.style.setProperty('--wave-glow', (state.curGlow * 0.65).toFixed(2));
+        card.style.transform = `perspective(1080px) translate3d(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px, ${state.curZ.toFixed(2)}px) rotateX(${state.curRx.toFixed(2)}deg) rotateY(${state.curRy.toFixed(2)}deg) skew(${state.curSkewX.toFixed(2)}deg, ${state.curSkewY.toFixed(2)}deg)`;
+
+        // Dynamic border luminescence synced with wave crest & shockwave energy
+        const waveEnergy = Math.max(0, Math.min(1, (Math.abs(hCenter) + Math.abs(twistDelta) * 0.45) / 3.2));
+        card.style.setProperty('--wave-glow', (waveEnergy * 0.8).toFixed(2));
 
         if (!state.isHovered && !card.classList.contains('card-filtered-active')) {
-          const borderAlpha = 0.14 + state.curGlow * 0.32;
-          const shadowAlpha = state.curGlow * 0.08;
+          const borderAlpha = 0.14 + waveEnergy * 0.42;
+          const shadowAlpha = waveEnergy * 0.10;
           card.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
           card.style.boxShadow = `0 20px 50px rgba(45, 212, 191, ${shadowAlpha.toFixed(3)})`;
         } else if (state.isHovered) {
-          card.style.borderColor = 'rgba(45, 212, 191, 0.55)';
-          card.style.boxShadow = '0 22px 55px rgba(45, 212, 191, 0.12)';
+          card.style.borderColor = 'rgba(45, 212, 191, 0.6)';
+          card.style.boxShadow = '0 22px 55px rgba(45, 212, 191, 0.14)';
         }
       });
     }
@@ -861,7 +878,7 @@
   })();
 </script>
 
-<!-- CUSTOM CURSOR + SUBTLE CLICK SWELL RING SCRIPT -->
+<!-- CUSTOM CURSOR + SHOCKWAVE RING SCRIPT -->
 <script>
   (function() {
     const dot = document.getElementById('nova-cursor-dot');
@@ -918,19 +935,19 @@
       halo.style.left = `${haloPos.x}px`;
       halo.style.top = `${haloPos.y}px`;
 
-      // Soft, slow-expanding ripple ring on click
+      // Render expanding click shockwave rings synced to the 380px/s wave speed
       const clickWaves = window.__portfolioClickWaves || [];
       const now = performance.now() * 0.001;
       for (let i = 0; i < clickWaves.length; i++) {
         const cw = clickWaves[i];
         const age = now - cw.startTime;
-        if (age < 3.0) {
-          const radius = age * 240;
-          const alpha = Math.pow(1 - age / 3.0, 2) * 0.11;
+        if (age < 2.6) {
+          const radius = age * 380;
+          const alpha = Math.pow(1 - age / 2.6, 2) * 0.16;
           ctx.beginPath();
           ctx.arc(cw.sx, cw.sy, radius, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(45, 212, 191, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.35;
           ctx.stroke();
         }
       }
