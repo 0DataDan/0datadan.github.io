@@ -44,30 +44,34 @@
             50% { opacity: 0; }
         }
 
-        /* Hover-Triggered Bio Container Expansion */
+        /* Scanline Header Interaction */
         #header-interaction-zone {
+            position: relative;
             cursor: default;
         }
         
-        #bio-container {
-            max-height: 0;
+        #header-scanline {
+            position: absolute;
+            left: -20px;
+            right: -20px;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.4), transparent);
+            box-shadow: 0 0 16px rgba(45, 212, 191, 0.2);
             opacity: 0;
-            overflow: hidden;
-            transition: max-height 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+            pointer-events: none;
+            z-index: 10;
+            top: 0;
         }
         
-        #header-interaction-zone:hover #bio-container,
-        #bio-container.bio-force-open {
-            max-height: 500px;
-            opacity: 1;
+        #header-interaction-zone:hover #header-scanline {
+            animation: headerScan 2.5s linear infinite;
         }
 
-        /* Bio Typewriter FX */
-        .bio-log.is-typing::after {
-            content: "█";
-            color: #2dd4bf;
-            margin-left: 4px;
-            animation: blinkUnderscore 0.8s step-start infinite;
+        @keyframes headerScan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
         }
 
         /* Wave-Reactive 3D Card Depth & Styles */
@@ -95,7 +99,8 @@
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Smoothed, slower physics for the flip */
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.2, 1);
             transform-style: preserve-3d;
         }
         .hud-card.is-flipped .card-flipper {
@@ -110,20 +115,33 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            background-color: rgba(2, 6, 23, 0.65); /* slate-950/65 base */
+            background-color: rgba(2, 6, 23, 0.65);
             border-radius: 1rem;
         }
         .card-back {
             transform: rotateY(180deg);
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             border: 1px solid rgba(45, 212, 191, 0.3);
-            pointer-events: none; /* Let the main card handle clicks */
+            pointer-events: none;
         }
         .hud-card.is-flipped .card-back {
-            pointer-events: auto; /* Re-enable clicks on back elements when flipped */
+            pointer-events: auto; 
         }
         .hud-card.is-flipped .card-front {
             pointer-events: none;
+        }
+
+        /* Gradient Accent Brand Tab */
+        .brand-tab {
+            position: absolute;
+            top: -1px;
+            left: 24px;
+            height: 3px;
+            width: 48px;
+            background: linear-gradient(90deg, #2dd4bf, #c084fc);
+            border-radius: 0 0 4px 4px;
+            z-index: 40;
+            transform: translateZ(32px);
         }
 
         .hud-card::before {
@@ -184,16 +202,6 @@
         .hud-card:hover .hud-bl { bottom: 8px; left: 8px; opacity: 1; transform: translateZ(32px); }
         .hud-card:hover .hud-br { bottom: 8px; right: 8px; opacity: 1; transform: translateZ(32px); }
 
-        .hud-telemetry-bar {
-            opacity: 0;
-            transform: translateY(-4px);
-            transition: all 0.25s ease-out;
-        }
-        .hud-card:hover .hud-telemetry-bar {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
         .hud-scanline {
             position: absolute;
             left: 0;
@@ -214,6 +222,7 @@
             100% { top: 100%; }
         }
 
+        /* Filter Highlight & Wave-Reactive Floating Pills */
         .skill-chip, .domain-pill {
             will-change: transform, border-color, box-shadow;
             transition: background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
@@ -234,7 +243,29 @@
             border-color: rgba(45, 212, 191, 0.65) !important;
         }
 
-        /* Interactive Terminal Log Animations */
+        /* Scrolling Marquee */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Backplate Code Typer */
+        .code-cursor {
+            color: #ec4899; /* Neon Pink/Magenta */
+            font-weight: bold;
+            animation: blinkUnderscore 1s step-start infinite;
+        }
+
+        /* Interactive Terminal Log Animations (Architecture Row) */
         .term-log.is-typing::after {
             content: "█";
             color: #2dd4bf;
@@ -261,8 +292,10 @@
 
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
-        <!-- Header / Intro Interaction Zone (Hover triggers bio illumination) -->
-        <header id="header-interaction-zone" class="mb-14 pb-2 group">
+        <!-- Header / Intro Interaction Zone (Hover triggers scanline) -->
+        <header id="header-interaction-zone" class="mb-14 pb-2 group relative">
+            <div id="header-scanline"></div>
+            
             <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3" aria-label="danielperez">
                 <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
             </h1>
@@ -274,16 +307,14 @@
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
 
-            <!-- Syntax Highlight Bio Reveal -->
-            <div id="bio-container">
-                <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-2 mb-2 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
-                    <p class="text-lg font-medium max-w-2xl leading-relaxed mb-4 text-slate-500 transition-colors duration-700 ease-out group-hover:text-slate-200">
-                        Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
-                    </p>
-                    <p class="text-sm max-w-2xl leading-relaxed text-slate-600 transition-colors duration-700 delay-150 ease-out group-hover:text-slate-300">
-                        After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
-                    </p>
-                </div>
+            <!-- Always-visible Bio text -->
+            <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-2 mb-2 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
+                <p class="text-lg font-medium max-w-2xl leading-relaxed mb-4 text-slate-400 transition-colors duration-500 ease-out group-hover:text-slate-200">
+                    Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
+                </p>
+                <p class="text-sm max-w-2xl leading-relaxed text-slate-500 transition-colors duration-500 ease-out group-hover:text-slate-300">
+                    After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
+                </p>
             </div>
 
             <!-- Minimalist Metrics Strip -->
@@ -360,25 +391,33 @@
 
             <!-- NOVA Observatory Card (Flashcard Flippable) -->
             <article data-card-cat="webgl" data-tilt="0.75" class="hud-card group md:col-span-2 bg-transparent border-none rounded-2xl overflow-hidden shadow-2xl flex flex-col h-auto min-h-[400px]">
-                <div class="hud-corner hud-tl"></div>
-                <div class="hud-corner hud-tr"></div>
-                <div class="hud-corner hud-bl"></div>
-                <div class="hud-corner hud-br"></div>
-
+                
                 <div class="glass-content">
-                    <div class="card-flipper">
+                    <div class="brand-tab"></div>
+                    <div class="hud-corner hud-tl"></div>
+                    <div class="hud-corner hud-tr"></div>
+                    <div class="hud-corner hud-bl"></div>
+                    <div class="hud-corner hud-br"></div>
+                    <div class="card-flipper" onclick="this.closest('.hud-card').classList.toggle('is-flipped')">
                         
                         <!-- FRONT OF CARD -->
                         <div class="card-front border border-slate-800/90 backdrop-blur-md">
+                            
+                            <!-- Header Bar: Window Title & Controls -->
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800/80 bg-slate-950/80 shrink-0">
+                                <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                                    NOVA Observatory
+                                </h2>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                </div>
+                            </div>
+                            
                             <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden shrink-0">
                                 <div class="hud-scanline"></div>
-                                <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
-                                        THREE.JS + FASTAPI // 60FPS WEBGL
-                                    </span>
-                                    <span class="text-slate-400 hidden sm:inline">RA: 17h 45m 40.04s | DEC: -29° 00' 28.1"</span>
-                                </div>
                                 <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
                                     <source src="SR10.mp4" type="video/mp4">
                                 </video>
@@ -386,53 +425,52 @@
                                     <source src="SR12.mp4" type="video/mp4">
                                 </video>
                             </div>
+                            
                             <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow bg-slate-900/65 rounded-b-2xl">
-                                <div class="mb-3">
-                                    <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
-                                </div>
                                 <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
                                     Interactive 3D cosmic map featuring procedural shaders, planetary tiers, orbital mechanics, and automated guided tours powered by FastAPI and Three.js.
                                 </p>
-                                <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
-                                        <span class="text-slate-500 select-none">&gt;</span>
-                                        <span class="typewriter-fx text-teal-300" data-phrases='["Click card to view blueprint schema", "Project: Full-Stack 3D", "Stack: Three.js · FastAPI"]'></span>
-                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                
+                                <div class="flex flex-wrap items-center justify-between gap-4 mt-auto pt-4 border-t border-slate-800/80">
+                                    
+                                    <!-- Marquee Terminal Pill -->
+                                    <div class="flex items-center font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md shadow-sm overflow-hidden w-48 sm:w-64">
+                                        <span class="text-slate-500 select-none mr-2 shrink-0">&gt;</span>
+                                        <div class="marquee-container">
+                                            <div class="marquee-content shrink-0">
+                                                // TYPE: Full-Stack 3D // STACK: Three.js · FastAPI // SKILLS: Procedural Shaders · Orbital Mechanics &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TYPE: Full-Stack 3D // STACK: Three.js · FastAPI // SKILLS: Procedural Shaders · Orbital Mechanics
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex gap-6 ml-auto">
-                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold flex items-center gap-1.5 transition">
+                                    
+                                    <div class="flex gap-4 sm:gap-6 ml-auto z-50 text-xs font-mono">
+                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" onclick="event.stopPropagation()" class="interactive px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold flex items-center gap-1.5 transition shadow-sm">
                                             Live App <span>↗</span>
                                         </a>
-                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="text-slate-400 hover:text-white transition flex items-center gap-1 py-1.5">
-                                            GitHub Repo <span>&rarr;</span>
+                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" onclick="event.stopPropagation()" class="interactive text-slate-400 hover:text-white transition flex items-center gap-1 py-1.5">
+                                            GitHub <span>&rarr;</span>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- BACK OF CARD (BLUEPRINT) -->
-                        <div class="card-back p-8 sm:p-10 flex flex-col justify-center items-center text-left">
-                            <div class="w-full max-w-2xl">
-                                <div class="font-mono text-xs text-teal-400 mb-4 flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
-                                    >> ARCHITECTURE_BLUEPRINT :: AI_EVALUATION_SCHEMA
+                        <!-- BACK OF CARD (LIVE CODE TYPER) -->
+                        <div class="card-back p-6 sm:p-10 flex flex-col justify-center items-center text-left">
+                            <div class="w-full max-w-3xl">
+                                <div class="font-mono text-xs text-fuchsia-400 mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-fuchsia-400 rounded-full animate-ping"></span>
+                                    >> LIVE_SYSTEM_PREVIEW :: SHADER_INITIALIZATION
                                 </div>
-                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/80 p-6 font-mono text-[11px] sm:text-xs text-slate-300 leading-loose shadow-inner w-full">
-                                    <span class="text-teal-500 font-bold">const</span> <span class="text-slate-200">validation_pipeline</span> = {<br>
-                                    &nbsp;&nbsp;<span class="text-slate-400">target_engine:</span> <span class="text-teal-300">"Three.js / WebGL"</span>,<br>
-                                    &nbsp;&nbsp;<span class="text-slate-400">performance_metric:</span> <span class="text-teal-300">"60fps @ 420K vertices"</span>,<br>
-                                    &nbsp;&nbsp;<span class="text-slate-400">backend_routing:</span> <span class="text-teal-300">"FastAPI Async Endpoints"</span>,<br>
-                                    &nbsp;&nbsp;<span class="text-slate-400">data_schema:</span> {<br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400">vector_type:</span> <span class="text-teal-300">"Dense Embeddings"</span>,<br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400">audit_protocol:</span> <span class="text-teal-300">"Multi-modal prompt evaluation"</span>,<br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400">strict_validation:</span> <span class="text-teal-500">true</span><br>
-                                    &nbsp;&nbsp;}<br>
-                                    };<br><br>
-                                    <span class="text-slate-500">/* Note: Schema adheres to strict data rating guidelines ensuring zero edge-case drift during procedural generation. */</span>
+                                
+                                <!-- Typing Container -->
+                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/90 p-5 sm:p-6 font-mono text-[10px] sm:text-xs leading-loose shadow-inner w-full min-h-[160px]">
+                                    <div class="code-typer-fx text-white" data-delay="30" data-code="const initStarField = (count, variance) => {&#10;  const geometry = new THREE.BufferGeometry();&#10;  const positions = new Float32Array(count * 3);&#10;  for(let i=0; i<count*3; i+=3) {&#10;    positions[i] = (Math.random()-0.5) * variance;&#10;    positions[i+1] = (Math.random()-0.5) * variance;&#10;    positions[i+2] = (Math.random()-0.5) * variance;&#10;  }&#10;  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));&#10;  return new THREE.Points(geometry, starMaterial);&#10;};"></div>
                                 </div>
-                                <div class="mt-6 text-center">
-                                    <span class="text-[10px] font-mono text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
+                                
+                                <div class="mt-4 flex justify-between items-center w-full px-2 text-[10px] font-mono">
+                                    <span class="text-slate-500">Run Count: <span class="text-white font-bold">1,824</span></span>
+                                    <span class="text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
                                 </div>
                             </div>
                         </div>
@@ -443,45 +481,58 @@
             
             <!-- Urban Heat Explorer Card (Flashcard Flippable) -->
             <article data-card-cat="geo" data-tilt="0.95" class="hud-card group bg-transparent border-none rounded-2xl overflow-hidden flex flex-col h-auto min-h-[420px]">
-                <div class="hud-corner hud-tl"></div>
-                <div class="hud-corner hud-tr"></div>
-                <div class="hud-corner hud-bl"></div>
-                <div class="hud-corner hud-br"></div>
-
+                
                 <div class="glass-content">
-                    <div class="card-flipper">
+                    <div class="brand-tab"></div>
+                    <div class="hud-corner hud-tl"></div>
+                    <div class="hud-corner hud-tr"></div>
+                    <div class="hud-corner hud-bl"></div>
+                    <div class="hud-corner hud-br"></div>
+                    <div class="card-flipper" onclick="this.closest('.hud-card').classList.toggle('is-flipped')">
 
                         <!-- FRONT OF CARD -->
                         <div class="card-front border border-slate-800/90 backdrop-blur-md">
+                            
+                            <!-- Header Bar: Window Title & Controls -->
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800/80 bg-slate-950/80 shrink-0">
+                                <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                                    Urban Heat Explorer
+                                </h2>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                                </div>
+                            </div>
+                            
                             <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center shrink-0">
                                 <div class="hud-scanline"></div>
-                                <div class="hud-telemetry-bar absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-2.5 py-1 rounded backdrop-blur-md">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
-                                        LANDSAT 8/9 L2
-                                    </span>
-                                    <span class="text-slate-400">BAND 10 · 30m RES</span>
-                                </div>
                                 <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
                             </div>
+                            
                             <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow bg-slate-900/65 rounded-b-2xl">
-                                <div class="mb-3">
-                                    <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                                </div>
                                 <p class="text-sm text-slate-300 leading-relaxed mb-6">
                                     Processes Landsat 8/9 thermal bands to map land surface temperature, NDVI, and urban heat islands across metropolitan biomes.
                                 </p>
+                                
                                 <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
-                                        <span class="text-slate-500 select-none">&gt;</span>
-                                        <span class="typewriter-fx text-teal-300" data-phrases='["Click card to view blueprint", "Project: Geospatial Analysis", "Stack: Python · Rasterio"]'></span>
-                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                    
+                                    <!-- Marquee Terminal Pill -->
+                                    <div class="flex items-center font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md shadow-sm overflow-hidden w-48 sm:w-56">
+                                        <span class="text-slate-500 select-none mr-2 shrink-0">&gt;</span>
+                                        <div class="marquee-container">
+                                            <div class="marquee-content shrink-0">
+                                                // TYPE: Geospatial // STACK: Python · Rasterio · Folium // SKILLS: Thermal Mapping · LST &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TYPE: Geospatial // STACK: Python · Rasterio · Folium // SKILLS: Thermal Mapping · LST
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center gap-3 ml-auto">
-                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold transition">
+                                    
+                                    <div class="flex items-center gap-3 ml-auto z-50">
+                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" onclick="event.stopPropagation()" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold transition shadow-sm">
                                             Demo ↗
                                         </a>
-                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="text-slate-400 hover:text-white transition">
+                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" onclick="event.stopPropagation()" class="interactive text-slate-400 hover:text-white transition">
                                             Code &rarr;
                                         </a>
                                     </div>
@@ -489,23 +540,21 @@
                             </div>
                         </div>
 
-                        <!-- BACK OF CARD (BLUEPRINT) -->
-                        <div class="card-back p-6 sm:p-8 flex flex-col justify-center items-center text-left">
+                        <!-- BACK OF CARD (LIVE CODE TYPER) -->
+                        <div class="card-back p-6 flex flex-col justify-center items-center text-left">
                             <div class="w-full">
-                                <div class="font-mono text-xs text-teal-400 mb-4 flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
-                                    >> SENSOR_TELEMETRY_DATA
+                                <div class="font-mono text-xs text-fuchsia-400 mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-fuchsia-400 rounded-full animate-ping"></span>
+                                    >> LIVE_SYSTEM_PREVIEW :: SPECTRAL_CALCULATION
                                 </div>
-                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/80 p-5 font-mono text-[11px] sm:text-xs text-slate-300 leading-loose shadow-inner w-full">
-                                    <span class="text-slate-500">// Landsat 8/9 Level-2 Processing Parameters</span><br><br>
-                                    <span class="text-slate-400">> BAND_10_THERMAL:</span> <span class="text-teal-300">10.6 - 11.19 μm</span><br>
-                                    <span class="text-slate-400">> SPATIAL_RESOLUTION:</span> <span class="text-teal-300">30m (resampled)</span><br>
-                                    <span class="text-slate-400">> SPECTRAL_INDICES:</span> <span class="text-teal-300">[NDVI, NDBI]</span><br>
-                                    <span class="text-slate-400">> LST_CONVERSION:</span> <span class="text-teal-300">Kelvin to Celsius pipeline</span><br><br>
-                                    <span class="text-slate-500">/* Note: AOD (Aerosol Optical Depth) and trace gas filters strictly applied to reduce atmospheric distortion over urban biomes. */</span>
+                                
+                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/90 p-5 font-mono text-[10px] sm:text-xs leading-loose shadow-inner w-full min-h-[160px]">
+                                    <div class="code-typer-fx text-white" data-delay="45" data-code="def calculate_lst(band10, ndvi):&#10;    # Calculate fractional vegetation&#10;    fv = ((ndvi - ndvi.min()) / (ndvi.max() - ndvi.min())) ** 2&#10;    &#10;    # Emissivity correction&#10;    emissivity = 0.004 * fv + 0.986&#10;    &#10;    # Thermal radiance to Celsius pipeline&#10;    lst_celsius = (band10 / (1 + (0.00115 * band10 / 1.4388) * np.log(emissivity))) - 273.15&#10;    &#10;    return lst_celsius"></div>
                                 </div>
-                                <div class="mt-6 text-center">
-                                    <span class="text-[10px] font-mono text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
+                                
+                                <div class="mt-4 flex justify-between items-center w-full px-2 text-[10px] font-mono">
+                                    <span class="text-slate-500">Transform Ops: <span class="text-white font-bold">42.5M/sec</span></span>
+                                    <span class="text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
                                 </div>
                             </div>
                         </div>
@@ -520,6 +569,7 @@
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
+                <div class="brand-tab" style="left: auto; right: 24px;"></div>
 
                 <div class="glass-content relative z-10 flex flex-col h-full">
                     <div class="flex items-center justify-between gap-2 mb-3">
@@ -563,6 +613,7 @@
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
+                <div class="brand-tab" style="left: auto; right: 24px;"></div>
 
                 <div class="glass-content relative z-10">
                     <div class="flex items-baseline justify-between mb-4 pb-3 border-b border-slate-800/80">
@@ -868,12 +919,50 @@
 
     const cardState = new Map();
     
-    // Add flip click listener to all cards
+    // Add flip listener and logic to trigger code typer on flip
     hudCards.forEach(card => {
       card.addEventListener('click', (e) => {
-        // Prevent flipping if clicking a button or link
         if(e.target.closest('a') || e.target.closest('button')) return;
+        
         card.classList.toggle('is-flipped');
+        
+        // If flipping to back, trigger the live code typing effect
+        if(card.classList.contains('is-flipped')) {
+            const typer = card.querySelector('.code-typer-fx');
+            if(typer && !typer.dataset.isTyping) {
+                typer.dataset.isTyping = "true";
+                typer.innerHTML = '<span class="code-cursor">_</span>';
+                
+                const codeText = typer.dataset.code;
+                const speed = parseInt(typer.dataset.delay) || 25;
+                let charIdx = 0;
+                
+                function typeCode() {
+                    if(charIdx < codeText.length) {
+                        let chunk = codeText.charAt(charIdx);
+                        if(chunk === '\n') chunk = '<br>';
+                        if(chunk === ' ') chunk = '&nbsp;';
+                        
+                        // Replace cursor with char + cursor
+                        typer.innerHTML = typer.innerHTML.slice(0, -33) + chunk + '<span class="code-cursor">_</span>';
+                        charIdx++;
+                        setTimeout(typeCode, speed + Math.random() * 20);
+                    } else {
+                        // Finish typing, leave cursor blinking
+                        typer.dataset.isTyping = "false";
+                    }
+                }
+                // Small delay before typing starts to let flip animation begin
+                setTimeout(typeCode, 400); 
+            }
+        } else {
+            // Reset typer when flipped back to front
+            const typer = card.querySelector('.code-typer-fx');
+            if(typer) {
+                typer.dataset.isTyping = "false";
+                typer.innerHTML = '';
+            }
+        }
       });
       
       cardState.set(card, {
@@ -1256,17 +1345,14 @@
 
         if (isCyan) {
           const auraAlpha = 0.75;
-
           ctx.beginPath();
           ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
           ctx.fill();
-
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
           ctx.fill();
-
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgb(45, 212, 191)`;
@@ -1277,10 +1363,8 @@
           ctx.fillStyle = '#1e202e';
           ctx.fill();
         }
-
         linkTag.href = canvas.toDataURL('image/png');
       }
-
       setInterval(animateFavicon, 33);
     };
   })();
@@ -1346,7 +1430,7 @@
   })();
 </script>
 
-<!-- INTERACTIVE TERMINAL LOG ENGINE (For Architecture Section) -->
+<!-- INTERACTIVE TERMINAL LOG ENGINE -->
 <script>
   window.__typewriterTimeouts = window.__typewriterTimeouts || {};
 
