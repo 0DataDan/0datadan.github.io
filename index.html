@@ -44,6 +44,18 @@
             50% { opacity: 0; }
         }
 
+        /* Bio Container Expansion */
+        #bio-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+        }
+        #bio-container.bio-expanded {
+            max-height: 500px;
+            opacity: 1;
+        }
+
         /* Wave-Reactive 3D Card Depth, Elastic Wobble & Scanline Styles */
         .hud-card {
             position: relative;
@@ -59,7 +71,7 @@
             will-change: transform;
         }
         .hud-card:hover .glass-content {
-            transform: translateZ(28px); /* Lifts content off the glass backplate on hover */
+            transform: translateZ(28px);
         }
 
         /* Base Teal Wave Glow */
@@ -207,19 +219,28 @@
                 <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
             </h1>
 
-            <!-- Hero Typewriter Prompt -->
-            <div class="mt-2 mb-5 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm">
+            <!-- Hero Typewriter Prompt & Execute Button -->
+            <div class="mt-2 mb-6 flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm">
                 <span class="text-slate-500 select-none">&gt;</span>
                 <span class="typewriter-fx text-teal-300" data-phrases='["Python · Rasterio · Folium · Streamlit", "Three.js · WebGL · FastAPI", "Multimodal AI Evaluation & QA", "Satellite Remote Sensing Pipelines"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
+                
+                <button onclick="toggleBio()" id="run-bio-btn" class="interactive ml-2 sm:ml-4 bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/60 rounded px-2.5 py-1 text-[10px] tracking-widest transition-colors flex items-center gap-1 shadow-sm">
+                    EXEC ↵
+                </button>
             </div>
 
-            <p class="text-lg text-slate-300 font-medium max-w-2xl leading-relaxed mb-4">
-                Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
-            </p>
-            <p class="text-sm text-slate-400 max-w-2xl leading-relaxed mb-6">
-                After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
-            </p>
+            <!-- Terminal Output Bio (Hidden by default) -->
+            <div id="bio-container">
+                <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-2 mb-2">
+                    <p class="text-lg text-slate-300 font-medium max-w-2xl leading-relaxed mb-4">
+                        Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
+                    </p>
+                    <p class="text-sm text-slate-400 max-w-2xl leading-relaxed">
+                        After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
+                    </p>
+                </div>
+            </div>
 
             <!-- Minimalist Metrics Strip -->
             <div class="mb-6 grid grid-cols-3 gap-4 max-w-lg border-y border-slate-800/70 py-3.5 px-1">
@@ -770,7 +791,6 @@
         const state = cardState.get(card);
         state.isHovered = true;
         
-        // Amplified hover tilt multipliers for intense glass effect
         state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -5.5 * intensity;
         state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 5.5 * intensity;
       });
@@ -1102,7 +1122,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT -->
+<!-- DYNAMIC FAVICON SCRIPT (Cyan to Dark Gray Blink) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -1121,7 +1141,7 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        time += 0.18; 
+        time += 0.18; // Fast blink speed
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
@@ -1130,30 +1150,37 @@
         const y = 16;
         const radius = 5;
 
+        // Sharp on/off blink condition
         const isCyan = Math.sin(time) > 0;
 
         if (isCyan) {
           const auraAlpha = 0.75;
+
           ctx.beginPath();
           ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
           ctx.fill();
+
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
           ctx.fill();
+
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, Math.PI * 2);
           ctx.fillStyle = `rgb(45, 212, 191)`;
           ctx.fill();
         } else {
+          // Draw dark gray over the baked-in cyan dot to "turn it off"
           ctx.beginPath();
           ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
           ctx.fillStyle = '#1e202e';
           ctx.fill();
         }
+
         linkTag.href = canvas.toDataURL('image/png');
       }
+
       setInterval(animateFavicon, 33);
     };
   })();
@@ -1161,6 +1188,22 @@
 
 <!-- UNIFIED TYPEWRITER, KPI COUNTER & TERMINAL LOG SCRIPT -->
 <script>
+  window.toggleBio = function() {
+      const bio = document.getElementById('bio-container');
+      const btn = document.getElementById('run-bio-btn');
+      const isExpanded = bio.classList.contains('bio-expanded');
+      
+      if (isExpanded) {
+          bio.classList.remove('bio-expanded');
+          btn.innerHTML = 'EXEC ↵';
+          btn.classList.remove('bg-slate-700', 'text-slate-200', 'border-slate-500');
+      } else {
+          bio.classList.add('bio-expanded');
+          btn.innerHTML = 'HIDE ↑';
+          btn.classList.add('bg-slate-700', 'text-slate-200', 'border-slate-500');
+      }
+  };
+
   (function() {
     // 1. Unified Typewriter Engine
     const typewriters = document.querySelectorAll('.typewriter-fx');
@@ -1506,7 +1549,7 @@
       if (currentDomain === 'geo') window.toggleProjectRow('p2', true);
     };
 
-    // 3. Minimalist Project Architecture Accordion & Subtle Waveforms
+    // 3. Minimalist Project Architecture Accordion
     window.toggleProjectRow = function(id, forceOpen) {
       const body = document.getElementById(`${id}-body`);
       const icon = document.getElementById(`${id}-icon`);
