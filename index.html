@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Perez | Applied AI & Geospatial Portfolio</title>
     
-    <link rel="icon" href="faviconR1.ico" type="image/x-icon">
-    
+    <!-- Dynamic Favicon Link -->
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="faviconR1.ico">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +40,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
+< class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
     <!-- Atmospheric Geospatial Background -->
     <div id="geospatial-canvas-container" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #0b0f19;"></div>
@@ -308,7 +309,7 @@
 
 
 <style>
-  *, *::before, *::after, html, body, canvas, div, span, a, button {
+  *, *::before, *::after, html, , canvas, div, span, a, button {
     cursor: none !important;
   }
   #tooltip, .tooltip, [id*="tooltip"], [class*="tooltip"] {
@@ -348,14 +349,14 @@
     transition: width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s ease, background-color 0.25s ease;
   }
 
-  body.nova-cursor-hover #nova-cursor-dot {
+  .nova-cursor-hover #nova-cursor-dot {
     width: 8px;
     height: 8px;
     background-color: #38bdf8;
     box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.9);
   }
 
-  body.nova-cursor-hover #nova-cursor-halo {
+  .nova-cursor-hover #nova-cursor-halo {
     width: 40px;
     height: 40px;
     border-color: rgba(56, 189, 248, 0.65);
@@ -417,12 +418,12 @@
     const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
     document.addEventListener('mouseover', (e) => {
       if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.add('nova-cursor-hover');
+        document..classList.add('nova-cursor-hover');
       }
     });
     document.addEventListener('mouseout', (e) => {
       if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.remove('nova-cursor-hover');
+        document..classList.remove('nova-cursor-hover');
       }
     });
 
@@ -469,5 +470,62 @@
   })();
 </script>
 
+    <script>
+  (function() {
+    const linkTag = document.getElementById('dynamic-favicon');
+    if (!linkTag) return;
+
+    // Create an off-screen canvas to draw our animated favicon frames
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+
+    // Load your base favicon image
+    const baseImage = new Image();
+    baseImage.crossOrigin = 'anonymous';
+    baseImage.src = 'faviconR1.ico';
+
+    let angle = 0;
+
+    baseImage.onload = function() {
+      function animateFavicon() {
+        angle += 0.06; // Speed of the pulsing/orbiting node
+
+        // 1. Draw the base favicon image onto the canvas
+        ctx.clearRect(0, 0, 64, 64);
+        ctx.drawImage(baseImage, 0, 0, 64, 64);
+
+        // 2. Calculate smooth pulsing coordinates for the teal dot overlay
+        // (Matching the approximate position of your existing teal dot near the top right)
+        const centerX = 47;
+        const centerY = 16;
+        const radius = 3 + Math.sin(angle) * 1.5; // Subtle breathing/pulsing effect
+
+        // Draw a glowing outer aura ring
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius + 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(45, 212, 191, 0.35)';
+        ctx.fill();
+
+        // Draw the solid inner teal core
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#2dd4bf';
+        ctx.fill();
+
+        // 3. Push the canvas frame directly into the browser tab's favicon href
+        linkTag.href = canvas.toDataURL('image/png');
+
+        // Loop the animation
+        requestAnimationFrame(animateFavicon);
+      }
+
+      // Kick off the loop once the image is ready
+      requestAnimationFrame(animateFavicon);
+    };
+  })();
+</script>
+    
 </body>
 </html>
