@@ -39,9 +39,30 @@
             50% { opacity: 0; }
         }
 
-        /* HUD Bounding-Box Lock-On Styles */
+        /* HUD Bounding-Box Lock-On & 3D Depth Styles */
         .hud-card {
             position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hud-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            background: radial-gradient(
+                550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(45, 212, 191, 0.09),
+                transparent 45%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .hud-card:hover::before {
+            opacity: 1;
         }
         .hud-corner {
             position: absolute;
@@ -291,14 +312,14 @@
         <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- NOVA Project Card (Span Full Width) -->
-            <article class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col transition duration-300 hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(45,212,191,0.08)]">
+            <article data-tilt="0.45" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)]">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
-                <div class="relative w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
+                <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
                     <!-- Laser Scanline -->
                     <div class="hud-scanline"></div>
 
@@ -319,7 +340,7 @@
                     </video>
                 </div>
 
-                <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
                         <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
                             NOVA Observatory
@@ -351,14 +372,14 @@
             </article>
             
             <!-- Urban Heat Explorer Project Card -->
-            <article class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md transition duration-300 hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(45,212,191,0.08)] flex flex-col">
+            <article data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] flex flex-col">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
-                <div class="w-full bg-slate-950 border-b border-slate-800/80 aspect-video relative overflow-hidden flex items-center justify-center">
+                <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center">
                     <!-- Laser Scanline -->
                     <div class="hud-scanline"></div>
 
@@ -374,7 +395,7 @@
                     <img src="urban-heat-demo.gif" alt="Urban Heat Island Explorer Demo" class="w-full h-full object-cover object-top" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs flex flex-col items-center gap-2 p-6 text-center\'><span>[Add urban-heat-demo.gif to repository root]</span><span class=\'text-slate-600\'>Landsat 8/9 thermal calibration & Folium interactive map walkthrough</span></div>';">
                 </div>
 
-                <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
                     <div class="flex flex-col gap-2 mb-4">
                         <div class="flex items-baseline justify-between">
                             <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
@@ -416,110 +437,80 @@
                 </div>
             </article>
 
-            <!-- Interactive Constellation / Sensor Network Map (Bento Tile) -->
-            <article class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col justify-between transition duration-300 hover:border-teal-500/50">
+            <!-- Update 3: Interactive 3D Constellation / Sensor Network Map -->
+            <article data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
 
-                <div>
-                    <!-- Card Header with Track Switcher -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-800/80">
+                <div class="relative z-10 flex flex-col h-full">
+                    <!-- Top Header & Filter Controls -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-slate-800/80">
                         <div>
                             <h3 class="text-lg font-bold text-white flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                                Operational Matrix &amp; Credentials
+                                Sensor Network &amp; Credentials
                             </h3>
-                            <p class="text-xs font-mono text-slate-400 mt-0.5">SYS_ID: NET-NODE // SELECT OPERATIONAL DOMAIN</p>
+                            <p class="text-[11px] font-mono text-teal-400/80 mt-0.5">
+                                INTERACTIVE 3D TOPOLOGY // HOVER OR CLICK NODES
+                            </p>
                         </div>
 
-                        <!-- Track Toggle Buttons -->
-                        <div class="flex items-center gap-1 bg-slate-950/80 border border-slate-800 p-1 rounded-lg font-mono text-xs">
-                            <button id="track-btn-1" onclick="switchConstellationTrack(1)" class="px-2.5 py-1 rounded bg-teal-500/20 border border-teal-500/40 text-teal-300 transition font-semibold">
-                                01. AI EVAL
+                        <!-- Cluster Filter Buttons -->
+                        <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 p-1 rounded-lg font-mono text-[11px]">
+                            <button id="net-filter-all" onclick="setConstellationFilter('all')" class="interactive px-2 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 transition font-semibold">
+                                ALL
                             </button>
-                            <button id="track-btn-2" onclick="switchConstellationTrack(2)" class="px-2.5 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition">
-                                02. GEOSPATIAL
+                            <button id="net-filter-ai" onclick="setConstellationFilter('ai')" class="interactive px-2 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition">
+                                AI EVAL
+                            </button>
+                            <button id="net-filter-geo" onclick="setConstellationFilter('geo')" class="interactive px-2 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition">
+                                GEO
                             </button>
                         </div>
                     </div>
 
-                    <!-- Track 01 Content: AI Evaluation & Dataset Auditing -->
-                    <div id="constellation-track-1" class="space-y-4 transition-all duration-300">
-                        <div class="text-sm text-slate-300 leading-relaxed">
-                            <p>
-                                4+ years evaluating LLM output fidelity, conducting rigorous multimodal dataset auditing, and maintaining 99% verbatim precision across high-precision annotation pipelines.
-                            </p>
+                    <!-- Interactive 3D Canvas Viewport -->
+                    <div class="relative w-full h-56 sm:h-64 rounded-xl bg-slate-950/90 border border-slate-800/90 overflow-hidden shadow-inner mb-3">
+                        <canvas id="constellation-canvas" class="interactive w-full h-full block"></canvas>
+
+                        <!-- Floating Viewport Telemetry Overlay -->
+                        <div class="absolute top-2.5 left-3 right-3 flex items-center justify-between pointer-events-none font-mono text-[10px] text-slate-500">
+                            <span id="net-coords">ROT_X: 0.00° | ROT_Y: 0.00°</span>
+                            <span class="text-teal-400/80 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                9 NODES ONLINE
+                            </span>
                         </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl flex items-start gap-3">
-                                <div class="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 font-mono text-xs mt-0.5">AI</div>
-                                <div>
-                                    <div class="text-xs font-bold text-white font-mono">Google AI Professional</div>
-                                    <div class="text-[11px] text-slate-400 mt-0.5">Workflow config &amp; prompt architecture.</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl flex items-start gap-3">
-                                <div class="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 font-mono text-xs mt-0.5">AUD</div>
-                                <div>
-                                    <div class="text-xs font-bold text-white font-mono">1,500+ Monthly Audits</div>
-                                    <div class="text-[11px] text-slate-400 mt-0.5">Production benchmark validation.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stack Badges -->
-                        <div class="flex flex-wrap gap-2 pt-2">
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Python</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">ChromaDB</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Prompt Engineering</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Dataset QA</span>
+                        <div class="absolute bottom-2 left-3 pointer-events-none font-mono text-[9px] text-slate-500">
+                            [MOVE CURSOR TO ORBIT 3D GRAPH · CLICK NODE TO LOCK]
                         </div>
                     </div>
 
-                    <!-- Track 02 Content: Geospatial & Earth Observation (Hidden by default) -->
-                    <div id="constellation-track-2" class="space-y-4 transition-all duration-300 hidden">
-                        <div class="text-sm text-slate-300 leading-relaxed">
-                            <p>
-                                Translating raw scientific satellite imagery and atmospheric remote sensing data into responsive, browser-based geospatial web tools and analytical pipelines.
-                            </p>
+                    <!-- Live Selected Node Inspector Drawer -->
+                    <div class="bg-slate-950/85 border border-teal-500/30 rounded-xl p-3.5 transition-all duration-300 shadow-[0_0_20px_rgba(45,212,191,0.06)]">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span id="inspector-badge" class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/15 border border-teal-500/40 text-teal-300">
+                                CORE HUB // LOCKED
+                            </span>
+                            <span id="inspector-metric" class="text-xs font-mono text-teal-400 font-semibold">
+                                4+ YRS · 99% QA ACC
+                            </span>
                         </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl flex items-start gap-3">
-                                <div class="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 font-mono text-xs mt-0.5">SAT</div>
-                                <div>
-                                    <div class="text-xs font-bold text-white font-mono">NASA ARSET Remote Sensing</div>
-                                    <div class="text-[11px] text-slate-400 mt-0.5">Atmospheric &amp; spectral data analysis.</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl flex items-start gap-3">
-                                <div class="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 font-mono text-xs mt-0.5">GIS</div>
-                                <div>
-                                    <div class="text-xs font-bold text-white font-mono">STAC &amp; Radiometric Calibration</div>
-                                    <div class="text-[11px] text-slate-400 mt-0.5">Landsat 8/9 thermal indexing.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stack Badges -->
-                        <div class="flex flex-wrap gap-2 pt-2">
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Rasterio</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Folium</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">Streamlit</span>
-                            <span class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-teal-300 text-xs font-mono">PyProj</span>
-                        </div>
+                        <h4 id="inspector-title" class="text-sm font-bold text-white font-mono">
+                            Daniel Perez — Applied AI &amp; Geospatial Systems
+                        </h4>
+                        <p id="inspector-desc" class="text-xs text-slate-300 leading-relaxed mt-1">
+                            Bridging 4+ years of multimodal LLM evaluation and dataset auditing with Python satellite remote sensing pipelines (Rasterio, STAC, Three.js).
+                        </p>
                     </div>
                 </div>
-                
-                <div class="mt-6 pt-4 border-t border-slate-800 text-xs font-mono text-teal-400 flex items-center justify-between">
-                    <span>STATUS: ALL SENSOR NODES ACTIVE</span>
-                    <span class="text-slate-500">[SECURE_LINK]</span>
+
+                <div class="relative z-10 mt-4 pt-3 border-t border-slate-800/80 text-xs font-mono text-teal-400 flex items-center justify-between">
+                    <span>STATUS: AVAILABLE FOR COLLABORATION // 2026</span>
+                    <span class="text-slate-500">[3D_MESH: ACTIVE]</span>
                 </div>
             </article>
 
@@ -824,26 +815,345 @@
   })();
 </script>
 
-<!-- CONSTELLATION TRACK SWITCHER SCRIPT -->
+<!-- 3D CARD TILT + INTERACTIVE 3D CONSTELLATION SENSOR NETWORK -->
 <script>
-  window.switchConstellationTrack = function(trackNum) {
-    const track1 = document.getElementById('constellation-track-1');
-    const track2 = document.getElementById('constellation-track-2');
-    const btn1 = document.getElementById('track-btn-1');
-    const btn2 = document.getElementById('track-btn-2');
+  (function() {
+    // 1. 3D Gyroscope Perspective Tilt & Specular Spotlight on Bento Cards
+    const cards = document.querySelectorAll('.hud-card');
+    cards.forEach(card => {
+      const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.7;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
 
-    if (trackNum === 1) {
-      track1.classList.remove('hidden');
-      track2.classList.add('hidden');
-      btn1.className = "px-2.5 py-1 rounded bg-teal-500/20 border border-teal-500/40 text-teal-300 transition font-semibold";
-      btn2.className = "px-2.5 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition";
-    } else {
-      track2.classList.remove('hidden');
-      track1.classList.add('hidden');
-      btn2.className = "px-2.5 py-1 rounded bg-teal-500/20 border border-teal-500/40 text-teal-300 transition font-semibold";
-      btn1.className = "px-2.5 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition";
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -2.8 * intensity;
+        const rotateY = ((x - centerX) / centerX) * 2.8 * intensity;
+
+        card.style.transform = `perspective(1100px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+      });
+    });
+
+    // 2. Interactive 3D Constellation Topology Graph
+    const canvas = document.getElementById('constellation-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const nodes = [
+      {
+        id: 'core', label: 'CORE // DP', group: 'core', x: 0, y: 0, z: 0, radius: 7,
+        badge: 'CORE OPERATOR // NODE_00', metric: '4+ YRS · 99% QA ACC',
+        title: 'Daniel Perez — Applied AI & Geospatial Systems',
+        desc: 'Bridging 4+ years of multimodal LLM evaluation and dataset auditing with Python satellite remote sensing pipelines (Rasterio, STAC, Three.js).'
+      },
+      {
+        id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -115, y: -55, z: 55, radius: 5.5,
+        badge: 'VERIFIED CREDENTIAL // AI-01', metric: 'CERTIFIED · 2026',
+        title: 'Google AI Professional Certificate',
+        desc: 'Specialized in LLM workflow configuration, structured schema design, few-shot prompt engineering, and rapid prototyping in Google AI Studio.'
+      },
+      {
+        id: 'audits', label: '1,500+ Audits/Mo', group: 'ai', x: -135, y: 45, z: -40, radius: 5.5,
+        badge: 'PRODUCTION TELEMETRY // AI-02', metric: '1,500+ TASKS / MO',
+        title: 'High-Volume LLM & Multimodal Dataset Auditing',
+        desc: '4+ years auditing machine learning training datasets, validating prompt-response fidelity, and classifying complex edge cases.'
+      },
+      {
+        id: 'qa_acc', label: '99% Verbatim QA', group: 'ai', x: -55, y: 85, z: 65, radius: 5,
+        badge: 'QUALITY BENCHMARK // AI-03', metric: '99.0% PRECISION',
+        title: 'Multi-Speaker Acoustic & Verbatim QA Analysis',
+        desc: 'Maintained 99% verbatim accuracy across complex multi-speaker audio transcription and high-precision market research evaluation.'
+      },
+      {
+        id: 'chromadb', label: 'ChromaDB / RAG', group: 'ai', x: -45, y: -90, z: -55, radius: 4.8,
+        badge: 'AI STACK NODE // AI-04', metric: 'VECTOR EMBEDDINGS',
+        title: 'ChromaDB & Multimodal Evaluation Pipelines',
+        desc: 'Vector database indexing, semantic retrieval testing, and structured LLM output validation.'
+      },
+      {
+        id: 'nasa', label: 'NASA ARSET Cert', group: 'geo', x: 115, y: -60, z: 50, radius: 5.5,
+        badge: 'VERIFIED CREDENTIAL // GEO-01', metric: 'CERTIFIED · 2026',
+        title: 'NASA ARSET Fundamentals of Remote Sensing',
+        desc: 'Trained in satellite orbital mechanics, spectral resolution, atmospheric aerosol optical depth (AOD), and Earth observation data products.'
+      },
+      {
+        id: 'landsat', label: 'Landsat 8/9 STAC', group: 'geo', x: 135, y: 40, z: -45, radius: 5.5,
+        badge: 'EARTH OBSERVATION // GEO-02', metric: '30m THERMAL TIR',
+        title: 'Landsat 8/9 Level-2 Thermal & Surface Reflectance',
+        desc: 'Automated STAC catalog queries, radiometric calibration to Celsius, and NDVI / NDBI biome indexing for urban heat island analysis.'
+      },
+      {
+        id: 'rasterio', label: 'Python · Rasterio', group: 'geo', x: 60, y: 85, z: 55, radius: 5,
+        badge: 'GEOSPATIAL STACK // GEO-03', metric: 'GDAL / PYPROJ',
+        title: 'Rasterio, PyProj, Folium & Streamlit Pipelines',
+        desc: 'Coordinate reprojection, multi-band GeoTIFF array processing, and interactive browser map rendering.'
+      },
+      {
+        id: 'webgl', label: 'Three.js / WebGL', group: 'geo', x: 55, y: -85, z: -60, radius: 5,
+        badge: '3D VISUALIZATION // GEO-04', metric: '60 FPS SHADERS',
+        title: 'Three.js, WebGL & FastAPI 3D Telemetry',
+        desc: 'Custom 3D terrain meshes, orbital mechanics simulations (NOVA Observatory), and real-time browser telemetry interfaces.'
+      }
+    ];
+
+    const edges = [
+      ['core', 'google_ai'], ['core', 'audits'], ['core', 'qa_acc'], ['core', 'chromadb'],
+      ['core', 'nasa'], ['core', 'landsat'], ['core', 'rasterio'], ['core', 'webgl'],
+      ['google_ai', 'chromadb'], ['google_ai', 'audits'], ['audits', 'qa_acc'],
+      ['nasa', 'landsat'], ['landsat', 'rasterio'], ['rasterio', 'webgl'], ['chromadb', 'webgl']
+    ];
+
+    // Travelling telemetry packets along edges
+    const packets = edges.map((edge, idx) => ({
+      edgeIdx: idx,
+      progress: (idx * 0.19) % 1,
+      speed: 0.004 + (idx % 3) * 0.0018
+    }));
+
+    let activeFilter = 'all';
+    let lockedNode = nodes[0];
+    let hoveredNode = null;
+
+    let rotY = 0.25;
+    let rotX = 0.15;
+    let targetRotY = 0.25;
+    let targetRotX = 0.15;
+    let isPointerInside = false;
+    let pointerX = -999, pointerY = -999;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-  };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function updateInspector(node, isLocked) {
+      if (!node) return;
+      document.getElementById('inspector-badge').textContent = isLocked ? `${node.badge} [LOCKED]` : `${node.badge} [PREVIEW]`;
+      document.getElementById('inspector-metric').textContent = node.metric;
+      document.getElementById('inspector-title').textContent = node.title;
+      document.getElementById('inspector-desc').textContent = node.desc;
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      isPointerInside = true;
+      pointerX = e.clientX - rect.left;
+      pointerY = e.clientY - rect.top;
+
+      const normX = (pointerX / rect.width - 0.5) * 2;
+      const normY = (pointerY / rect.height - 0.5) * 2;
+      targetRotY = normX * 0.85;
+      targetRotX = -normY * 0.55;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      isPointerInside = false;
+      pointerX = -999;
+      pointerY = -999;
+      hoveredNode = null;
+      updateInspector(lockedNode, true);
+    });
+
+    canvas.addEventListener('click', () => {
+      if (hoveredNode) {
+        lockedNode = hoveredNode;
+        updateInspector(lockedNode, true);
+      }
+    });
+
+    window.setConstellationFilter = function(filter) {
+      activeFilter = filter;
+      const btns = {
+        all: document.getElementById('net-filter-all'),
+        ai: document.getElementById('net-filter-ai'),
+        geo: document.getElementById('net-filter-geo')
+      };
+      Object.keys(btns).forEach(k => {
+        if (k === filter) {
+          btns[k].className = "interactive px-2 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 transition font-semibold";
+        } else {
+          btns[k].className = "interactive px-2 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition";
+        }
+      });
+
+      if (filter === 'ai') {
+        lockedNode = nodes.find(n => n.id === 'google_ai');
+        targetRotY = -0.45;
+      } else if (filter === 'geo') {
+        lockedNode = nodes.find(n => n.id === 'nasa');
+        targetRotY = 0.45;
+      } else {
+        lockedNode = nodes[0];
+      }
+      updateInspector(lockedNode, true);
+    };
+
+    const coordsEl = document.getElementById('net-coords');
+
+    function renderConstellation() {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Subtle background radar rings
+      const cx = w / 2;
+      const cy = h / 2;
+      ctx.strokeStyle = 'rgba(45, 212, 191, 0.06)';
+      ctx.lineWidth = 1;
+      [48, 96, 144].forEach(r => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      if (!isPointerInside) {
+        targetRotY += 0.0032;
+        targetRotX = Math.sin(Date.now() * 0.0007) * 0.18;
+      }
+      rotY += (targetRotY - rotY) * 0.08;
+      rotX += (targetRotX - rotX) * 0.08;
+
+      if (coordsEl) {
+        coordsEl.textContent = `ROT_X: ${(rotX * 57.3).toFixed(1)}° | ROT_Y: ${((rotY * 57.3) % 360).toFixed(1)}°`;
+      }
+
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      const fov = 320;
+
+      // Project 3D coordinates into 2D canvas space with depth scaling
+      const projected = {};
+      nodes.forEach(n => {
+        const x1 = n.x * cosY - n.z * sinY;
+        const z1 = n.z * cosY + n.x * sinY;
+        const y2 = n.y * cosX - z1 * sinX;
+        const z2 = z1 * cosX + n.y * sinX;
+
+        const scale = fov / (fov + z2 + 180);
+        const px = cx + x1 * scale;
+        const py = cy + y2 * scale;
+
+        const isVisibleGroup = activeFilter === 'all' || n.group === 'core' || n.group === activeFilter;
+        projected[n.id] = {
+          node: n,
+          px, py, z: z2, scale,
+          alpha: isVisibleGroup ? Math.max(0.25, Math.min(1, (scale - 0.45) * 1.6)) : 0.12
+        };
+      });
+
+      // Check hover hit-testing
+      letnewHover = null;
+      let minDist = 26;
+      Object.values(projected).forEach(p => {
+        const d = Math.hypot(pointerX - p.px, pointerY - p.py);
+        if (d < minDist) {
+          minDist = d;
+          letnewHover = p.node;
+        }
+      });
+      if (letnewHover !== hoveredNode) {
+        hoveredNode = letnewHover;
+        if (hoveredNode) {
+          updateInspector(hoveredNode, false);
+        } else {
+          updateInspector(lockedNode, true);
+        }
+      }
+
+      // Draw edges & data packets
+      edges.forEach((pair, idx) => {
+        const p1 = projected[pair[0]];
+        const p2 = projected[pair[1]];
+        const edgeAlpha = Math.min(p1.alpha, p2.alpha) * 0.45;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.px, p1.py);
+        ctx.lineTo(p2.px, p2.py);
+        ctx.strokeStyle = `rgba(45, 212, 191, ${edgeAlpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Data packet pulse along active links
+        const pkt = packets[idx];
+        pkt.progress = (pkt.progress + pkt.speed) % 1;
+        if (edgeAlpha > 0.15) {
+          const kx = p1.px + (p2.px - p1.px) * pkt.progress;
+          const ky = p1.py + (p2.py - p1.py) * pkt.progress;
+          ctx.beginPath();
+          ctx.arc(kx, ky, 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(153, 246, 228, ${edgeAlpha * 1.8})`;
+          ctx.fill();
+        }
+      });
+
+      // Sort back-to-front by Z depth so foreground nodes render on top
+      const sorted = Object.values(projected).sort((a, b) => b.z - a.z);
+
+      sorted.forEach(p => {
+        const n = p.node;
+        const isLocked = lockedNode && lockedNode.id === n.id;
+        const isHovered = hoveredNode && hoveredNode.id === n.id;
+        const r = n.radius * p.scale * (isHovered || isLocked ? 1.3 : 1);
+
+        // Outer glow
+        if (isLocked || isHovered || n.group === 'core') {
+          ctx.beginPath();
+          ctx.arc(p.px, p.py, r + 6, 0, Math.PI * 2);
+          ctx.fillStyle = isHovered
+            ? 'rgba(56, 189, 248, 0.28)'
+            : 'rgba(45, 212, 191, 0.2)';
+          ctx.fill();
+        }
+
+        // Targeting reticle ring for locked/hovered node
+        if (isLocked || isHovered) {
+          ctx.beginPath();
+          ctx.arc(p.px, p.py, r + 10, 0, Math.PI * 2);
+          ctx.strokeStyle = isHovered ? '#38bdf8' : '#2dd4bf';
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([3, 3]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // Core node circle
+        ctx.beginPath();
+        ctx.arc(p.px, p.py, r, 0, Math.PI * 2);
+        ctx.fillStyle = n.group === 'core'
+          ? `rgba(255, 255, 255, ${p.alpha})`
+          : n.group === 'ai'
+            ? `rgba(45, 212, 191, ${p.alpha})`
+            : `rgba(56, 189, 248, ${p.alpha})`;
+        ctx.fill();
+
+        // Node text label
+        ctx.font = `${isLocked || isHovered ? '600 ' : ''}10px "JetBrains Mono", monospace`;
+        ctx.fillStyle = isLocked || isHovered
+          ? `rgba(255, 255, 255, ${Math.min(1, p.alpha + 0.3)})`
+          : `rgba(203, 213, 225, ${p.alpha * 0.9})`;
+        ctx.textAlign = 'center';
+        ctx.fillText(n.label, p.px, p.py - r - 6);
+      });
+
+      requestAnimationFrame(renderConstellation);
+    }
+
+    renderConstellation();
+  })();
 </script>
     
 </body>
