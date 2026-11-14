@@ -488,48 +488,27 @@
     pointer-events: none !important;
   }
 
-  #nova-cursor-dot {
+  #mag-cursor-core {
     position: fixed;
     top: 0;
     left: 0;
-    width: 6px;
-    height: 6px;
-    background-color: #ffffff;
+    width: 5px;
+    height: 5px;
+    background-color: #2dd4bf;
     border-radius: 50%;
     pointer-events: none !important;
     z-index: 99999;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.8),
-                0 0 16px 4px rgba(56, 189, 248, 0.35);
+    box-shadow: 0 0 10px 2px rgba(45, 212, 191, 0.85);
     transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  #nova-cursor-halo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 26px;
-    height: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 50%;
-    pointer-events: none !important;
-    z-index: 99998;
-    transform: translate(-50%, -50%);
-    transition: width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s ease, background-color 0.25s ease;
-  }
-
-  .nova-cursor-hover #nova-cursor-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #38bdf8;
-    box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.9);
-  }
-
-  .nova-cursor-hover #nova-cursor-halo {
-    width: 40px;
-    height: 40px;
-    border-color: rgba(56, 189, 248, 0.65);
-    background-color: rgba(56, 189, 248, 0.06);
+  .mag-cursor-hover #mag-cursor-core {
+    width: 18px;
+    height: 18px;
+    background-color: rgba(45, 212, 191, 0.12);
+    border: 1.5px solid #2dd4bf;
+    box-shadow: 0 0 16px 3px rgba(45, 212, 191, 0.55);
   }
 
   #nova-trail-canvas {
@@ -543,11 +522,10 @@
   }
 </style>
 
-<div id="nova-cursor-dot"></div>
-<div id="nova-cursor-halo"></div>
+<div id="mag-cursor-core"></div>
 <canvas id="nova-trail-canvas"></canvas>
 
-<!-- UNIFIED WAVE-UI COUPLING ENGINE (Three.js Terrain + Elastic Panel Fold/Wobble & Pill Buoyancy) -->
+<!-- UNIFIED WAVE-UI COUPLING + 3D MAGNETIC PARTICLE ATTRACTION -->
 <script>
   (function() {
     const container = document.getElementById('geospatial-canvas-container');
@@ -576,51 +554,63 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
-    // Floating Data Nodes coupled to wave elevation
-    const particleCount = 380;
+    // Floating Data Nodes with Magnetic Velocity Vectors
+    const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
+    const particleBaseZ = new Float32Array(particleCount);
     const particleSpeeds = new Float32Array(particleCount);
+    const particleVelX = new Float32Array(particleCount);
+    const particleVelY = new Float32Array(particleCount);
 
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 70;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 70;
-      particlePositions[i + 2] = (Math.random() * 14) - 2;
-      particleSpeeds[i / 3] = 0.012 + Math.random() * 0.022;
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      particlePositions[i3]     = (Math.random() - 0.5) * 70;
+      particlePositions[i3 + 1] = (Math.random() - 0.5) * 70;
+      particleBaseZ[i]          = (Math.random() * 12) - 2;
+      particlePositions[i3 + 2] = particleBaseZ[i];
+      particleSpeeds[i]         = 0.012 + Math.random() * 0.022;
     }
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
     const canvasNode = document.createElement('canvas');
     canvasNode.width = 32; canvasNode.height = 32;
     const ctxNode = canvasNode.getContext('2d');
-    ctxNode.beginPath();
-    ctxNode.arc(16, 16, 12, 0, Math.PI * 2);
-    ctxNode.fillStyle = '#2dd4bf';
-    ctxNode.fill();
+    const grad = ctxNode.createRadialGradient(16, 16, 2, 16, 16, 14);
+    grad.addColorStop(0, 'rgba(153, 246, 228, 1)');
+    grad.addColorStop(0.45, 'rgba(45, 212, 191, 0.85)');
+    grad.addColorStop(1, 'rgba(45, 212, 191, 0)');
+    ctxNode.fillStyle = grad;
+    ctxNode.fillRect(0, 0, 32, 32);
     const spriteTex = new THREE.CanvasTexture(canvasNode);
 
     const particleMat = new THREE.PointsMaterial({
       color: 0x2dd4bf,
-      size: 0.44,
+      size: 0.65,
       map: spriteTex,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.75,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
-    // Interactive Concentric Wave & Shockwave State
+    // Cursor & Wave State
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
     let pointerScreenY = window.innerHeight / 2;
+    let prevScreenX = pointerScreenX, prevScreenY = pointerScreenY;
+    let cursorSpeed = 0;
     let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
     const clickWaves = [];
-    // Expose clickWaves to cursor canvas for subtle visual shockwave rings
     window.__portfolioClickWaves = clickWaves;
 
     window.addEventListener('mousemove', (e) => {
+      const dx = e.clientX - pointerScreenX;
+      const dy = e.clientY - pointerScreenY;
+      cursorSpeed = Math.min(Math.hypot(dx, dy), 45);
+
       pointerScreenX = e.clientX;
       pointerScreenY = e.clientY;
       pointerNormX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -629,7 +619,6 @@
       mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
     });
 
-    // Clicking anywhere spawns a high-energy radial shockwave in BOTH 3D world space & 2D screen space
     window.addEventListener('mousedown', (e) => {
       clickWaves.push({
         sx: e.clientX,
@@ -638,17 +627,15 @@
         wy: -((e.clientY / window.innerHeight) - 0.5) * 36,
         startTime: performance.now() * 0.001
       });
-      if (clickWaves.length > 6) clickWaves.shift();
+      if (clickWaves.length > 5) clickWaves.shift();
     });
 
-    // 1. 3D Terrain Wave Equation
     function sampleTerrainWave(wx, wy, t) {
-      const cursorWX = pointerNormX * 18;
-      const cursorWY = pointerNormY * 14;
+      const cursorWX = pointerNormX * 22;
+      const cursorWY = pointerNormY * 16;
       const distCursor = Math.hypot(wx - cursorWX, wy - cursorWY);
-      const concentricRipple = Math.sin(distCursor * 0.38 - t * 2.8) * Math.exp(-distCursor * 0.03) * 1.45;
-
-      const ambientSwell = Math.sin(wx * 0.13 + t * 0.65) * Math.cos(wy * 0.13 + t * 0.55) * 1.35;
+      const concentricRipple = Math.sin(distCursor * 0.35 - t * 2.3) * Math.exp(-distCursor * 0.031) * 1.35;
+      const ambientSwell = Math.sin(wx * 0.13 + t * 0.58) * Math.cos(wy * 0.13 + t * 0.48) * 1.3;
 
       let shockwave = 0;
       for (let i = clickWaves.length - 1; i >= 0; i--) {
@@ -656,59 +643,50 @@
         const age = t - cw.startTime;
         if (age > 4.0) continue;
         const d = Math.hypot(wx - cw.wx, wy - cw.wy);
-        const radius = age * 18;
-        const envelope = Math.exp(-Math.pow(d - radius, 2) * 0.08) * Math.max(0, 1 - age / 4.0);
-        shockwave += Math.sin((d - radius) * 0.85) * envelope * 3.1;
+        const radius = age * 15;
+        const envelope = Math.exp(-Math.pow(d - radius, 2) * 0.07) * Math.max(0, 1 - age / 4.0);
+        shockwave += Math.sin((d - radius) * 0.7) * envelope * 2.25;
       }
-
       return concentricRipple + ambientSwell + shockwave;
     }
 
-    // 2. Screen-Space Wave & Shockwave Field for DOM Panels, Pills & Text
-    // Returns wave displacement at exact pixel coordinate (px, py) on screen
     function sampleScreenWave(px, py, t) {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const nx = (px / vw - 0.5) * 26;
-      const ny = -(py / vh - 0.5) * 20;
+      const nx = (px / vw - 0.5) * 22;
+      const ny = -(py / vh - 0.5) * 17;
 
-      // Ambient traveling ocean swell across the layout
-      const swell = Math.sin(nx * 0.22 + t * 1.45) * Math.cos(ny * 0.22 + t * 1.15) * 1.15;
-
-      // Continuous concentric ripple radiating from cursor position
+      const swell = Math.sin(nx * 0.21 + t * 1.25) * Math.cos(ny * 0.21 + t * 1.0) * 1.05;
       const dCursorPx = Math.hypot(px - pointerScreenX, py - pointerScreenY);
-      const cursorRipple = Math.sin(dCursorPx * 0.022 - t * 3.4) * Math.exp(-dCursorPx * 0.0022) * 1.1;
+      const cursorRipple = Math.sin(dCursorPx * 0.018 - t * 2.6) * Math.exp(-dCursorPx * 0.0023) * 0.85;
 
-      // High-energy elastic shockwave when clicking anywhere on the background or page
       let clickImpulse = 0;
       for (let i = 0; i < clickWaves.length; i++) {
         const cw = clickWaves[i];
         const age = t - cw.startTime;
-        if (age > 3.2) continue;
+        if (age > 3.5) continue;
 
         const distPx = Math.hypot(px - cw.sx, py - cw.sy);
-        const waveFrontPx = age * 520; // expands at 520px/sec across the screen
+        const waveFrontPx = age * 380;
         const distFromFront = distPx - waveFrontPx;
+        const packet = Math.exp(-(distFromFront * distFromFront) / (2 * 175 * 175));
+        const decay = Math.pow(Math.max(0, 1 - age / 3.5), 1.4);
 
-        // Gaussian packet around the expanding wavefront ring
-        const packet = Math.exp(-(distFromFront * distFromFront) / (2 * 135 * 135));
-        const decay = Math.pow(Math.max(0, 1 - age / 3.2), 1.35);
-
-        // Multi-oscillation elastic wave train (creates the wobble/fold as the wave passes)
-        clickImpulse += Math.sin(distFromFront * 0.038) * packet * decay * 3.8;
+        clickImpulse += Math.sin(distFromFront * 0.024) * packet * decay * 2.15;
       }
-
       return swell + cursorRipple + clickImpulse;
     }
 
-    // Cache DOM elements for real-time wave coupling
     const hudCards = Array.from(document.querySelectorAll('.hud-card'));
     const floatingPills = Array.from(document.querySelectorAll('.skill-chip, .domain-pill'));
     const waveChars = Array.from(document.querySelectorAll('.wave-char'));
 
-    const cardHoverState = new Map();
+    const cardState = new Map();
     hudCards.forEach(card => {
-      cardHoverState.set(card, { hoverRx: 0, hoverRy: 0, isHovered: false });
+      cardState.set(card, {
+        hoverRx: 0, hoverRy: 0, isHovered: false,
+        curX: 0, curY: 0, curZ: 0, curRx: 0, curRy: 0, curSkewX: 0, curSkewY: 0
+      });
       const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.65;
 
       card.addEventListener('mousemove', (e) => {
@@ -718,34 +696,37 @@
         card.style.setProperty('--mouse-x', `${x}px`);
         card.style.setProperty('--mouse-y', `${y}px`);
 
-        const state = cardHoverState.get(card);
+        const state = cardState.get(card);
         state.isHovered = true;
-        state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -2.6 * intensity;
-        state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 2.6 * intensity;
+        state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -2.4 * intensity;
+        state.hoverRy = ((x - rect.width / 2) / (rect.width / 2)) * 2.4 * intensity;
       });
 
       card.addEventListener('mouseleave', () => {
-        const state = cardHoverState.get(card);
+        const state = cardState.get(card);
         state.isHovered = false;
         state.hoverRx = 0;
         state.hoverRy = 0;
       });
     });
 
-    const clock = new THREE.Clock();
+    const pillState = new Map();
+    floatingPills.forEach(pill => {
+      pillState.set(pill, { curX: 0, curY: 0, curRot: 0, curScale: 1 });
+    });
 
     function animateTerrainAndDOM() {
       requestAnimationFrame(animateTerrainAndDOM);
       const t = performance.now() * 0.001;
+      cursorSpeed *= 0.9; // Decay movement speed smoothly
 
-      // Clean up expired click waves
       for (let i = clickWaves.length - 1; i >= 0; i--) {
         if (t - clickWaves[i].startTime > 4.0) clickWaves.splice(i, 1);
       }
 
       // 1. Update Three.js Camera & Terrain Vertices
-      targetX += (mouseX - targetX) * 0.035;
-      targetY += (mouseY - targetY) * 0.035;
+      targetX += (mouseX - targetX) * 0.032;
+      targetY += (mouseY - targetY) * 0.032;
       camera.position.x = targetX * 14;
       camera.position.y = -18 - targetY * 14;
       camera.lookAt(0, 0, 0);
@@ -758,45 +739,92 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
+      // 2. Magnetic Background Particle Physics (Cursor pulls nearby 3D cyan nodes)
+      const cursorWX = pointerNormX * 24;
+      const cursorWY = pointerNormY * 18;
+      const magnetRadius = 14.0; // 3D world radius of magnetic pull
       const positions = particleGeo.attributes.position.array;
-      for (let i = 1; i < particleCount * 3; i += 3) {
-        positions[i] += particleSpeeds[Math.floor(i / 3)];
-        if (positions[i] > 35) positions[i] = -35;
+
+      for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        let px = positions[i3];
+        let py = positions[i3 + 1];
+
+        // Distance from 3D particle to cursor's projected 3D coordinate
+        const dx = cursorWX - px;
+        const dy = cursorWY - py;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < magnetRadius && dist > 0.4) {
+          // Smooth magnetic pull + subtle tangential swirl when cursor moves
+          const pullStrength = Math.pow(1 - dist / magnetRadius, 2) * (0.028 + cursorSpeed * 0.0012);
+          particleVelX[i] += (dx / dist) * pullStrength - (dy / dist) * pullStrength * 0.35;
+          particleVelY[i] += (dy / dist) * pullStrength + (dx / dist) * pullStrength * 0.35;
+
+          // Lift magnetized particles slightly upward toward the glass cards
+          positions[i3 + 2] += (particleBaseZ[i] + 3.5 - positions[i3 + 2]) * 0.08;
+        } else {
+          // Relax Z-height back to baseline when outside magnetic field
+          positions[i3 + 2] += (particleBaseZ[i] - positions[i3 + 2]) * 0.04;
+        }
+
+        // Apply velocity + fluid damping
+        particleVelX[i] *= 0.90;
+        particleVelY[i] *= 0.90;
+
+        px += particleVelX[i];
+        py += particleSpeeds[i] + particleVelY[i];
+
+        // Wrap around world bounds seamlessly
+        if (py > 35) py = -35;
+        if (py < -35) py = 35;
+        if (px > 35) px = -35;
+        if (px < -35) px = 35;
+
+        positions[i3]     = px;
+        positions[i3 + 1] = py;
       }
       particleGeo.attributes.position.needsUpdate = true;
 
       renderer.render(scene, camera);
 
-      // 2. Kinetic Header Characters (Ripple & Scale with Screen Wave)
+      // 3. Kinetic Header Characters
       waveChars.forEach((ch) => {
         const rect = ch.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
         const wVal = sampleScreenWave(cx, cy, t);
-        const lift = wVal * 2.6;
-        const rot = wVal * 1.8;
-        const scale = 1 + Math.max(-0.04, wVal * 0.038);
+        const lift = wVal * 2.1;
+        const rot = wVal * 1.3;
+        const scale = 1 + Math.max(-0.03, wVal * 0.03);
         ch.style.transform = `translate3d(0, ${-lift.toFixed(2)}px, 0) rotateZ(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       });
 
-      // 3. Pronounced Buoyancy & Wobble on Domain Buttons and Skill/Cert Pills
+      // 4. Floating Pills Buoyancy
       floatingPills.forEach((pill, idx) => {
         const rect = pill.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
 
-        // Sample wave at left and right edges of pill for realistic tilt + bobbing
         const wCenter = sampleScreenWave(cx, cy, t + idx * 0.08);
-        const wRight = sampleScreenWave(cx + 28, cy, t + idx * 0.08);
-        const slopeDeg = (wRight - wCenter) * 4.2;
-        const yOffset = -wCenter * 3.4;
-        const xOffset = (wRight - wCenter) * 1.8;
-        const scale = 1 + wCenter * 0.022;
+        const wRight  = sampleScreenWave(cx + 30, cy, t + idx * 0.08);
 
-        pill.style.transform = `translate3d(${xOffset.toFixed(2)}px, ${yOffset.toFixed(2)}px, 0) rotateZ(${slopeDeg.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        const targetX = (wRight - wCenter) * 1.5;
+        const targetY = -wCenter * 2.8;
+        const targetRot = (wRight - wCenter) * 3.1;
+        const targetScale = 1 + wCenter * 0.018;
+
+        const pState = pillState.get(pill);
+        const pEase = 0.18;
+        pState.curX += (targetX - pState.curX) * pEase;
+        pState.curY += (targetY - pState.curY) * pEase;
+        pState.curRot += (targetRot - pState.curRot) * pEase;
+        pState.curScale += (targetScale - pState.curScale) * pEase;
+
+        pill.style.transform = `translate3d(${pState.curX.toFixed(2)}px, ${pState.curY.toFixed(2)}px, 0) rotateZ(${pState.curRot.toFixed(2)}deg) scale(${pState.curScale.toFixed(3)})`;
       });
 
-      // 4. Bento Panels: Multi-Point Wave Sampling for 3D Buoyancy, Wobble & Fold Distortion
+      // 5. Bento Panels Wave Coupling
       const vh = window.innerHeight;
       hudCards.forEach(card => {
         const rect = card.getBoundingClientRect();
@@ -807,7 +835,6 @@
         const spanX = Math.min(rect.width * 0.38, 160);
         const spanY = Math.min(rect.height * 0.38, 120);
 
-        // Sample wave at center and 4 cardinal points + corners to compute slope & torsional fold
         const hCenter = sampleScreenWave(cx, cy, t);
         const hLeft   = sampleScreenWave(cx - spanX, cy, t);
         const hRight  = sampleScreenWave(cx + spanX, cy, t);
@@ -816,33 +843,35 @@
         const hTL     = sampleScreenWave(cx - spanX, cy - spanY, t);
         const hBR     = sampleScreenWave(cx + spanX, cy + spanY, t);
 
-        // Vertical & horizontal wave drift
-        const waveLiftY = -hCenter * 4.6;
-        const waveDriftX = (hLeft - hRight) * 1.8;
-        const waveTranslateZ = hCenter * 9.5;
+        const state = cardState.get(card);
 
-        // 3D Pitch (rotateX) and Roll (rotateY) from wave gradient across the panel
-        const wavePitch = (hTop - hBottom) * 1.95;
-        const waveRoll  = (hRight - hLeft) * -1.95;
+        const targetX = (hLeft - hRight) * 1.4;
+        const targetY = -hCenter * 3.6;
+        const targetZ = hCenter * 6.5;
+        const targetRx = state.hoverRx + (hTop - hBottom) * 1.5;
+        const targetRy = state.hoverRy + (hRight - hLeft) * -1.5;
 
-        // Torsional Twist / Fold Distortion (skewX & skewY) when a diagonal shockwave crosses the panel
         const twistDelta = (hTL + hBR) - 2 * hCenter;
-        const foldSkewX = twistDelta * 0.48;
-        const foldSkewY = (hRight - hLeft - (hBottom - hTop)) * 0.24;
+        const targetSkewX = twistDelta * 0.32;
+        const targetSkewY = (hRight - hLeft - (hBottom - hTop)) * 0.16;
 
-        const state = cardHoverState.get(card);
-        const totalRx = state.hoverRx + wavePitch;
-        const totalRy = state.hoverRy + waveRoll;
+        const ease = 0.16;
+        state.curX += (targetX - state.curX) * ease;
+        state.curY += (targetY - state.curY) * ease;
+        state.curZ += (targetZ - state.curZ) * ease;
+        state.curRx += (targetRx - state.curRx) * ease;
+        state.curRy += (targetRy - state.curRy) * ease;
+        state.curSkewX += (targetSkewX - state.curSkewX) * ease;
+        state.curSkewY += (targetSkewY - state.curSkewY) * ease;
 
-        card.style.transform = `perspective(1050px) translate3d(${waveDriftX.toFixed(2)}px, ${waveLiftY.toFixed(2)}px, ${waveTranslateZ.toFixed(2)}px) rotateX(${totalRx.toFixed(2)}deg) rotateY(${totalRy.toFixed(2)}deg) skew(${foldSkewX.toFixed(2)}deg, ${foldSkewY.toFixed(2)}deg)`;
+        card.style.transform = `perspective(1080px) translate3d(${state.curX.toFixed(2)}px, ${state.curY.toFixed(2)}px, ${state.curZ.toFixed(2)}px) rotateX(${state.curRx.toFixed(2)}deg) rotateY(${state.curRy.toFixed(2)}deg) skew(${state.curSkewX.toFixed(2)}deg, ${state.curSkewY.toFixed(2)}deg)`;
 
-        // Dynamic border luminescence synced with wave crest & shockwave energy
-        const waveEnergy = Math.max(0, Math.min(1, (Math.abs(hCenter) + Math.abs(twistDelta) * 0.5) / 3.8));
-        card.style.setProperty('--wave-glow', (waveEnergy * 0.85).toFixed(2));
+        const waveEnergy = Math.max(0, Math.min(1, (Math.abs(hCenter) + Math.abs(twistDelta) * 0.45) / 3.2));
+        card.style.setProperty('--wave-glow', (waveEnergy * 0.8).toFixed(2));
 
         if (!state.isHovered && !card.classList.contains('card-filtered-active')) {
-          const borderAlpha = 0.14 + waveEnergy * 0.48;
-          const shadowAlpha = waveEnergy * 0.12;
+          const borderAlpha = 0.14 + waveEnergy * 0.42;
+          const shadowAlpha = waveEnergy * 0.10;
           card.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
           card.style.boxShadow = `0 20px 50px rgba(45, 212, 191, ${shadowAlpha.toFixed(3)})`;
         } else if (state.isHovered) {
@@ -862,11 +891,10 @@
   })();
 </script>
 
-<!-- CUSTOM CURSOR + VISIBLE SHOCKWAVE RING SCRIPT -->
+<!-- FOREGROUND MAGNETIC SPARKLE TRAIL & CLICK RIPPLE SCRIPT -->
 <script>
   (function() {
-    const dot = document.getElementById('nova-cursor-dot');
-    const halo = document.getElementById('nova-cursor-halo');
+    const core = document.getElementById('mag-cursor-core');
     const canvas = document.getElementById('nova-trail-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -878,24 +906,31 @@
       height = canvas.height = window.innerHeight;
     });
 
-    let mouse = { x: width / 2, y: height / 2 };
-    let haloPos = { x: width / 2, y: height / 2 };
-    const particles = [];
+    let mouse = { x: width / 2, y: height / 2, vx: 0, vy: 0 };
+    const sparks = [];
 
     window.addEventListener('mousemove', (e) => {
+      mouse.vx = e.clientX - mouse.x;
+      mouse.vy = e.clientY - mouse.y;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-      dot.style.left = `${mouse.x}px`;
-      dot.style.top = `${mouse.y}px`;
 
-      if (Math.random() > 0.25) {
-        particles.push({
-          x: mouse.x + (Math.random() - 0.5) * 4,
-          y: mouse.y + (Math.random() - 0.5) * 4,
-          size: Math.random() * 1.6 + 0.4,
-          alpha: 0.55,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25
+      core.style.left = `${mouse.x}px`;
+      core.style.top = `${mouse.y}px`;
+
+      // Spawn cyan micro-sparks that get pulled back toward the cursor tip
+      const speed = Math.hypot(mouse.vx, mouse.vy);
+      if (speed > 1.5 && sparks.length < 42) {
+        const angle = Math.random() * Math.PI * 2;
+        const spawnDist = 14 + Math.random() * 28;
+        sparks.push({
+          x: mouse.x + Math.cos(angle) * spawnDist,
+          y: mouse.y + Math.sin(angle) * spawnDist,
+          vx: -mouse.vx * 0.08 + (Math.random() - 0.5) * 0.8,
+          vy: -mouse.vy * 0.08 + (Math.random() - 0.5) * 0.8,
+          size: Math.random() * 1.8 + 0.7,
+          alpha: 0.85,
+          life: 1.0
         });
       }
     });
@@ -903,72 +938,84 @@
     const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
     document.addEventListener('mouseover', (e) => {
       if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.add('nova-cursor-hover');
+        document.body.classList.add('mag-cursor-hover');
       }
     });
     document.addEventListener('mouseout', (e) => {
       if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.remove('nova-cursor-hover');
+        document.body.classList.remove('mag-cursor-hover');
       }
     });
 
-    function animateCursor() {
+    function animateMagneticTrail() {
       ctx.clearRect(0, 0, width, height);
-      haloPos.x += (mouse.x - haloPos.x) * 0.16;
-      haloPos.y += (mouse.y - haloPos.y) * 0.16;
-      halo.style.left = `${haloPos.x}px`;
-      halo.style.top = `${haloPos.y}px`;
 
-      // Render expanding click shockwave rings so the user sees the wave hitting the panels
+      // 1. Expanding click shockwave rings
       const clickWaves = window.__portfolioClickWaves || [];
       const now = performance.now() * 0.001;
       for (let i = 0; i < clickWaves.length; i++) {
         const cw = clickWaves[i];
         const age = now - cw.startTime;
-        if (age < 2.2) {
-          const radius = age * 520;
-          const alpha = Math.pow(1 - age / 2.2, 2) * 0.22;
+        if (age < 2.6) {
+          const radius = age * 380;
+          const alpha = Math.pow(1 - age / 2.6, 2) * 0.16;
           ctx.beginPath();
           ctx.arc(cw.sx, cw.sy, radius, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(45, 212, 191, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.35;
           ctx.stroke();
         }
       }
 
-      const dx = mouse.x - haloPos.x;
-      const dy = mouse.y - haloPos.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist > 4) {
-        ctx.beginPath();
-        ctx.moveTo(mouse.x, mouse.y);
-        ctx.lineTo(haloPos.x, haloPos.y);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(dist / 120, 0.2)})`;
-        ctx.lineWidth = 0.75;
-        ctx.stroke();
-      }
+      // 2. Update & draw foreground magnetic cyan sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        const dx = mouse.x - s.x;
+        const dy = mouse.y - s.y;
+        const dist = Math.hypot(dx, dy);
 
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.018;
+        // Magnetic attraction toward the live cursor position
+        if (dist > 2) {
+          const pull = Math.min(0.35, 18 / (dist + 8));
+          s.vx += (dx / dist) * pull;
+          s.vy += (dy / dist) * pull;
+        }
 
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
+        s.vx *= 0.86;
+        s.vy *= 0.86;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life -= 0.024;
+
+        if (s.life <= 0 || dist < 3) {
+          sparks.splice(i, 1);
           continue;
         }
 
+        const alpha = s.life * s.alpha;
+
+        // Subtle filament tether when spark is close to snapping into the cursor
+        if (dist < 38) {
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(45, 212, 191, ${(alpha * (1 - dist / 38) * 0.28).toFixed(3)})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(220, 240, 255, ${p.alpha})`;
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = s.life > 0.6
+          ? `rgba(153, 246, 228, ${alpha.toFixed(3)})`
+          : `rgba(45, 212, 191, ${alpha.toFixed(3)})`;
         ctx.fill();
       }
 
-      requestAnimationFrame(animateCursor);
+      requestAnimationFrame(animateMagneticTrail);
     }
 
-    animateCursor();
+    animateMagneticTrail();
   })();
 </script>
 
