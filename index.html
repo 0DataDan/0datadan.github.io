@@ -149,7 +149,7 @@
 
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
-        <!-- Header / Intro (Top pill removed for cleaner minimalism) -->
+        <!-- Header / Intro -->
         <header class="mb-14">
             <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3" aria-label="danielperez">
                 <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
@@ -525,7 +525,7 @@
 <div id="mag-cursor-core"></div>
 <canvas id="nova-trail-canvas"></canvas>
 
-<!-- UNIFIED WAVE-UI COUPLING + 3D MAGNETIC PARTICLE ATTRACTION -->
+<!-- UNIFIED WAVE-UI COUPLING + 3D MAGNETIC PARTICLE ATTRACTION (Sparse, Smooth Pull) -->
 <script>
   (function() {
     const container = document.getElementById('geospatial-canvas-container');
@@ -554,7 +554,7 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
-    // Floating Data Nodes with Magnetic Velocity Vectors
+    // Floating Data Nodes with Sparse Magnetic Vectors
     const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -600,7 +600,6 @@
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
     let pointerScreenY = window.innerHeight / 2;
-    let prevScreenX = pointerScreenX, prevScreenY = pointerScreenY;
     let cursorSpeed = 0;
     let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
     const clickWaves = [];
@@ -718,7 +717,7 @@
     function animateTerrainAndDOM() {
       requestAnimationFrame(animateTerrainAndDOM);
       const t = performance.now() * 0.001;
-      cursorSpeed *= 0.9; // Decay movement speed smoothly
+      cursorSpeed *= 0.9;
 
       for (let i = clickWaves.length - 1; i >= 0; i--) {
         if (t - clickWaves[i].startTime > 4.0) clickWaves.splice(i, 1);
@@ -739,10 +738,10 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // 2. Magnetic Background Particle Physics (Cursor pulls nearby 3D cyan nodes)
+      // 2. Sparse & Heavy Magnetic Background Particle Physics (Pulls 3-4 distinct particles smoothly)
       const cursorWX = pointerNormX * 24;
       const cursorWY = pointerNormY * 18;
-      const magnetRadius = 14.0; // 3D world radius of magnetic pull
+      const magnetRadius = 22.0; // Wider radius
       const positions = particleGeo.attributes.position.array;
 
       for (let i = 0; i < particleCount; i++) {
@@ -750,32 +749,29 @@
         let px = positions[i3];
         let py = positions[i3 + 1];
 
-        // Distance from 3D particle to cursor's projected 3D coordinate
         const dx = cursorWX - px;
         const dy = cursorWY - py;
         const dist = Math.hypot(dx, dy);
 
         if (dist < magnetRadius && dist > 0.4) {
-          // Smooth magnetic pull + subtle tangential swirl when cursor moves
-          const pullStrength = Math.pow(1 - dist / magnetRadius, 2) * (0.028 + cursorSpeed * 0.0012);
-          particleVelX[i] += (dx / dist) * pullStrength - (dy / dist) * pullStrength * 0.35;
-          particleVelY[i] += (dy / dist) * pullStrength + (dx / dist) * pullStrength * 0.35;
-
-          // Lift magnetized particles slightly upward toward the glass cards
-          positions[i3 + 2] += (particleBaseZ[i] + 3.5 - positions[i3 + 2]) * 0.08;
+          // Heavier magnetic pull applied strictly to only ~3-4 nearby particles (using modulo index filtering)
+          if (i % 115 === 0) {
+            const pullStrength = Math.pow(1 - dist / magnetRadius, 2) * (0.095 + cursorSpeed * 0.003);
+            particleVelX[i] += (dx / dist) * pullStrength - (dy / dist) * pullStrength * 0.25;
+            particleVelY[i] += (dy / dist) * pullStrength + (dx / dist) * pullStrength * 0.25;
+            positions[i3 + 2] += (particleBaseZ[i] + 5.0 - positions[i3 + 2]) * 0.09;
+          }
         } else {
-          // Relax Z-height back to baseline when outside magnetic field
-          positions[i3 + 2] += (particleBaseZ[i] - positions[i3 + 2]) * 0.04;
+          // Smooth return spring-back to background baseline
+          positions[i3 + 2] += (particleBaseZ[i] - positions[i3 + 2]) * 0.025;
         }
 
-        // Apply velocity + fluid damping
-        particleVelX[i] *= 0.90;
-        particleVelY[i] *= 0.90;
+        particleVelX[i] *= 0.92;
+        particleVelY[i] *= 0.92;
 
         px += particleVelX[i];
         py += particleSpeeds[i] + particleVelY[i];
 
-        // Wrap around world bounds seamlessly
         if (py > 35) py = -35;
         if (py < -35) py = 35;
         if (px > 35) px = -35;
@@ -918,7 +914,6 @@
       core.style.left = `${mouse.x}px`;
       core.style.top = `${mouse.y}px`;
 
-      // Spawn cyan micro-sparks that get pulled back toward the cursor tip
       const speed = Math.hypot(mouse.vx, mouse.vy);
       if (speed > 1.5 && sparks.length < 42) {
         const angle = Math.random() * Math.PI * 2;
@@ -950,7 +945,6 @@
     function animateMagneticTrail() {
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Expanding click shockwave rings
       const clickWaves = window.__portfolioClickWaves || [];
       const now = performance.now() * 0.001;
       for (let i = 0; i < clickWaves.length; i++) {
@@ -967,14 +961,12 @@
         }
       }
 
-      // 2. Update & draw foreground magnetic cyan sparks
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i];
         const dx = mouse.x - s.x;
         const dy = mouse.y - s.y;
         const dist = Math.hypot(dx, dy);
 
-        // Magnetic attraction toward the live cursor position
         if (dist > 2) {
           const pull = Math.min(0.35, 18 / (dist + 8));
           s.vx += (dx / dist) * pull;
@@ -994,7 +986,6 @@
 
         const alpha = s.life * s.alpha;
 
-        // Subtle filament tether when spark is close to snapping into the cursor
         if (dist < 38) {
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
@@ -1019,7 +1010,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT (Fast Blink) -->
+<!-- DYNAMIC FAVICON SCRIPT (Original Fast-Blinking Cyan Circle) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -1038,8 +1029,7 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        // Increase speed for a faster blink
-        time += 0.18;
+        time += 0.18; // Fast blink speed
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
@@ -1047,7 +1037,7 @@
         const x = 48;
         const y = 16;
 
-        // Sharp on/off blink condition instead of a smooth pulse wave
+        // Sharp on/off blink condition
         const isVisible = Math.sin(time) > 0;
 
         if (isVisible) {
@@ -1140,7 +1130,6 @@
 <!-- 3D GRAPH + TOGGLEABLE FILTERS + PROJECT INDEX -->
 <script>
   (function() {
-    // 1. Interactive 3D Skills & Credentials Graph
     const canvas = document.getElementById('constellation-canvas');
     let activeGraphFilter = 'all';
 
