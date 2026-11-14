@@ -552,11 +552,6 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
-    // Raycaster for exact 3D-to-2D screen alignment
-    const raycaster = new THREE.Raycaster();
-    const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    const cursorWorld = new THREE.Vector3();
-
     // Floating Data Nodes with Targeted Spring Physics
     const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
@@ -610,6 +605,11 @@
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
+    // EXACT 3D-TO-2D RAYCASTER FOR PERFECT CURSOR ALIGNMENT
+    const raycaster = new THREE.Raycaster();
+    const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const cursorWorld = new THREE.Vector3();
+
     // Cursor & Wave State
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
@@ -634,7 +634,7 @@
       );
       raycaster.setFromCamera(mVec, camera);
       const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
-      
+
       clickWaves.push({
         sx: e.clientX,
         sy: e.clientY,
@@ -738,16 +738,23 @@
         if (t - clickWaves[i].startTime > 4.0) clickWaves.splice(i, 1);
       }
 
-      // 1. Update Three.js Camera & Terrain Vertices
+      // 1. Update Three.js Camera
       targetX += (mouseX - targetX) * 0.032;
       targetY += (mouseY - targetY) * 0.032;
       camera.position.x = targetX * 14;
       camera.position.y = -18 - targetY * 14;
       camera.lookAt(0, 0, 0);
-      
-      // Update camera matrix so Raycaster calculations are accurate
+
+      // Force camera matrix update so Raycaster is perfectly accurate
       camera.updateMatrixWorld();
 
+      // Ensure cursorWorld is exactly where the physical mouse is in 3D space
+      raycaster.setFromCamera(new THREE.Vector2(pointerNormX, pointerNormY), camera);
+      const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
+      const cursorWX = intersectResult ? cursorWorld.x : pointerNormX * 24 + camera.position.x;
+      const cursorWY = intersectResult ? cursorWorld.y : pointerNormY * 18 + camera.position.y + 18;
+
+      // Update Terrain Vertices
       const posArr = geometry.attributes.position.array;
       for (let i = 0; i < posArr.length; i += 3) {
         const px = posArr[i];
@@ -756,24 +763,18 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // 2. Exact Raycaster Coordinates (Fixes particles running away from cursor)
-      raycaster.setFromCamera(new THREE.Vector2(pointerNormX, pointerNormY), camera);
-      const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
-      const cursorWX = intersectResult ? cursorWorld.x : pointerNormX * 24 + camera.position.x;
-      const cursorWY = intersectResult ? cursorWorld.y : pointerNormY * 18 + camera.position.y + 18;
-
+      // 2. Heavy, Targeted Spring Physics (Strictly 4 closest particles)
       const positions = particleGeo.attributes.position.array;
 
-      // Advance the invisible anchor grid
       for (let i = 0; i < particleCount; i++) {
         baseY[i] += particleSpeeds[i];
         if (baseY[i] > 35) {
           baseY[i] -= 70;
-          positions[i * 3 + 1] -= 70; // Wrap particle position instantly so it doesn't streak across screen
+          positions[i * 3 + 1] -= 70; // Wrap particle position instantly
         }
       }
 
-      // Locate the 4 absolute closest anchor points to the exact 3D cursor position
+      // Locate the 4 absolute closest anchor points to the EXACT cursor coordinate
       let closest = [
         { id: -1, d: Infinity }, { id: -1, d: Infinity },
         { id: -1, d: Infinity }, { id: -1, d: Infinity }
@@ -790,10 +791,10 @@
         }
       }
 
-      // Ensure particles are reasonably nearby (dSq < 500) before targeting
+      // Filter to nearby particles only
       const targetIds = closest.filter(c => c.d < 500).map(c => c.id);
 
-      // Apply Spring Hooke's Law (F = -kX) to every particle
+      // Apply Spring Hooke's Law (F = -kX)
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         const isTarget = targetIds.includes(i);
@@ -802,19 +803,17 @@
         let ty = baseY[i];
         let tz = baseZ[i];
         
-        // Default: Moderate spring tension + fluid momentum for natural return to grid
-        let stiffness = 0.003; 
-        let damping = 0.90;    
+        // Fluid, heavy glide back to original grid position
+        let stiffness = 0.0035; 
+        let damping = 0.88;    
         
         if (isTarget) {
-          // Add micro-offset so particles orbit cursor smoothly instead of condensing into 1 dot
-          tx = cursorWX + Math.cos(i * 1.57) * 2.0;
-          ty = cursorWY + Math.sin(i * 1.57) * 2.0;
-          tz = baseZ[i] + 4.0; 
-          
-          // Slow, deliberate acceleration (heavy feel) + smooth glide friction
-          stiffness = 0.0012; 
-          damping = 0.95; 
+          // Slow, heavy magnetic acceleration toward cursor
+          tx = cursorWX;
+          ty = cursorWY;
+          tz = baseZ[i] + 4.5; // Lift up toward glass
+          stiffness = 0.0018;  // Lower stiffness = heavier, slower acceleration
+          damping = 0.94;      // Higher damping = smoother momentum, no slingshot
         }
 
         // Apply Spring Force
