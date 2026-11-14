@@ -155,10 +155,10 @@
                 <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
             </h1>
 
-            <!-- Minimal Typewriter Prompt -->
+            <!-- Hero Typewriter Prompt -->
             <div class="mt-2 mb-5 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm">
                 <span class="text-slate-500 select-none">&gt;</span>
-                <span id="typewriter-text" class="text-teal-300"></span>
+                <span class="typewriter-fx text-teal-300" data-phrases='["Python · Rasterio · Folium · Streamlit", "Three.js · WebGL · FastAPI", "Multimodal AI Evaluation & QA", "Satellite Remote Sensing Pipelines"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
 
@@ -268,21 +268,24 @@
                 </div>
 
                 <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
-                    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
-                            NOVA Observatory
-                            <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/60 px-3 py-1 rounded-full">
-                                Full-Stack / 3D &amp; FastAPI
-                            </span>
-                        </h2>
+                    <div class="mb-3">
+                        <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
                     </div>
 
                     <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
                         Interactive 3D cosmic map featuring procedural shaders, planetary tiers, orbital mechanics, and automated guided tours powered by FastAPI and Three.js.
                     </p>
 
-                    <div class="flex flex-wrap items-center justify-between gap-6 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                        <div class="flex gap-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                        
+                        <!-- Mini Project Typewriter -->
+                        <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                            <span class="text-slate-500 select-none">&gt;</span>
+                            <span class="typewriter-fx text-teal-300" data-phrases='["Project: Full-Stack 3D", "Stack: Three.js · FastAPI", "Skill: Procedural Shaders", "Skill: Orbital Mechanics"]'></span>
+                            <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                        </div>
+
+                        <div class="flex gap-6 ml-auto">
                             <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold flex items-center gap-1.5 transition">
                                 Live App <span>↗</span>
                             </a>
@@ -316,20 +319,24 @@
                 </div>
 
                 <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow">
-                    <div class="flex items-baseline justify-between gap-2 mb-3">
+                    <div class="mb-3">
                         <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                        <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/50 px-2 py-0.5 rounded">
-                            Geospatial
-                        </span>
                     </div>
 
                     <p class="text-sm text-slate-300 leading-relaxed mb-6">
                         Processes Landsat 8/9 thermal bands to map land surface temperature, NDVI, and urban heat islands across metropolitan biomes.
                     </p>
 
-                    <div class="mt-auto pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
-                        <span class="text-slate-500">Rasterio · Folium · Streamlit</span>
-                        <div class="flex items-center gap-3">
+                    <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                        
+                        <!-- Mini Project Typewriter -->
+                        <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                            <span class="text-slate-500 select-none">&gt;</span>
+                            <span class="typewriter-fx text-teal-300" data-phrases='["Project: Geospatial Analysis", "Stack: Python · Rasterio", "Stack: Folium · Streamlit", "Skill: Thermal Mapping"]'></span>
+                            <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                        </div>
+
+                        <div class="flex items-center gap-3 ml-auto">
                             <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold transition">
                                 Demo ↗
                             </a>
@@ -1117,42 +1124,45 @@
   })();
 </script>
 
-<!-- HERO TYPEWRITER & COUNTER SCRIPT -->
+<!-- UNIFIED TYPEWRITER & KPI COUNTER SCRIPT -->
 <script>
   (function() {
-    const phrases = [
-      "Python · Rasterio · Folium · Streamlit",
-      "Three.js · WebGL · FastAPI",
-      "Multimodal AI Evaluation & QA",
-      "Satellite Remote Sensing Pipelines"
-    ];
-    const el = document.getElementById('typewriter-text');
-    if (el) {
-      let phraseIdx = 0;
-      let charIdx = 0;
-      let isDeleting = false;
+    // 1. Unified Typewriter Engine
+    const typewriters = document.querySelectorAll('.typewriter-fx');
+    typewriters.forEach(tw => {
+      try {
+        const phrases = JSON.parse(tw.getAttribute('data-phrases'));
+        if (!phrases || !phrases.length) return;
+        
+        let phraseIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
 
-      function tick() {
-        const currentPhrase = phrases[phraseIdx];
-        charIdx += isDeleting ? -1 : 1;
-        el.textContent = currentPhrase.substring(0, charIdx);
+        function tick() {
+          const currentPhrase = phrases[phraseIdx];
+          charIdx += isDeleting ? -1 : 1;
+          tw.textContent = currentPhrase.substring(0, charIdx);
 
-        let speed = isDeleting ? 22 : 42;
+          let speed = isDeleting ? 22 : 42;
 
-        if (!isDeleting && charIdx === currentPhrase.length) {
-          speed = 2200;
-          isDeleting = true;
-        } else if (isDeleting && charIdx === 0) {
-          isDeleting = false;
-          phraseIdx = (phraseIdx + 1) % phrases.length;
-          speed = 350;
+          if (!isDeleting && charIdx === currentPhrase.length) {
+            speed = 2200; // Pause at end of phrase
+            isDeleting = true;
+          } else if (isDeleting && charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            speed = 350; // Pause before typing new phrase
+          }
+
+          setTimeout(tick, speed);
         }
-
-        setTimeout(tick, speed);
+        tick();
+      } catch (e) {
+        console.error("Typewriter parsing error for element:", tw, e);
       }
-      tick();
-    }
+    });
 
+    // 2. KPI Counters
     const counters = document.querySelectorAll('.kpi-counter');
     counters.forEach(counter => {
       const target = +counter.getAttribute('data-target');
