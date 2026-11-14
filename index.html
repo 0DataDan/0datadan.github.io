@@ -64,7 +64,32 @@
             100% { top: 100%; opacity: 0; }
         }
 
-        /* Wave-Reactive 3D Card Container (No outer box/blur so zero ghosting on flip) */
+        /* Stacked Project Deck Mechanics */
+        .project-deck-stage {
+            display: grid;
+            grid-template-columns: 1fr;
+            position: relative;
+            perspective: 1400px;
+        }
+        .deck-slide {
+            grid-row-start: 1;
+            grid-column-start: 1;
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s ease;
+        }
+        .deck-slide.slide-active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 20;
+        }
+        .deck-slide.slide-inactive {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Wave-Reactive 3D Card Container */
         .hud-card {
             position: relative;
             transform-style: preserve-3d;
@@ -254,15 +279,6 @@
         .skill-chip.chip-dim {
             opacity: 0.25;
         }
-        .card-filtered-dim {
-            opacity: 0.28;
-            filter: saturate(0.35);
-        }
-        .card-filtered-active .card-front,
-        .card-filtered-active .card-back,
-        .card-filtered-active .static-card-surface {
-            border-color: rgba(45, 212, 191, 0.65) !important;
-        }
 
         /* Magnified Link Hover Effect + Generous Hitbox */
         .mag-link {
@@ -292,22 +308,18 @@
             animation: blinkUnderscore 0.8s step-start infinite;
         }
 
-        /* Interactive Terminal Log Animations (Architecture Row) */
-        .term-log.is-typing::after {
-            content: "█";
-            color: #2dd4bf;
-            margin-left: 4px;
-            animation: blinkUnderscore 0.8s step-start infinite;
+        /* Interactive Skill Matrix Item States */
+        .matrix-node-btn {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .term-log-title::before {
-            content: "> ";
-            opacity: 0.5;
+        .matrix-node-btn.node-selected {
+            border-color: rgba(45, 212, 191, 0.75);
+            background-color: rgba(45, 212, 191, 0.12);
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(45, 212, 191, 0.12);
         }
-        .term-log-desc.typing-done::after {
-            content: " [OK]";
-            color: #0f766e;
-            font-weight: 600;
-            margin-left: 6px;
+        .matrix-node-btn.node-dimmed {
+            opacity: 0.3;
         }
     </style>
 </head>
@@ -320,7 +332,7 @@
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
         <!-- Header / Intro Interaction Zone -->
-        <header id="header-interaction-zone" class="mb-14 pb-2 group relative">
+        <header id="header-interaction-zone" class="mb-12 pb-2 group relative">
             <div id="header-scanline"></div>
             
             <!-- Clean Kinetic Wave Title -->
@@ -369,389 +381,384 @@
                 </div>
             </div>
 
-            <!-- Minimalist Wave-Coupled Domain Filter Bar & Skill Pills -->
+            <!-- Minimalist Wave-Coupled Domain Filter Bar -->
             <div class="space-y-3 max-w-2xl relative z-10">
                 <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+                    <button onclick="applyPortfolioFilter('webgl')" data-filter-btn="webgl" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
+                        3D &amp; Web
+                    </button>
                     <button onclick="applyPortfolioFilter('geo')" data-filter-btn="geo" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
                         Geospatial
                     </button>
                     <button onclick="applyPortfolioFilter('ai')" data-filter-btn="ai" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
                         AI &amp; Evaluation
                     </button>
-                    <button onclick="applyPortfolioFilter('webgl')" data-filter-btn="webgl" class="domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm">
-                        3D &amp; Web
-                    </button>
-                </div>
-
-                <!-- Concise Wave-Reactive Skill & Credential Pills -->
-                <div class="flex flex-wrap gap-2 text-xs font-mono pt-1">
-                    <span data-chip-cat="geo" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-300">
-                        <span class="text-teal-400">Cert:</span> NASA ARSET
-                    </span>
-                    <span data-chip-cat="ai" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-300">
-                        <span class="text-teal-400">Cert:</span> Google AI
-                    </span>
-                    <span data-chip-cat="geo ai webgl" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        Python
-                    </span>
-                    <span data-chip-cat="geo" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        Rasterio
-                    </span>
-                    <span data-chip-cat="geo" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        Folium
-                    </span>
-                    <span data-chip-cat="ai" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        ChromaDB
-                    </span>
-                    <span data-chip-cat="webgl" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        Three.js
-                    </span>
-                    <span data-chip-cat="webgl" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        FastAPI
-                    </span>
-                    <span data-chip-cat="geo" class="skill-chip inline-block px-2.5 py-1 rounded-md bg-slate-900/65 border border-slate-800/90 text-slate-400">
-                        Streamlit
-                    </span>
                 </div>
             </div>
         </header>
 
-        <!-- Bento Grid Section -->
-        <main class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
+        <!-- Main Stacked Layout -->
+        <main class="space-y-14">
 
-            <!-- NOVA Observatory Card (Flippable) -->
-            <article data-card-cat="webgl" data-tilt="0.75" data-card-id="nova" class="hud-card flippable-card group md:col-span-2 rounded-2xl">
-                <div class="glass-content">
-                    <div class="card-flipper">
-                        
-                        <!-- FRONT OF NOVA CARD -->
-                        <div class="card-front">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-tr"></div>
-                            <div class="hud-corner hud-bl"></div>
-                            <div class="hud-corner hud-br"></div>
-
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
-                                <div class="hud-scanline"></div>
-
-                                <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
-                                        THREE.JS + FASTAPI // 60FPS WEBGL
-                                    </span>
-                                    <span class="text-slate-400 hidden sm:inline">3D SOLAR SYSTEM &amp; STAR MAP</span>
-                                </div>
-
-                                <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
-                                    <source src="SR10.mp4" type="video/mp4">
-                                </video>
-                                <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
-                                    <source src="SR12.mp4" type="video/mp4">
-                                </video>
-                            </div>
-
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
-                                <div class="mb-3">
-                                    <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
-                                </div>
-
-                                <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
-                                    Interactive 3D space map built with Three.js and FastAPI. Users can explore stars, planets, and camera tours directly in the browser.
-                                </p>
-
-                                <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                    <!-- Animated Typewriter Pill -->
-                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
-                                        <span class="text-slate-500 select-none">&gt;</span>
-                                        <span class="typewriter-fx text-teal-300" data-phrases='["Project: Full-Stack 3D Web App", "Tools: Three.js · FastAPI · Python", "Skills: 3D Animation · REST APIs"]'></span>
-                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
-                                    </div>
-
-                                    <!-- Minimalist Footer-Style Links -->
-                                    <div class="flex items-center gap-6 ml-auto">
-                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
-                                            Live App <span>↗</span>
-                                        </a>
-                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                            GitHub Repo <span>&rarr;</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BACK OF NOVA CARD (CLEAN FULL-WIDTH CODE + SINGLE BOTTOM SUMMARY) -->
-                        <div class="card-back">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-tr"></div>
-                            <div class="hud-corner hud-bl"></div>
-                            <div class="hud-corner hud-br"></div>
-
-                            <!-- Top Full-Bleed Code Viewport (No scanline, no sidebar, matches Urban Heat style) -->
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] p-5 sm:p-7 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-start">
-                                <div id="code-stream-nova" class="space-y-1.5 text-left w-full"></div>
-                            </div>
-
-                            <!-- Bottom Body Section -->
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
-                                <div>
-                                    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-                                        <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory // Under the Hood</h2>
-                                        <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
-                                    </div>
-                                    <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
-                                        Combines a FastAPI backend with a Three.js frontend to load star data, animate planet orbits, and smoothly move the 3D camera between stops on the guided tour.
-                                    </p>
-                                </div>
-
-                                <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                    <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                                        <span><strong class="text-purple-400">142</strong> Debug Runs</span>
-                                        <span class="text-slate-700">·</span>
-                                        <span><strong class="text-emerald-400">60 FPS</strong> Smooth 3D</span>
-                                    </div>
-
-                                    <div class="flex items-center gap-6 ml-auto">
-                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
-                                            Live App <span>↗</span>
-                                        </a>
-                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                            GitHub Repo <span>&rarr;</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+            <!-- SECTION 1: STACKED PROJECT DECK (One card in view at all times) -->
+            <section aria-label="Featured Projects">
+                
+                <!-- Minimalist Deck Switcher Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/70">
+                    <div class="flex items-center gap-2 font-mono text-xs">
+                        <button onclick="switchProjectSlide(0)" id="deck-tab-0" class="interactive px-3 py-1.5 rounded-lg bg-teal-500/15 border border-teal-500/40 text-teal-300 font-semibold transition flex items-center gap-2">
+                            <span class="text-[10px] opacity-70">01</span> NOVA Observatory
+                        </button>
+                        <button onclick="switchProjectSlide(1)" id="deck-tab-1" class="interactive px-3 py-1.5 rounded-lg bg-slate-900/70 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition flex items-center gap-2">
+                            <span class="text-[10px] opacity-70">02</span> Urban Heat Explorer
+                        </button>
                     </div>
-                </div>
-            </article>
-            
-            <!-- Urban Heat Explorer Card (Flippable) -->
-            <article data-card-cat="geo" data-tilt="0.95" data-card-id="heat" class="hud-card flippable-card group rounded-2xl">
-                <div class="glass-content">
-                    <div class="card-flipper">
 
-                        <!-- FRONT OF URBAN HEAT CARD -->
-                        <div class="card-front">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-tr"></div>
-                            <div class="hud-corner hud-bl"></div>
-                            <div class="hud-corner hud-br"></div>
-
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center">
-                                <div class="hud-scanline"></div>
-
-                                <div class="hud-telemetry-bar absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-2.5 py-1 rounded backdrop-blur-md">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
-                                        LANDSAT 8/9 SATELLITE
-                                    </span>
-                                    <span class="text-slate-400">SURFACE TEMP · 30m</span>
-                                </div>
-
-                                <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
-                            </div>
-
-                            <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow">
-                                <div class="mb-3">
-                                    <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                                </div>
-
-                                <p class="text-sm text-slate-300 leading-relaxed mb-6">
-                                    Uses Landsat 8/9 satellite imagery to map surface temperatures, vegetation cover, and heat islands across major cities.
-                                </p>
-
-                                <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                    <!-- Animated Typewriter Pill -->
-                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
-                                        <span class="text-slate-500 select-none">&gt;</span>
-                                        <span class="typewriter-fx text-teal-300" data-phrases='["Project: Satellite Map App", "Tools: Python · Rasterio · Folium", "Skills: Heat Mapping · Data Viz"]'></span>
-                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
-                                    </div>
-
-                                    <!-- Minimalist Footer-Style Links -->
-                                    <div class="flex items-center gap-5 ml-auto">
-                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
-                                            Demo ↗
-                                        </a>
-                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                            Code &rarr;
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BACK OF URBAN HEAT CARD (CLEAN FULL-WIDTH CODE + PLAIN LANGUAGE) -->
-                        <div class="card-back">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-tr"></div>
-                            <div class="hud-corner hud-bl"></div>
-                            <div class="hud-corner hud-br"></div>
-
-                            <!-- Top Full-Bleed Code Viewport (No scanline) -->
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video p-4 sm:p-5 font-mono text-[10px] sm:text-[11px] leading-relaxed overflow-hidden flex flex-col justify-start">
-                                <div id="code-stream-heat" class="space-y-1 text-left w-full"></div>
-                            </div>
-
-                            <!-- Bottom Body Section -->
-                            <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow justify-between">
-                                <div>
-                                    <div class="flex items-baseline justify-between gap-2 mb-2">
-                                        <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat // Under the Hood</h2>
-                                        <span class="text-[11px] font-mono text-purple-400">1,840 LOC</span>
-                                    </div>
-                                    <p class="text-sm text-slate-300 leading-relaxed mb-5">
-                                        Downloads low-cloud satellite images, converts raw thermal sensor data into Celsius, and plots interactive heat layers over city maps.
-                                    </p>
-                                </div>
-
-                                <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                                    <div class="flex items-center gap-3 text-[10px] text-slate-400">
-                                        <span><strong class="text-purple-400">89</strong> Debug Runs</span>
-                                        <span class="text-slate-700">·</span>
-                                        <span><strong class="text-emerald-400">310+</strong> Scenes Checked</span>
-                                    </div>
-
-                                    <div class="flex items-center gap-5 ml-auto">
-                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
-                                            Demo ↗
-                                        </a>
-                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                            Code &rarr;
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </article>
-
-            <!-- Interactive 3D Skills & Credentials Graph -->
-            <article data-card-cat="ai geo webgl" data-tilt="0.95" class="hud-card group rounded-2xl">
-                <div class="glass-content">
-                    <div class="static-card-surface p-6 sm:p-7 flex flex-col justify-between">
-                        <div class="hud-corner hud-tl"></div>
-                        <div class="hud-corner hud-tr"></div>
-                        <div class="hud-corner hud-bl"></div>
-                        <div class="hud-corner hud-br"></div>
-
-                        <div class="relative z-10 flex flex-col h-full">
-                            <div class="flex items-center justify-between gap-2 mb-3">
-                                <h3 class="text-lg font-bold text-white">Skills &amp; Credentials</h3>
-                                <div class="flex items-center gap-1 bg-slate-950/80 border border-slate-800/80 p-0.5 rounded-lg font-mono text-[11px]">
-                                    <button id="net-filter-ai" onclick="setConstellationFilter('ai')" class="interactive px-2 py-0.5 rounded text-slate-400 hover:text-white transition">
-                                        AI
-                                    </button>
-                                    <button id="net-filter-geo" onclick="setConstellationFilter('geo')" class="interactive px-2 py-0.5 rounded text-slate-400 hover:text-white transition">
-                                        Geo
-                                    </button>
-                                    <button id="net-filter-webgl" onclick="setConstellationFilter('webgl')" class="interactive px-2 py-0.5 rounded text-slate-400 hover:text-white transition">
-                                        3D
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="relative w-full h-56 sm:h-60 rounded-xl bg-slate-950/75 border border-slate-800/80 overflow-hidden mb-3">
-                                <canvas id="constellation-canvas" class="interactive w-full h-full block"></canvas>
-                            </div>
-
-                            <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5">
-                                <div class="flex items-baseline justify-between gap-2">
-                                    <h4 id="inspector-title" class="text-xs font-bold text-white font-mono">
-                                        Daniel Perez
-                                    </h4>
-                                    <span id="inspector-metric" class="text-[11px] font-mono text-teal-400">
-                                        Core Stack
-                                    </span>
-                                </div>
-                                <p id="inspector-desc" class="text-xs text-slate-400 mt-0.5 truncate">
-                                    Hover or click any node to inspect credentials and tools.
-                                </p>
-                            </div>
+                    <div class="flex items-center gap-3 font-mono text-xs">
+                        <span id="deck-counter" class="text-slate-500 text-[11px]">01 / 02</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="stepProjectSlide(-1)" aria-label="Previous Project" class="interactive px-2.5 py-1 rounded bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-teal-400 hover:border-slate-700 transition">
+                                &larr;
+                            </button>
+                            <button onclick="stepProjectSlide(1)" aria-label="Next Project" class="interactive px-2.5 py-1 rounded bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-teal-400 hover:border-slate-700 transition">
+                                &rarr;
+                            </button>
                         </div>
                     </div>
                 </div>
-            </article>
 
-            <!-- Minimalist Project Architecture Index (Terminal Logs) -->
-            <article data-card-cat="geo webgl" data-tilt="0.65" class="hud-card md:col-span-2 rounded-2xl">
+                <!-- Single-View Deck Stage -->
+                <div class="project-deck-stage">
+
+                    <!-- SLIDE 01: NOVA Observatory Card (Flippable) -->
+                    <article data-slide-index="0" data-card-cat="webgl" data-tilt="0.75" data-card-id="nova" class="deck-slide slide-active hud-card flippable-card group rounded-2xl">
+                        <div class="glass-content">
+                            <div class="card-flipper">
+                                
+                                <!-- FRONT OF NOVA CARD -->
+                                <div class="card-front">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
+                                        <div class="hud-scanline"></div>
+
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                                THREE.JS + FASTAPI // 60FPS WEBGL
+                                            </span>
+                                            <span class="text-slate-400 hidden sm:inline">3D SOLAR SYSTEM &amp; STAR MAP</span>
+                                        </div>
+
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                            <source src="SR10.mp4" type="video/mp4">
+                                        </video>
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                            <source src="SR12.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                        <div class="mb-3">
+                                            <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
+                                        </div>
+
+                                        <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                            Interactive 3D space map built with Three.js and FastAPI. Users can explore stars, planets, and camera tours directly in the browser.
+                                        </p>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <!-- Animated Typewriter Pill -->
+                                            <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Project: Full-Stack 3D Web App", "Tools: Three.js · FastAPI · Python", "Skills: 3D Animation · REST APIs"]'></span>
+                                                <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                            </div>
+
+                                            <!-- Minimalist Footer-Style Links -->
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK OF NOVA CARD (Clean Badge, No Double Slashes) -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <!-- Top Full-Bleed Code Viewport -->
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] p-5 sm:p-7 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-start">
+                                        <div id="code-stream-nova" class="space-y-1.5 text-left w-full"></div>
+                                    </div>
+
+                                    <!-- Bottom Body Section -->
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-center gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
+                                                    <span class="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded bg-slate-900/90 border border-slate-700/80 text-slate-300">Under the Hood</span>
+                                                </div>
+                                                <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
+                                            </div>
+                                            <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                                Combines a FastAPI backend with a Three.js frontend to load star data, animate planet orbits, and smoothly move the 3D camera between stops on the guided tour.
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-purple-400">142</strong> Debug Runs</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-emerald-400">60 FPS</strong> Smooth 3D</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- SLIDE 02: Urban Heat Explorer Card (Flippable, Unified Full-Width Proportions) -->
+                    <article data-slide-index="1" data-card-cat="geo" data-tilt="0.75" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+                        <div class="glass-content">
+                            <div class="card-flipper">
+
+                                <!-- FRONT OF URBAN HEAT CARD -->
+                                <div class="card-front">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] overflow-hidden flex items-center justify-center">
+                                        <div class="hud-scanline"></div>
+
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                                LANDSAT 8/9 SATELLITE
+                                            </span>
+                                            <span class="text-slate-400">SURFACE TEMP · 30m RESOLUTION</span>
+                                        </div>
+
+                                        <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                        <div class="mb-3">
+                                            <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                        </div>
+
+                                        <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                            Uses Landsat 8/9 satellite imagery to map surface temperatures, vegetation cover, and heat islands across major cities.
+                                        </p>
+
+                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                                            <!-- Animated Typewriter Pill -->
+                                            <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Project: Satellite Map App", "Tools: Python · Rasterio · Folium", "Skills: Heat Mapping · Data Viz"]'></span>
+                                                <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                            </div>
+
+                                            <!-- Minimalist Footer-Style Links -->
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live Demo <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK OF URBAN HEAT CARD (Clean Badge, No Double Slashes) -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <!-- Top Full-Bleed Code Viewport -->
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] p-5 sm:p-7 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-start">
+                                        <div id="code-stream-heat" class="space-y-1.5 text-left w-full"></div>
+                                    </div>
+
+                                    <!-- Bottom Body Section -->
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-center gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                                    <span class="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded bg-slate-900/90 border border-slate-700/80 text-slate-300">Under the Hood</span>
+                                                </div>
+                                                <span class="text-xs font-mono text-purple-400">1,840 LOC</span>
+                                            </div>
+                                            <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                                Downloads low-cloud satellite images, converts raw thermal sensor data into Celsius, and plots interactive heat layers over city maps.
+                                            </p>
+                                        </div>
+
+                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-purple-400">89</strong> Debug Runs</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-emerald-400">310+</strong> Scenes Checked</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live Demo <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- SECTION 2: UPGRADED FULL-WIDTH SKILLS & CREDENTIALS MATRIX -->
+            <article data-card-cat="ai geo webgl" data-tilt="0.55" class="hud-card group rounded-2xl">
                 <div class="glass-content">
-                    <div class="static-card-surface p-6 sm:p-8 flex flex-col">
+                    <div class="static-card-surface p-6 sm:p-8 flex flex-col justify-between">
                         <div class="hud-corner hud-tl"></div>
                         <div class="hud-corner hud-tr"></div>
                         <div class="hud-corner hud-bl"></div>
                         <div class="hud-corner hud-br"></div>
 
                         <div class="relative z-10">
-                            <div class="flex items-baseline justify-between mb-4 pb-3 border-b border-slate-800/80">
-                                <h3 class="text-lg font-bold text-white">Project Breakdown</h3>
-                                <span class="text-xs font-mono text-slate-500">Click project to view steps</span>
+                            <!-- Matrix Header & Domain Filter Tabs -->
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/80">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white tracking-tight">Skills &amp; Credentials</h3>
+                                    <p class="text-xs text-slate-400 mt-0.5">Select any credential or tool to inspect how it connects across projects.</p>
+                                </div>
+                                <div class="flex items-center gap-1.5 bg-slate-950/80 border border-slate-800/80 p-1 rounded-lg font-mono text-xs">
+                                    <button id="net-filter-all" onclick="setConstellationFilter('all')" class="interactive px-2.5 py-1 rounded bg-teal-500/20 text-teal-300 font-semibold transition">
+                                        All
+                                    </button>
+                                    <button id="net-filter-ai" onclick="setConstellationFilter('ai')" class="interactive px-2.5 py-1 rounded text-slate-400 hover:text-white transition">
+                                        AI &amp; QA
+                                    </button>
+                                    <button id="net-filter-geo" onclick="setConstellationFilter('geo')" class="interactive px-2.5 py-1 rounded text-slate-400 hover:text-white transition">
+                                        Geospatial
+                                    </button>
+                                    <button id="net-filter-webgl" onclick="setConstellationFilter('webgl')" class="interactive px-2.5 py-1 rounded text-slate-400 hover:text-white transition">
+                                        3D &amp; Web
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="divide-y divide-slate-800/70">
+                            <!-- 2-Column Interactive Layout: 3D Graph Left + Direct Clickable Index Right -->
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                                
+                                <!-- Left 7 Cols: Widened 3D Constellation (Pauses rotation on hover so nodes don't run away) -->
+                                <div class="lg:col-span-7 flex flex-col justify-between bg-slate-950/75 border border-slate-800/80 rounded-xl overflow-hidden relative min-h-[290px]">
+                                    <canvas id="constellation-canvas" class="interactive w-full h-64 sm:h-72 block"></canvas>
 
-                                <!-- Row 01 -->
-                                <div data-project-row="webgl" class="py-3.5 first:pt-1">
-                                    <div onclick="toggleProjectRow('p1')" class="interactive group/row flex items-center justify-between gap-4 cursor-pointer">
-                                        <div class="flex items-baseline gap-3">
-                                            <span class="font-mono text-xs text-teal-400">01</span>
-                                            <span class="text-sm font-semibold text-white group-hover/row:text-teal-300 transition">NOVA Observatory</span>
-                                            <span class="hidden sm:inline text-xs font-mono text-slate-500">Three.js · WebGL · FastAPI</span>
+                                    <!-- Live Node Inspector Bar -->
+                                    <div class="bg-slate-900/85 border-t border-slate-800/80 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center gap-2.5">
+                                                <h4 id="inspector-title" class="text-xs font-bold text-white font-mono">
+                                                    Daniel Perez
+                                                </h4>
+                                                <span id="inspector-metric" class="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/15 text-teal-300 border border-teal-500/30">
+                                                    Core Stack
+                                                </span>
+                                            </div>
+                                            <p id="inspector-desc" class="text-xs text-slate-300 mt-1">
+                                                AI evaluation, satellite remote sensing, and 3D web development.
+                                            </p>
                                         </div>
-                                        <div class="flex items-center gap-4">
-                                            <canvas class="sparkline-canvas w-16 h-5 opacity-40 group-hover/row:opacity-100 transition" data-freq="0.16" data-amp="6"></canvas>
-                                            <span id="p1-icon" class="font-mono text-xs text-teal-400 w-4 text-right">&minus;</span>
-                                        </div>
-                                    </div>
-
-                                    <div id="p1-body" class="mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">3D Scene</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">Renders starfields and planetary orbits smoothly at 60fps in the browser.</span>
-                                        </div>
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Backend API</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">FastAPI server sends planet positions and guided tour stops to the frontend.</span>
-                                        </div>
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Camera Controls</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">Lets users click on planets and smoothly fly between locations.</span>
-                                        </div>
+                                        <button id="inspector-project-btn" onclick="jumpToLinkedProject()" class="hidden interactive text-[11px] font-mono text-teal-400 hover:text-teal-300 bg-slate-950/90 border border-teal-500/30 px-3 py-1.5 rounded-lg transition shrink-0">
+                                            View Project &uarr;
+                                        </button>
                                     </div>
                                 </div>
 
-                                <!-- Row 02 -->
-                                <div data-project-row="geo" class="py-3.5 last:pb-1">
-                                    <div onclick="toggleProjectRow('p2')" class="interactive group/row flex items-center justify-between gap-4 cursor-pointer">
-                                        <div class="flex items-baseline gap-3">
-                                            <span class="font-mono text-xs text-teal-400">02</span>
-                                            <span class="text-sm font-semibold text-white group-hover/row:text-teal-300 transition">Urban Heat Explorer</span>
-                                            <span class="hidden sm:inline text-xs font-mono text-slate-500">Landsat 8/9 · Rasterio · Folium</span>
-                                        </div>
-                                        <div class="flex items-center gap-4">
-                                            <canvas class="sparkline-canvas w-16 h-5 opacity-40 group-hover/row:opacity-100 transition" data-freq="0.1" data-amp="7"></canvas>
-                                            <span id="p2-icon" class="font-mono text-xs text-slate-500 w-4 text-right">+</span>
+                                <!-- Right 5 Cols: Scannable, Clickable Directory (Zero Label Overlap) -->
+                                <div class="lg:col-span-5 flex flex-col justify-between space-y-4 font-mono">
+                                    
+                                    <!-- Credentials & Experience Group -->
+                                    <div>
+                                        <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Certifications &amp; Experience</div>
+                                        <div class="grid grid-cols-1 gap-2">
+                                            <button data-node-id="nasa" data-node-group="geo" onclick="selectGraphNode('nasa')" onmouseenter="previewGraphNode('nasa')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90 flex items-center justify-between">
+                                                <span class="text-xs text-slate-200 font-semibold">NASA ARSET</span>
+                                                <span class="text-[10px] text-teal-400">Remote Sensing Cert</span>
+                                            </button>
+                                            <button data-node-id="google_ai" data-node-group="ai" onclick="selectGraphNode('google_ai')" onmouseenter="previewGraphNode('google_ai')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90 flex items-center justify-between">
+                                                <span class="text-xs text-slate-200 font-semibold">Google AI</span>
+                                                <span class="text-[10px] text-teal-400">Professional Cert</span>
+                                            </button>
+                                            <button data-node-id="qa_acc" data-node-group="ai" onclick="selectGraphNode('qa_acc')" onmouseenter="previewGraphNode('qa_acc')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90 flex items-center justify-between">
+                                                <span class="text-xs text-slate-200 font-semibold">LLM &amp; Multimodal QA</span>
+                                                <span class="text-[10px] text-purple-400">4+ Yrs · 1,500+/mo</span>
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <div id="p2-body" class="hidden mt-3 pl-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Satellite Data</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">Finds clear Landsat satellite images with minimal cloud cover.</span>
-                                        </div>
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Vegetation Check</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">Measures green space vs. concrete to compare cooling effects.</span>
-                                        </div>
-                                        <div class="bg-slate-950/80 border border-slate-800/60 p-3 rounded-lg">
-                                            <span class="term-log term-log-title text-[10px] text-teal-400 block mb-1">Heat Map</span>
-                                            <span class="term-log term-log-desc text-slate-400 inline">Converts thermal sensor readings into Celsius on an interactive map.</span>
+                                    <!-- Technical Stack Group -->
+                                    <div>
+                                        <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Technical Stack</div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button data-node-id="webgl" data-node-group="webgl" onclick="selectGraphNode('webgl')" onmouseenter="previewGraphNode('webgl')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90">
+                                                <div class="text-xs text-slate-200 font-semibold">Three.js</div>
+                                                <div class="text-[10px] text-slate-500">3D WebGL</div>
+                                            </button>
+                                            <button data-node-id="fastapi" data-node-group="webgl" onclick="selectGraphNode('fastapi')" onmouseenter="previewGraphNode('fastapi')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90">
+                                                <div class="text-xs text-slate-200 font-semibold">FastAPI</div>
+                                                <div class="text-[10px] text-slate-500">Python APIs</div>
+                                            </button>
+                                            <button data-node-id="rasterio" data-node-group="geo" onclick="selectGraphNode('rasterio')" onmouseenter="previewGraphNode('rasterio')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90">
+                                                <div class="text-xs text-slate-200 font-semibold">Rasterio</div>
+                                                <div class="text-[10px] text-slate-500">Satellite Data</div>
+                                            </button>
+                                            <button data-node-id="folium" data-node-group="geo" onclick="selectGraphNode('folium')" onmouseenter="previewGraphNode('folium')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90">
+                                                <div class="text-xs text-slate-200 font-semibold">Folium · Streamlit</div>
+                                                <div class="text-[10px] text-slate-500">Web Maps</div>
+                                            </button>
+                                            <button data-node-id="chromadb" data-node-group="ai" onclick="selectGraphNode('chromadb')" onmouseenter="previewGraphNode('chromadb')" onmouseleave="clearPreviewGraphNode()" class="matrix-node-btn interactive col-span-2 text-left px-3 py-2 rounded-lg bg-slate-950/60 border border-slate-800/90 flex items-center justify-between">
+                                                <span class="text-xs text-slate-200 font-semibold">Python · ChromaDB</span>
+                                                <span class="text-[10px] text-slate-500">Embeddings &amp; Data Pipelines</span>
+                                            </button>
                                         </div>
                                     </div>
+
                                 </div>
 
                             </div>
@@ -824,7 +831,7 @@
 <div id="mag-cursor-core"></div>
 <canvas id="nova-trail-canvas"></canvas>
 
-<!-- UNIFIED WAVE-UI COUPLING + 3D TARGETED SPRING PARTICLE ATTRACTION -->
+<!-- UNIFIED WAVE-UI COUPLING + 3D TARGETED SPRING PARTICLE ATTRACTION + STACKED DECK CONTROLLER -->
 <script>
   (function() {
     const container = document.getElementById('geospatial-canvas-container');
@@ -990,8 +997,9 @@
     }
 
     const hudCards = Array.from(document.querySelectorAll('.hud-card'));
-    const floatingPills = Array.from(document.querySelectorAll('.skill-chip, .domain-pill'));
+    const floatingPills = Array.from(document.querySelectorAll('.domain-pill'));
     const waveChars = Array.from(document.querySelectorAll('.wave-char'));
+    const deckSlides = Array.from(document.querySelectorAll('.deck-slide'));
 
     // Grounded, Easy-to-Read Code Lines for Backside Viewports
     const rollingCodeLines = {
@@ -1014,7 +1022,8 @@
         { num: "05", tokens: [{ t: "    celsius = kelvin - ", c: "text-white" }, { t: "273.15", c: "text-emerald-400" }] },
         { num: "06", tokens: [{ t: "    return ", c: "text-purple-400 font-semibold" }, { t: "np.round(celsius, ", c: "text-teal-300" }, { t: "2", c: "text-amber-300" }, { t: ")", c: "text-teal-300" }] },
         { num: "07", tokens: [{ t: "# Add temperature overlay to interactive city map", c: "text-slate-400" }] },
-        { num: "08", tokens: [{ t: "folium.RasterLayers.ImageOverlay(temp_map).add_to(city_map)", c: "text-emerald-400" }] }
+        { num: "08", tokens: [{ t: "folium.RasterLayers.ImageOverlay(temp_map).add_to(city_map)", c: "text-emerald-400" }] },
+        { num: "09", tokens: [{ t: "# [OK] 310+ scenes checked and calibrated", c: "text-teal-400" }] }
       ]
     };
 
@@ -1033,12 +1042,10 @@
       function typeNextLine() {
         const lineData = lines[lineIdx % lines.length];
 
-        // Remove oldest top line if viewport is full so code scrolls continuously
         while (container.children.length >= maxVisibleLines) {
           container.removeChild(container.firstElementChild);
         }
 
-        // Remove cursor from previous line
         const prevCursor = container.querySelector('.live-code-cursor');
         if (prevCursor) prevCursor.remove();
 
@@ -1097,6 +1104,56 @@
       typeNextLine();
     }
 
+    // Stacked Project Deck Switcher Logic
+    let currentSlideIdx = 0;
+
+    window.switchProjectSlide = function(nextIdx) {
+      if (nextIdx < 0) nextIdx = deckSlides.length - 1;
+      if (nextIdx >= deckSlides.length) nextIdx = 0;
+
+      // Reset any flipped card before switching so animations stay crisp
+      deckSlides.forEach((slide, idx) => {
+        const cardId = slide.getAttribute('data-card-id');
+        if (idx === nextIdx) {
+          slide.classList.remove('slide-inactive');
+          slide.classList.add('slide-active');
+        } else {
+          slide.classList.remove('slide-active', 'is-flipped');
+          slide.classList.add('slide-inactive');
+          if (cardId && activeCodeStreams[cardId]) {
+            clearTimeout(activeCodeStreams[cardId]);
+          }
+        }
+      });
+
+      currentSlideIdx = nextIdx;
+
+      // Update switcher tabs
+      deckSlides.forEach((_, idx) => {
+        const tab = document.getElementById(`deck-tab-${idx}`);
+        if (!tab) return;
+        if (idx === currentSlideIdx) {
+          tab.className = "interactive px-3 py-1.5 rounded-lg bg-teal-500/15 border border-teal-500/40 text-teal-300 font-semibold transition flex items-center gap-2";
+        } else {
+          tab.className = "interactive px-3 py-1.5 rounded-lg bg-slate-900/70 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition flex items-center gap-2";
+        }
+      });
+
+      const counterEl = document.getElementById('deck-counter');
+      if (counterEl) {
+        counterEl.textContent = `${String(currentSlideIdx + 1).padStart(2, '0')} / ${String(deckSlides.length).padStart(2, '0')}`;
+      }
+    };
+
+    window.stepProjectSlide = function(dir) {
+      window.switchProjectSlide(currentSlideIdx + dir);
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') window.stepProjectSlide(1);
+      if (e.key === 'ArrowLeft') window.stepProjectSlide(-1);
+    });
+
     const cardState = new Map();
 
     hudCards.forEach(card => {
@@ -1106,10 +1163,8 @@
           card.classList.toggle('is-flipped');
 
           const cardId = card.getAttribute('data-card-id');
-          const maxLines = cardId === 'nova' ? 9 : 7;
-
           if (card.classList.contains('is-flipped')) {
-            startContinuousCodeStream(cardId, `code-stream-${cardId}`, maxLines);
+            startContinuousCodeStream(cardId, `code-stream-${cardId}`, 9);
           } else if (activeCodeStreams[cardId]) {
             clearTimeout(activeCodeStreams[cardId]);
           }
@@ -1277,6 +1332,7 @@
 
       const vh = window.innerHeight;
       hudCards.forEach(card => {
+        if (card.classList.contains('slide-inactive')) return;
         const rect = card.getBoundingClientRect();
         if (rect.bottom < -80 || rect.top > vh + 80) return;
 
@@ -1319,15 +1375,14 @@
         const waveEnergy = Math.max(0, Math.min(1, (Math.abs(hCenter) + Math.abs(twistDelta) * 0.45) / 3.2));
         card.style.setProperty('--wave-glow', (waveEnergy * 0.8).toFixed(2));
 
-        // Apply border & shadow directly to the faces so no ghost box stays behind
         const faces = card.querySelectorAll('.card-front, .card-back, .static-card-surface');
         faces.forEach(face => {
-          if (!state.isHovered && !card.classList.contains('card-filtered-active')) {
+          if (!state.isHovered) {
             const borderAlpha = 0.14 + waveEnergy * 0.42;
             const shadowAlpha = waveEnergy * 0.10;
             face.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
             face.style.boxShadow = `0 20px 50px rgba(45, 212, 191, ${shadowAlpha.toFixed(3)})`;
-          } else if (state.isHovered) {
+          } else {
             face.style.borderColor = 'rgba(45, 212, 191, 0.6)';
             face.style.boxShadow = '0 22px 55px rgba(45, 212, 191, 0.14)';
           }
@@ -1525,10 +1580,9 @@
   })();
 </script>
 
-<!-- UNIFIED TYPEWRITER, KPI COUNTER & TERMINAL LOG SCRIPT -->
+<!-- UNIFIED TYPEWRITER & KPI COUNTER SCRIPT -->
 <script>
   (function() {
-    // 1. Unified Typewriter Engine
     const typewriters = document.querySelectorAll('.typewriter-fx');
     typewriters.forEach(tw => {
       try {
@@ -1563,7 +1617,6 @@
       }
     });
 
-    // 2. KPI Counters
     const counters = document.querySelectorAll('.kpi-counter');
     counters.forEach(counter => {
       const target = +counter.getAttribute('data-target');
@@ -1584,98 +1637,104 @@
       }
       requestAnimationFrame(updateCounter);
     });
-
-    // 3. Interactive Terminal Log Engine (For Project Breakdown Section)
-    window.__typewriterTimeouts = window.__typewriterTimeouts || {};
-
-    window.playTerminalLog = function(containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        if (window.__typewriterTimeouts[containerId]) {
-            window.__typewriterTimeouts[containerId].forEach(clearTimeout);
-        }
-        window.__typewriterTimeouts[containerId] = [];
-
-        const nodes = container.querySelectorAll('.term-log');
-        
-        nodes.forEach(node => {
-            if (node.dataset.orig === undefined) {
-                node.dataset.orig = node.textContent;
-            }
-            node.textContent = ''; 
-            node.classList.remove('typing-done', 'is-typing');
-        });
-
-        let currentDelay = 0;
-
-        nodes.forEach((node) => {
-            const text = node.dataset.orig;
-            
-            const tId = setTimeout(() => {
-                node.classList.add('is-typing');
-                let charIdx = 0;
-                
-                function typeChar() {
-                    if (charIdx < text.length) {
-                        node.textContent += text.charAt(charIdx);
-                        charIdx++;
-                        const nextTid = setTimeout(typeChar, 8 + Math.random() * 12);
-                        window.__typewriterTimeouts[containerId].push(nextTid);
-                    } else {
-                        node.classList.remove('is-typing');
-                        node.classList.add('typing-done');
-                    }
-                }
-                typeChar();
-            }, currentDelay);
-            
-            window.__typewriterTimeouts[containerId].push(tId);
-            currentDelay += 50 + (text.length * 10); 
-        });
-    };
-
-    setTimeout(() => {
-        const p1 = document.getElementById('p1-body');
-        if (p1 && !p1.classList.contains('hidden')) {
-            window.playTerminalLog('p1-body');
-        }
-    }, 600);
   })();
 </script>
 
-<!-- 3D GRAPH + TOGGLEABLE FILTERS + PROJECT INDEX -->
+<!-- UPGRADED 3D SKILLS & CREDENTIALS MATRIX + DECK COUPLING -->
 <script>
   (function() {
     const canvas = document.getElementById('constellation-canvas');
     let activeGraphFilter = 'all';
 
+    // Spread-out 3D coordinates to prevent label collisions + project deck links
+    const nodes = [
+      { id: 'core', label: 'Daniel Perez', group: 'core', x: 0, y: 0, z: 0, radius: 6.5, metric: 'Core Stack', desc: 'AI evaluation, satellite remote sensing, and 3D web development.', projectSlide: null },
+      { id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -135, y: -58, z: 45, radius: 5, metric: 'Credential', desc: 'Prompt design, model evaluation, and AI Studio workflows.', projectSlide: null },
+      { id: 'chromadb', label: 'Python · ChromaDB', group: 'ai', x: -145, y: 52, z: -35, radius: 5, metric: 'Data & Vector DB', desc: 'Python data pipelines, document embeddings, and retrieval workflows.', projectSlide: 0 },
+      { id: 'qa_acc', label: 'LLM & Multimodal QA', group: 'ai', x: -48, y: 82, z: 55, radius: 5, metric: '4+ Yrs · 99% QA', desc: '1,500+ monthly dataset audits and model output rating tasks.', projectSlide: null },
+      { id: 'nasa', label: 'NASA ARSET', group: 'geo', x: 135, y: -60, z: 40, radius: 5, metric: 'Credential', desc: 'Satellite remote sensing fundamentals and Earth observation.', projectSlide: 1 },
+      { id: 'rasterio', label: 'Rasterio', group: 'geo', x: 148, y: 38, z: -40, radius: 5, metric: 'Geospatial', desc: 'Processing Landsat satellite imagery and surface temperature bands.', projectSlide: 1 },
+      { id: 'folium', label: 'Folium · Streamlit', group: 'geo', x: 58, y: 82, z: 48, radius: 4.8, metric: 'Web Mapping', desc: 'Interactive city heat maps and browser data dashboards.', projectSlide: 1 },
+      { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', x: 45, y: -82, z: -55, radius: 5, metric: '3D Graphics', desc: 'Interactive 3D starfields, lighting, and camera animations.', projectSlide: 0 },
+      { id: 'fastapi', label: 'FastAPI', group: 'webgl', x: -52, y: -82, z: -45, radius: 4.8, metric: 'Backend API', desc: 'Python REST endpoints serving planet and tour data to NOVA.', projectSlide: 0 }
+    ];
+
+    const edges = [
+      ['core', 'google_ai'], ['core', 'chromadb'], ['core', 'qa_acc'],
+      ['core', 'nasa'], ['core', 'rasterio'], ['core', 'folium'],
+      ['core', 'webgl'], ['core', 'fastapi'],
+      ['google_ai', 'chromadb'], ['nasa', 'rasterio'], ['rasterio', 'folium'], ['webgl', 'fastapi']
+    ];
+
+    let lockedNode = nodes[0];
+    let hoveredNode = null;
+    let rotY = 0.25, rotX = 0.12, targetRotY = 0.25, targetRotX = 0.12;
+    let isPointerInside = false, pointerX = -999, pointerY = -999;
+
+    function syncDirectoryButtons(activeNode) {
+      document.querySelectorAll('.matrix-node-btn').forEach(btn => {
+        const bId = btn.getAttribute('data-node-id');
+        const bGroup = btn.getAttribute('data-node-group');
+        const groupMatch = activeGraphFilter === 'all' || bGroup === activeGraphFilter;
+
+        btn.classList.toggle('node-selected', activeNode && activeNode.id === bId);
+        btn.classList.toggle('node-dimmed', !groupMatch);
+      });
+    }
+
+    function updateInspector(node) {
+      if (!node) return;
+      document.getElementById('inspector-title').textContent = node.label;
+      document.getElementById('inspector-metric').textContent = node.metric;
+      document.getElementById('inspector-desc').textContent = node.desc;
+
+      const projBtn = document.getElementById('inspector-project-btn');
+      if (projBtn) {
+        if (node.projectSlide !== null && node.projectSlide !== undefined) {
+          projBtn.classList.remove('hidden');
+          projBtn.textContent = node.projectSlide === 0 ? 'Show NOVA Project ↑' : 'Show Urban Heat ↑';
+          projBtn.dataset.targetSlide = node.projectSlide;
+        } else {
+          projBtn.classList.add('hidden');
+        }
+      }
+      syncDirectoryButtons(node);
+    }
+
+    window.selectGraphNode = function(nodeId) {
+      const found = nodes.find(n => n.id === nodeId);
+      if (!found) return;
+      lockedNode = found;
+      updateInspector(lockedNode);
+
+      // Gently rotate the 3D graph to bring the selected node forward
+      targetRotY = -Math.atan2(found.x, found.z + 160) * 0.55;
+      targetRotX = Math.atan2(found.y, 180) * 0.5;
+    };
+
+    window.previewGraphNode = function(nodeId) {
+      const found = nodes.find(n => n.id === nodeId);
+      if (found) {
+        hoveredNode = found;
+        updateInspector(found);
+      }
+    };
+
+    window.clearPreviewGraphNode = function() {
+      hoveredNode = null;
+      updateInspector(lockedNode);
+    };
+
+    window.jumpToLinkedProject = function() {
+      const projBtn = document.getElementById('inspector-project-btn');
+      if (!projBtn || projBtn.dataset.targetSlide === undefined) return;
+      const slideIdx = parseInt(projBtn.dataset.targetSlide, 10);
+      window.switchProjectSlide(slideIdx);
+      document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
     if (canvas) {
       const ctx = canvas.getContext('2d');
-
-      const nodes = [
-        { id: 'core', label: 'Daniel Perez', group: 'core', x: 0, y: 0, z: 0, radius: 6.5, metric: 'Core Stack', desc: 'AI evaluation, satellite remote sensing, and 3D web development.' },
-        { id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -105, y: -50, z: 50, radius: 5, metric: 'Credential', desc: 'Prompt design, model evaluation, and AI Studio workflows.' },
-        { id: 'chromadb', label: 'ChromaDB', group: 'ai', x: -115, y: 45, z: -35, radius: 4.8, metric: 'Vector DB', desc: 'Document search, embeddings, and retrieval workflows.' },
-        { id: 'qa_acc', label: 'LLM Evaluation', group: 'ai', x: -45, y: 75, z: 55, radius: 4.8, metric: '4+ Yrs · 99% QA', desc: 'Multimodal dataset auditing and model output rating.' },
-        { id: 'nasa', label: 'NASA ARSET', group: 'geo', x: 105, y: -55, z: 45, radius: 5, metric: 'Credential', desc: 'Satellite remote sensing fundamentals and Earth observation.' },
-        { id: 'rasterio', label: 'Rasterio · Python', group: 'geo', x: 120, y: 40, z: -40, radius: 5, metric: 'Geospatial', desc: 'Processing satellite imagery and surface temperature bands.' },
-        { id: 'folium', label: 'Folium · Streamlit', group: 'geo', x: 50, y: 80, z: 50, radius: 4.5, metric: 'Mapping', desc: 'Interactive web maps and data dashboards.' },
-        { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', x: 35, y: -80, z: -55, radius: 5, metric: '3D Graphics', desc: 'Interactive 3D scenes, lighting, and camera animations.' },
-        { id: 'fastapi', label: 'FastAPI', group: 'webgl', x: -45, y: -80, z: -45, radius: 4.5, metric: 'Backend', desc: 'Python REST APIs serving data to web applications.' }
-      ];
-
-      const edges = [
-        ['core', 'google_ai'], ['core', 'chromadb'], ['core', 'qa_acc'],
-        ['core', 'nasa'], ['core', 'rasterio'], ['core', 'folium'],
-        ['core', 'webgl'], ['core', 'fastapi'],
-        ['google_ai', 'chromadb'], ['nasa', 'rasterio'], ['rasterio', 'folium'], ['webgl', 'fastapi']
-      ];
-
-      let lockedNode = nodes[0];
-      let hoveredNode = null;
-      let rotY = 0.25, rotX = 0.15, targetRotY = 0.25, targetRotX = 0.15;
-      let isPointerInside = false, pointerX = -999, pointerY = -999;
 
       function resizeCanvas() {
         const rect = canvas.getBoundingClientRect();
@@ -1687,20 +1746,12 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
-      function updateInspector(node) {
-        if (!node) return;
-        document.getElementById('inspector-title').textContent = node.label;
-        document.getElementById('inspector-metric').textContent = node.metric;
-        document.getElementById('inspector-desc').textContent = node.desc;
-      }
-
+      // Gentle parallax on mousemove without spinning nodes away from cursor
       canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         isPointerInside = true;
         pointerX = e.clientX - rect.left;
         pointerY = e.clientY - rect.top;
-        targetRotY = ((pointerX / rect.width) - 0.5) * 1.5;
-        targetRotX = -((pointerY / rect.height) - 0.5) * 1.0;
       });
 
       canvas.addEventListener('mouseleave', () => {
@@ -1719,15 +1770,15 @@
       });
 
       window.setConstellationFilter = function(filter) {
-        activeGraphFilter = (activeGraphFilter === filter) ? 'all' : filter;
+        activeGraphFilter = filter;
 
-        ['ai', 'geo', 'webgl'].forEach(k => {
+        ['all', 'ai', 'geo', 'webgl'].forEach(k => {
           const btn = document.getElementById(`net-filter-${k}`);
           if (!btn) return;
           if (k === activeGraphFilter) {
-            btn.className = "interactive px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-semibold transition";
+            btn.className = "interactive px-2.5 py-1 rounded bg-teal-500/20 text-teal-300 font-semibold transition";
           } else {
-            btn.className = "interactive px-2 py-0.5 rounded text-slate-400 hover:text-white transition";
+            btn.className = "interactive px-2.5 py-1 rounded text-slate-400 hover:text-white transition";
           }
         });
 
@@ -1743,16 +1794,17 @@
 
         const cx = w / 2, cy = h / 2;
 
+        // Pause auto-rotation when pointer is inside so nodes stay still for clicking
         if (!isPointerInside) {
-          targetRotY += 0.0028;
-          targetRotX = Math.sin(Date.now() * 0.0006) * 0.15;
+          targetRotY += 0.0022;
+          targetRotX = Math.sin(Date.now() * 0.0005) * 0.12;
         }
-        rotY += (targetRotY - rotY) * 0.08;
-        rotX += (targetRotX - rotX) * 0.08;
+        rotY += (targetRotY - rotY) * 0.07;
+        rotX += (targetRotX - rotX) * 0.07;
 
         const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
         const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-        const fov = 300;
+        const fov = 340;
 
         const projected = {};
         nodes.forEach(n => {
@@ -1761,7 +1813,7 @@
           const y2 = n.y * cosX - z1 * sinX;
           const z2 = z1 * cosX + n.y * sinX;
 
-          const scale = fov / (fov + z2 + 170);
+          const scale = fov / (fov + z2 + 190);
           const isMatch = activeGraphFilter === 'all' || n.group === 'core' || n.group === activeGraphFilter;
 
           projected[n.id] = {
@@ -1770,44 +1822,51 @@
             py: cy + y2 * scale,
             z: z2,
             scale,
-            alpha: isMatch ? Math.max(0.3, Math.min(1, (scale - 0.45) * 1.6)) : 0.1
+            isMatch,
+            alpha: isMatch ? Math.max(0.35, Math.min(1, (scale - 0.4) * 1.6)) : 0.12
           };
         });
 
-        let nextHover = null, minDist = 24;
-        Object.values(projected).forEach(p => {
-          const d = Math.hypot(pointerX - p.px, pointerY - p.py);
-          if (d < minDist) {
-            minDist = d;
-            nextHover = p.node;
+        if (isPointerInside) {
+          let nextHover = null, minDist = 26;
+          Object.values(projected).forEach(p => {
+            const d = Math.hypot(pointerX - p.px, pointerY - p.py);
+            if (d < minDist) {
+              minDist = d;
+              nextHover = p.node;
+            }
+          });
+          if (nextHover !== hoveredNode) {
+            hoveredNode = nextHover;
+            updateInspector(hoveredNode || lockedNode);
           }
-        });
-        if (nextHover !== hoveredNode) {
-          hoveredNode = nextHover;
-          updateInspector(hoveredNode || lockedNode);
         }
 
         edges.forEach(pair => {
           const p1 = projected[pair[0]], p2 = projected[pair[1]];
-          const a = Math.min(p1.alpha, p2.alpha) * 0.38;
+          const activeNode = hoveredNode || lockedNode;
+          const isConnectedToActive = activeNode && (pair[0] === activeNode.id || pair[1] === activeNode.id);
+          const a = isConnectedToActive ? 0.65 : Math.min(p1.alpha, p2.alpha) * 0.32;
+
           ctx.beginPath();
           ctx.moveTo(p1.px, p1.py);
           ctx.lineTo(p2.px, p2.py);
           ctx.strokeStyle = `rgba(45, 212, 191, ${a})`;
-          ctx.lineWidth = 1;
+          ctx.lineWidth = isConnectedToActive ? 1.5 : 1;
           ctx.stroke();
         });
 
         Object.values(projected).sort((a, b) => b.z - a.z).forEach(p => {
           const n = p.node;
-          const isFocus = (lockedNode && lockedNode.id === n.id) || (hoveredNode && hoveredNode.id === n.id);
-          const r = n.radius * p.scale * (isFocus ? 1.25 : 1);
+          const activeNode = hoveredNode || lockedNode;
+          const isFocus = activeNode && activeNode.id === n.id;
+          const r = n.radius * p.scale * (isFocus ? 1.35 : 1);
 
           if (isFocus) {
             ctx.beginPath();
-            ctx.arc(p.px, p.py, r + 6, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(45, 212, 191, 0.55)';
-            ctx.lineWidth = 1;
+            ctx.arc(p.px, p.py, r + 7, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.7)';
+            ctx.lineWidth = 1.5;
             ctx.stroke();
           }
 
@@ -1818,12 +1877,15 @@
             : `rgba(45, 212, 191, ${p.alpha})`;
           ctx.fill();
 
-          ctx.font = `${isFocus ? '600 ' : ''}10px "JetBrains Mono", monospace`;
-          ctx.fillStyle = isFocus
-            ? `rgba(255, 255, 255, ${Math.min(1, p.alpha + 0.3)})`
-            : `rgba(203, 213, 225, ${p.alpha * 0.85})`;
-          ctx.textAlign = 'center';
-          ctx.fillText(n.label, p.px, p.py - r - 5);
+          // Hide dimmed background labels when a filter is active to eliminate visual noise
+          if (p.isMatch || isFocus) {
+            ctx.font = `${isFocus ? '600 ' : ''}10px "JetBrains Mono", monospace`;
+            ctx.fillStyle = isFocus
+              ? '#ffffff'
+              : `rgba(203, 213, 225, ${p.alpha * 0.88})`;
+            ctx.textAlign = 'center';
+            ctx.fillText(n.label, p.px, p.py - r - 6);
+          }
         });
 
         requestAnimationFrame(renderConstellation);
@@ -1831,7 +1893,7 @@
       renderConstellation();
     }
 
-    // 2. Toggleable Domain Filter Buttons
+    // Top Domain Filter Buttons sync with Deck & Skills Matrix
     let currentDomain = null;
     window.applyPortfolioFilter = function(cat) {
       currentDomain = (currentDomain === cat) ? null : cat;
@@ -1839,80 +1901,20 @@
       document.querySelectorAll('[data-filter-btn]').forEach(btn => {
         const bCat = btn.getAttribute('data-filter-btn');
         if (bCat === currentDomain) {
-          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-teal-500/20 border border-teal-500/50 text-teal-300 font-semibold";
+          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-teal-500/20 border border-teal-500/50 text-teal-300 font-semibold shadow-sm";
         } else {
-          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700";
+          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm";
         }
       });
 
-      document.querySelectorAll('[data-chip-cat]').forEach(chip => {
-        const cats = chip.getAttribute('data-chip-cat').split(' ');
-        chip.classList.remove('chip-active', 'chip-dim');
-        if (currentDomain) {
-          chip.classList.add(cats.includes(currentDomain) ? 'chip-active' : 'chip-dim');
-        }
-      });
-
-      document.querySelectorAll('[data-card-cat]').forEach(card => {
-        const cats = card.getAttribute('data-card-cat').split(' ');
-        card.classList.remove('card-filtered-dim', 'card-filtered-active');
-        if (currentDomain) {
-          card.classList.add(cats.includes(currentDomain) ? 'card-filtered-active' : 'card-filtered-dim');
-        }
-      });
+      // Automatically switch the Stacked Project Deck to the matching project
+      if (currentDomain === 'webgl') window.switchProjectSlide(0);
+      if (currentDomain === 'geo') window.switchProjectSlide(1);
 
       if (window.setConstellationFilter) {
-        activeGraphFilter = currentDomain ? 'all' : activeGraphFilter;
         window.setConstellationFilter(currentDomain || 'all');
       }
-
-      if (currentDomain === 'webgl') window.toggleProjectRow('p1', true);
-      if (currentDomain === 'geo') window.toggleProjectRow('p2', true);
     };
-
-    // 3. Minimalist Project Breakdown Accordion
-    window.toggleProjectRow = function(id, forceOpen) {
-      const body = document.getElementById(`${id}-body`);
-      const icon = document.getElementById(`${id}-icon`);
-      if (!body || !icon) return;
-
-      const isHidden = body.classList.contains('hidden');
-      const open = forceOpen !== undefined ? forceOpen : isHidden;
-
-      body.classList.toggle('hidden', !open);
-      icon.innerHTML = open ? '&minus;' : '+';
-      icon.className = `font-mono text-xs w-4 text-right ${open ? 'text-teal-400' : 'text-slate-500'}`;
-
-      if (open) {
-          window.playTerminalLog(`${id}-body`);
-      }
-    };
-
-    const sparkCanvases = document.querySelectorAll('.sparkline-canvas');
-    let phase = 0;
-    function animateSparklines() {
-      phase += 0.08;
-      sparkCanvases.forEach((sc, idx) => {
-        const sCtx = sc.getContext('2d');
-        const w = sc.width = 64;
-        const h = sc.height = 20;
-        const freq = parseFloat(sc.getAttribute('data-freq')) || 0.12;
-        const amp = parseFloat(sc.getAttribute('data-amp')) || 6;
-
-        sCtx.clearRect(0, 0, w, h);
-        sCtx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const y = h / 2 + Math.sin(x * freq + phase + idx) * amp * Math.sin((x / w) * Math.PI);
-          if (x === 0) sCtx.moveTo(x, y);
-          else sCtx.lineTo(x, y);
-        }
-        sCtx.strokeStyle = '#2dd4bf';
-        sCtx.lineWidth = 1.2;
-        sCtx.stroke();
-      });
-      requestAnimationFrame(animateSparklines);
-    }
-    animateSparklines();
   })();
 </script>
     
