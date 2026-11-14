@@ -488,43 +488,49 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        time += 0.08; // Pulse speed
+        // Slower increment speed for a deliberate, relaxed pulse cadence
+        time += 0.04;
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
 
-        // Exact locked coordinates matching your static teal dot
         const x = 48;
         const y = 16;
 
-        // Calculate pulsing aura size and opacity
-        const pulse = Math.sin(time);
-        const radius = 4 + pulse * 2.5; // Expands and contracts cleanly
-        const alpha = 0.3 + (pulse + 1) * 0.25; // Fades glow in and out
+        // Smooth normalized wave from 0 (dim/dark gray) to 1 (100% cyan peak)
+        const wave = (Math.sin(time) + 1) / 2; 
 
-        // Draw outer radar aura ring
+        // Aura radius and opacity scale with the wave
+        const radius = 3 + wave * 3;
+        const auraAlpha = wave * 0.6;
+
+        // Draw outer pulsing aura
         ctx.beginPath();
         ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${alpha * 0.5})`;
+        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
         ctx.fill();
 
-        // Draw mid-ring glow
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(45, 212, 191, ${alpha})`;
+        ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
         ctx.fill();
 
-        // Draw solid bright core node
+        // Interpolate core node color from dark slate/gray (#1e293b) up to 100% cyan (#2dd4bf)
+        // Red: 30 -> 45, Green: 41 -> 212, Blue: 59 -> 191
+        const r = Math.round(30 + wave * 15);
+        const g = Math.round(41 + wave * 171);
+        const b = Math.round(59 + wave * 132);
+
         ctx.beginPath();
         ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
         ctx.fill();
 
         linkTag.href = canvas.toDataURL('image/png');
-        requestAnimationFrame(animateFavicon);
       }
 
-      requestAnimationFrame(animateFavicon);
+      // Use setInterval (~30fps) so the timer persists better across tab focus states than rAF
+      setInterval(animateFavicon, 33);
     };
   })();
 </script>
