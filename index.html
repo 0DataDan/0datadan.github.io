@@ -32,45 +32,35 @@
             display: inline-block;
             will-change: transform;
         }
-        .terminal-cursor {
-            color: #2dd4bf;
-            font-weight: 800;
-            margin-left: 2px;
-            user-select: none;
-            animation: blinkUnderscore 1s step-start infinite;
-        }
         @keyframes blinkUnderscore {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
 
-        /* Scanline Header Interaction */
+        /* Subtle Faded Scanline Header Interaction */
         #header-interaction-zone {
             position: relative;
             cursor: default;
         }
-        
         #header-scanline {
             position: absolute;
-            left: -20px;
-            right: -20px;
-            height: 6px;
-            background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.4), transparent);
-            box-shadow: 0 0 16px rgba(45, 212, 191, 0.2);
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(45, 212, 191, 0.12) 35%, rgba(45, 212, 191, 0.18) 50%, rgba(45, 212, 191, 0.12) 65%, transparent 100%);
+            box-shadow: 0 0 8px rgba(45, 212, 191, 0.08);
             opacity: 0;
             pointer-events: none;
             z-index: 10;
             top: 0;
         }
-        
         #header-interaction-zone:hover #header-scanline {
-            animation: headerScan 2.5s linear infinite;
+            animation: headerScan 3.6s linear infinite;
         }
-
         @keyframes headerScan {
-            0% { top: 0; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
+            0% { top: 0%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
 
@@ -80,70 +70,74 @@
             transform-style: preserve-3d;
             will-change: transform, border-color, box-shadow, opacity;
             transition: opacity 0.35s ease;
+        }
+        .flippable-card {
             cursor: pointer;
         }
         
+        /* Inner Parallax Content Layer */
         .glass-content {
             transform: translateZ(1px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
             transform-style: preserve-3d;
             height: 100%;
         }
         .hud-card:hover .glass-content {
-            transform: translateZ(28px);
+            transform: translateZ(24px);
         }
 
-        /* 3D Blueprint Flip Mechanics */
+        /* 3D Blueprint Flip Mechanics (Smooth, heavy 1.35s rotation) */
         .card-flipper {
             position: relative;
             width: 100%;
             height: 100%;
-            /* Smoothed, slower physics for the flip */
-            transition: transform 1.2s cubic-bezier(0.25, 1, 0.2, 1);
+            transition: transform 1.35s cubic-bezier(0.22, 1, 0.36, 1);
             transform-style: preserve-3d;
         }
         .hud-card.is-flipped .card-flipper {
             transform: rotateY(180deg);
         }
-        .card-front, .card-back {
+        .card-front {
+            position: relative;
+            width: 100%;
+            height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(30, 41, 59, 0.9);
+            border-radius: 1rem;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+        .card-back {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: rotateY(180deg);
             display: flex;
             flex-direction: column;
-            background-color: rgba(2, 6, 23, 0.65);
+            justify-content: space-between;
+            background: radial-gradient(circle at 50% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(2, 6, 23, 0.98) 100%);
+            border: 1px solid rgba(45, 212, 191, 0.35);
             border-radius: 1rem;
-        }
-        .card-back {
-            transform: rotateY(180deg);
-            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
-            border: 1px solid rgba(45, 212, 191, 0.3);
+            overflow: hidden;
             pointer-events: none;
+            backdrop-filter: blur(16px);
         }
         .hud-card.is-flipped .card-back {
-            pointer-events: auto; 
+            pointer-events: auto;
         }
         .hud-card.is-flipped .card-front {
             pointer-events: none;
         }
 
-        /* Gradient Accent Brand Tab */
-        .brand-tab {
-            position: absolute;
-            top: -1px;
-            left: 24px;
-            height: 3px;
-            width: 48px;
-            background: linear-gradient(90deg, #2dd4bf, #c084fc);
-            border-radius: 0 0 4px 4px;
-            z-index: 40;
-            transform: translateZ(32px);
-        }
-
+        /* Base Teal Wave Glow */
         .hud-card::before {
             content: "";
             position: absolute;
@@ -160,6 +154,7 @@
             z-index: 1;
         }
         
+        /* Specular White Glass Glare */
         .hud-card::after {
             content: "";
             position: absolute;
@@ -167,7 +162,7 @@
             border-radius: 1rem;
             background: radial-gradient(
                 700px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(255, 255, 255, 0.08),
+                rgba(255, 255, 255, 0.07),
                 transparent 45%
             );
             opacity: 0;
@@ -181,6 +176,7 @@
             opacity: 1;
         }
 
+        /* 3D Floating Corners */
         .hud-corner {
             position: absolute;
             width: 14px;
@@ -201,6 +197,16 @@
         .hud-card:hover .hud-tr { top: 8px; right: 8px; opacity: 1; transform: translateZ(32px); }
         .hud-card:hover .hud-bl { bottom: 8px; left: 8px; opacity: 1; transform: translateZ(32px); }
         .hud-card:hover .hud-br { bottom: 8px; right: 8px; opacity: 1; transform: translateZ(32px); }
+
+        .hud-telemetry-bar {
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.25s ease-out;
+        }
+        .hud-card:hover .hud-telemetry-bar {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         .hud-scanline {
             position: absolute;
@@ -243,26 +249,16 @@
             border-color: rgba(45, 212, 191, 0.65) !important;
         }
 
-        /* Scrolling Marquee */
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .marquee-content {
+        /* Live Code Typer Cursor on Card Back */
+        .live-code-cursor {
             display: inline-block;
-            animation: marquee 15s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Backplate Code Typer */
-        .code-cursor {
-            color: #ec4899; /* Neon Pink/Magenta */
-            font-weight: bold;
-            animation: blinkUnderscore 1s step-start infinite;
+            width: 7px;
+            height: 13px;
+            background-color: #2dd4bf;
+            vertical-align: middle;
+            margin-left: 2px;
+            box-shadow: 0 0 8px #2dd4bf;
+            animation: blinkUnderscore 0.8s step-start infinite;
         }
 
         /* Interactive Terminal Log Animations (Architecture Row) */
@@ -292,29 +288,32 @@
 
     <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
-        <!-- Header / Intro Interaction Zone (Hover triggers scanline) -->
+        <!-- Header / Intro Interaction Zone -->
         <header id="header-interaction-zone" class="mb-14 pb-2 group relative">
             <div id="header-scanline"></div>
             
+            <!-- Clean Kinetic Wave Title (No competing cursor) -->
             <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3" aria-label="danielperez">
-                <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span><span class="terminal-cursor">_</span>
+                <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span>
             </h1>
 
-            <!-- Hero Typewriter Prompt -->
+            <!-- Single Active Terminal Prompt -->
             <div class="mt-2 mb-6 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400 bg-slate-900/60 border border-slate-800/80 px-3.5 py-1.5 rounded-lg w-fit backdrop-blur-sm shadow-sm transition-colors duration-500 group-hover:border-teal-500/40">
                 <span class="text-slate-500 select-none">&gt;</span>
                 <span class="typewriter-fx text-teal-300" data-phrases='["Python · Rasterio · Folium · Streamlit", "Three.js · WebGL · FastAPI", "Multimodal AI Evaluation & QA", "Satellite Remote Sensing Pipelines"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
 
-            <!-- Always-visible Bio text -->
-            <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-2 mb-2 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
-                <p class="text-lg font-medium max-w-2xl leading-relaxed mb-4 text-slate-400 transition-colors duration-500 ease-out group-hover:text-slate-200">
-                    Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
-                </p>
-                <p class="text-sm max-w-2xl leading-relaxed text-slate-500 transition-colors duration-500 ease-out group-hover:text-slate-300">
-                    After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
-                </p>
+            <!-- Always-Visible Bio with Smooth Syntax Illumination -->
+            <div id="bio-container">
+                <div class="pb-6 border-l-2 border-slate-800/60 pl-5 ml-1 mb-2 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
+                    <p class="text-lg font-medium max-w-2xl leading-relaxed mb-4 text-slate-400 transition-colors duration-700 ease-out group-hover:text-slate-100">
+                        Background in AI data analysis, multimodal evaluation, and full-stack development. Currently expanding into 3D web visualizations, backend APIs, and satellite remote sensing workflows.
+                    </p>
+                    <p class="text-sm max-w-2xl leading-relaxed text-slate-500 transition-colors duration-700 delay-100 ease-out group-hover:text-slate-300">
+                        After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
+                    </p>
+                </div>
             </div>
 
             <!-- Minimalist Metrics Strip -->
@@ -389,35 +388,29 @@
         <!-- Bento Grid Section -->
         <main class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
 
-            <!-- NOVA Observatory Card (Flashcard Flippable) -->
-            <article data-card-cat="webgl" data-tilt="0.75" class="hud-card group md:col-span-2 bg-transparent border-none rounded-2xl overflow-hidden shadow-2xl flex flex-col h-auto min-h-[400px]">
-                
+            <!-- NOVA Observatory Card (Flippable) -->
+            <article data-card-cat="webgl" data-tilt="0.75" data-card-id="nova" class="hud-card flippable-card group md:col-span-2 rounded-2xl shadow-2xl">
+                <div class="hud-corner hud-tl"></div>
+                <div class="hud-corner hud-tr"></div>
+                <div class="hud-corner hud-bl"></div>
+                <div class="hud-corner hud-br"></div>
+
                 <div class="glass-content">
-                    <div class="brand-tab"></div>
-                    <div class="hud-corner hud-tl"></div>
-                    <div class="hud-corner hud-tr"></div>
-                    <div class="hud-corner hud-bl"></div>
-                    <div class="hud-corner hud-br"></div>
-                    <div class="card-flipper" onclick="this.closest('.hud-card').classList.toggle('is-flipped')">
+                    <div class="card-flipper">
                         
-                        <!-- FRONT OF CARD -->
-                        <div class="card-front border border-slate-800/90 backdrop-blur-md">
-                            
-                            <!-- Header Bar: Window Title & Controls -->
-                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800/80 bg-slate-950/80 shrink-0">
-                                <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                                    NOVA Observatory
-                                </h2>
-                                <div class="flex items-center gap-2">
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden shrink-0">
+                        <!-- FRONT OF NOVA CARD -->
+                        <div class="card-front">
+                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
                                 <div class="hud-scanline"></div>
+
+                                <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                        THREE.JS + FASTAPI // 60FPS WEBGL
+                                    </span>
+                                    <span class="text-slate-400 hidden sm:inline">CLICK PANEL TO INSPECT SOURCE</span>
+                                </div>
+
                                 <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
                                     <source src="SR10.mp4" type="video/mp4">
                                 </video>
@@ -425,52 +418,69 @@
                                     <source src="SR12.mp4" type="video/mp4">
                                 </video>
                             </div>
-                            
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow bg-slate-900/65 rounded-b-2xl">
+
+                            <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                <div class="flex items-baseline justify-between gap-2 mb-3">
+                                    <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
+                                    <span class="text-[10px] font-mono text-slate-500 group-hover:text-teal-400/80 transition">[FLIP ↻]</span>
+                                </div>
+
                                 <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
                                     Interactive 3D cosmic map featuring procedural shaders, planetary tiers, orbital mechanics, and automated guided tours powered by FastAPI and Three.js.
                                 </p>
-                                
-                                <div class="flex flex-wrap items-center justify-between gap-4 mt-auto pt-4 border-t border-slate-800/80">
-                                    
-                                    <!-- Marquee Terminal Pill -->
-                                    <div class="flex items-center font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md shadow-sm overflow-hidden w-48 sm:w-64">
-                                        <span class="text-slate-500 select-none mr-2 shrink-0">&gt;</span>
-                                        <div class="marquee-container">
-                                            <div class="marquee-content shrink-0">
-                                                // TYPE: Full-Stack 3D // STACK: Three.js · FastAPI // SKILLS: Procedural Shaders · Orbital Mechanics &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TYPE: Full-Stack 3D // STACK: Three.js · FastAPI // SKILLS: Procedural Shaders · Orbital Mechanics
-                                            </div>
-                                        </div>
+
+                                <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                    <!-- Animated Typewriter Pill -->
+                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                                        <span class="text-slate-500 select-none">&gt;</span>
+                                        <span class="typewriter-fx text-teal-300" data-phrases='["Project: Full-Stack 3D", "Stack: Three.js · FastAPI", "Skill: Procedural Shaders", "Skill: Orbital Mechanics"]'></span>
+                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                     </div>
-                                    
-                                    <div class="flex gap-4 sm:gap-6 ml-auto z-50 text-xs font-mono">
-                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" onclick="event.stopPropagation()" class="interactive px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold flex items-center gap-1.5 transition shadow-sm">
+
+                                    <!-- Minimalist Footer-Style Links -->
+                                    <div class="flex items-center gap-6 ml-auto">
+                                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive text-slate-300 hover:text-teal-400 transition flex items-center gap-1 py-1">
                                             Live App <span>↗</span>
                                         </a>
-                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" onclick="event.stopPropagation()" class="interactive text-slate-400 hover:text-white transition flex items-center gap-1 py-1.5">
-                                            GitHub <span>&rarr;</span>
+                                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive text-slate-400 hover:text-teal-400 transition flex items-center gap-1 py-1">
+                                            GitHub Repo <span>&rarr;</span>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- BACK OF CARD (LIVE CODE TYPER) -->
-                        <div class="card-back p-6 sm:p-10 flex flex-col justify-center items-center text-left">
-                            <div class="w-full max-w-3xl">
-                                <div class="font-mono text-xs text-fuchsia-400 mb-4 flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-fuchsia-400 rounded-full animate-ping"></span>
-                                    >> LIVE_SYSTEM_PREVIEW :: SHADER_INITIALIZATION
+                        <!-- BACK OF NOVA CARD (LIVE RUNNING NEON CODE & METRICS) -->
+                        <div class="card-back p-6 sm:p-8">
+                            <div class="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 font-mono text-xs">
+                                <span class="text-teal-400 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                                    nova_shader_pipeline.js // LIVE_EXECUTION
+                                </span>
+                                <span class="text-slate-400 text-[11px]">[CLICK TO RETURN ↺]</span>
+                            </div>
+
+                            <!-- Live Neon Code Stream -->
+                            <div class="bg-slate-950/90 border border-slate-800/90 rounded-xl p-4 sm:p-5 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex-grow flex items-center shadow-inner">
+                                <pre class="w-full whitespace-pre-wrap break-words"><code id="code-stream-nova"></code><span class="live-code-cursor"></span></pre>
+                            </div>
+
+                            <!-- Telemetry & Debug Metrics Strip -->
+                            <div class="grid grid-cols-4 gap-3 pt-4 mt-4 border-t border-slate-800/80 font-mono">
+                                <div>
+                                    <div class="text-[10px] text-slate-500">LINES OF CODE</div>
+                                    <div class="text-sm sm:text-base font-bold text-white">4,280 <span class="text-[10px] text-teal-400 font-normal">LOC</span></div>
                                 </div>
-                                
-                                <!-- Typing Container -->
-                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/90 p-5 sm:p-6 font-mono text-[10px] sm:text-xs leading-loose shadow-inner w-full min-h-[160px]">
-                                    <div class="code-typer-fx text-white" data-delay="30" data-code="const initStarField = (count, variance) => {&#10;  const geometry = new THREE.BufferGeometry();&#10;  const positions = new Float32Array(count * 3);&#10;  for(let i=0; i<count*3; i+=3) {&#10;    positions[i] = (Math.random()-0.5) * variance;&#10;    positions[i+1] = (Math.random()-0.5) * variance;&#10;    positions[i+2] = (Math.random()-0.5) * variance;&#10;  }&#10;  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));&#10;  return new THREE.Points(geometry, starMaterial);&#10;};"></div>
+                                <div class="border-l border-slate-800/80 pl-3">
+                                    <div class="text-[10px] text-slate-500">DEBUG CYCLES</div>
+                                    <div class="text-sm sm:text-base font-bold text-purple-400">142 <span class="text-[10px] text-slate-400 font-normal">runs</span></div>
                                 </div>
-                                
-                                <div class="mt-4 flex justify-between items-center w-full px-2 text-[10px] font-mono">
-                                    <span class="text-slate-500">Run Count: <span class="text-white font-bold">1,824</span></span>
-                                    <span class="text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
+                                <div class="border-l border-slate-800/80 pl-3">
+                                    <div class="text-[10px] text-slate-500">SHADER PASSES</div>
+                                    <div class="text-sm sm:text-base font-bold text-emerald-400">60.0 <span class="text-[10px] text-slate-400 font-normal">fps</span></div>
+                                </div>
+                                <div class="border-l border-slate-800/80 pl-3 flex items-center justify-end gap-4 text-xs">
+                                    <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive text-slate-300 hover:text-teal-400 transition">Live App ↗</a>
                                 </div>
                             </div>
                         </div>
@@ -479,60 +489,56 @@
                 </div>
             </article>
             
-            <!-- Urban Heat Explorer Card (Flashcard Flippable) -->
-            <article data-card-cat="geo" data-tilt="0.95" class="hud-card group bg-transparent border-none rounded-2xl overflow-hidden flex flex-col h-auto min-h-[420px]">
-                
-                <div class="glass-content">
-                    <div class="brand-tab"></div>
-                    <div class="hud-corner hud-tl"></div>
-                    <div class="hud-corner hud-tr"></div>
-                    <div class="hud-corner hud-bl"></div>
-                    <div class="hud-corner hud-br"></div>
-                    <div class="card-flipper" onclick="this.closest('.hud-card').classList.toggle('is-flipped')">
+            <!-- Urban Heat Explorer Card (Flippable) -->
+            <article data-card-cat="geo" data-tilt="0.95" data-card-id="heat" class="hud-card flippable-card group rounded-2xl shadow-2xl">
+                <div class="hud-corner hud-tl"></div>
+                <div class="hud-corner hud-tr"></div>
+                <div class="hud-corner hud-bl"></div>
+                <div class="hud-corner hud-br"></div>
 
-                        <!-- FRONT OF CARD -->
-                        <div class="card-front border border-slate-800/90 backdrop-blur-md">
-                            
-                            <!-- Header Bar: Window Title & Controls -->
-                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800/80 bg-slate-950/80 shrink-0">
-                                <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                                    Urban Heat Explorer
-                                </h2>
-                                <div class="flex items-center gap-2">
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center shrink-0">
+                <div class="glass-content">
+                    <div class="card-flipper">
+
+                        <!-- FRONT OF URBAN HEAT CARD -->
+                        <div class="card-front">
+                            <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video overflow-hidden flex items-center justify-center">
                                 <div class="hud-scanline"></div>
+
+                                <div class="hud-telemetry-bar absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-2.5 py-1 rounded backdrop-blur-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                        LANDSAT 8/9 L2
+                                    </span>
+                                    <span class="text-slate-400">BAND 10 · 30m RES</span>
+                                </div>
+
                                 <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
                             </div>
-                            
-                            <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow bg-slate-900/65 rounded-b-2xl">
+
+                            <div class="relative z-10 p-6 sm:p-7 flex flex-col flex-grow">
+                                <div class="flex items-baseline justify-between gap-2 mb-3">
+                                    <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                    <span class="text-[10px] font-mono text-slate-500 group-hover:text-teal-400/80 transition">[FLIP ↻]</span>
+                                </div>
+
                                 <p class="text-sm text-slate-300 leading-relaxed mb-6">
                                     Processes Landsat 8/9 thermal bands to map land surface temperature, NDVI, and urban heat islands across metropolitan biomes.
                                 </p>
-                                
+
                                 <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                    
-                                    <!-- Marquee Terminal Pill -->
-                                    <div class="flex items-center font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md shadow-sm overflow-hidden w-48 sm:w-56">
-                                        <span class="text-slate-500 select-none mr-2 shrink-0">&gt;</span>
-                                        <div class="marquee-container">
-                                            <div class="marquee-content shrink-0">
-                                                // TYPE: Geospatial // STACK: Python · Rasterio · Folium // SKILLS: Thermal Mapping · LST &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TYPE: Geospatial // STACK: Python · Rasterio · Folium // SKILLS: Thermal Mapping · LST
-                                            </div>
-                                        </div>
+                                    <!-- Animated Typewriter Pill -->
+                                    <div class="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] text-teal-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-1.5 rounded-md w-fit shadow-sm">
+                                        <span class="text-slate-500 select-none">&gt;</span>
+                                        <span class="typewriter-fx text-teal-300" data-phrases='["Project: Geospatial Analysis", "Stack: Python · Rasterio", "Stack: Folium · Streamlit", "Skill: Thermal Mapping"]'></span>
+                                        <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                     </div>
-                                    
-                                    <div class="flex items-center gap-3 ml-auto z-50">
-                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" onclick="event.stopPropagation()" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 font-semibold transition shadow-sm">
+
+                                    <!-- Minimalist Footer-Style Links -->
+                                    <div class="flex items-center gap-4 ml-auto">
+                                        <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive text-slate-300 hover:text-teal-400 transition">
                                             Demo ↗
                                         </a>
-                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" onclick="event.stopPropagation()" class="interactive text-slate-400 hover:text-white transition">
+                                        <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive text-slate-400 hover:text-teal-400 transition">
                                             Code &rarr;
                                         </a>
                                     </div>
@@ -540,21 +546,34 @@
                             </div>
                         </div>
 
-                        <!-- BACK OF CARD (LIVE CODE TYPER) -->
-                        <div class="card-back p-6 flex flex-col justify-center items-center text-left">
-                            <div class="w-full">
-                                <div class="font-mono text-xs text-fuchsia-400 mb-4 flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-fuchsia-400 rounded-full animate-ping"></span>
-                                    >> LIVE_SYSTEM_PREVIEW :: SPECTRAL_CALCULATION
+                        <!-- BACK OF URBAN HEAT CARD (LIVE RUNNING NEON CODE & METRICS) -->
+                        <div class="card-back p-6 sm:p-7">
+                            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5 mb-3 font-mono text-[11px]">
+                                <span class="text-teal-400 flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                    lst_calibration.py
+                                </span>
+                                <span class="text-slate-400 text-[10px]">[RETURN ↺]</span>
+                            </div>
+
+                            <!-- Live Neon Code Stream -->
+                            <div class="bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 font-mono text-[10px] sm:text-[11px] leading-relaxed overflow-hidden flex-grow flex items-center shadow-inner">
+                                <pre class="w-full whitespace-pre-wrap break-words"><code id="code-stream-heat"></code><span class="live-code-cursor"></span></pre>
+                            </div>
+
+                            <!-- Telemetry & Debug Metrics Strip -->
+                            <div class="grid grid-cols-3 gap-2 pt-3 mt-3 border-t border-slate-800/80 font-mono">
+                                <div>
+                                    <div class="text-[9px] text-slate-500">CODEBASE</div>
+                                    <div class="text-xs sm:text-sm font-bold text-white">1,840 <span class="text-[9px] text-teal-400 font-normal">LOC</span></div>
                                 </div>
-                                
-                                <div class="border border-slate-700/50 rounded-xl bg-slate-950/90 p-5 font-mono text-[10px] sm:text-xs leading-loose shadow-inner w-full min-h-[160px]">
-                                    <div class="code-typer-fx text-white" data-delay="45" data-code="def calculate_lst(band10, ndvi):&#10;    # Calculate fractional vegetation&#10;    fv = ((ndvi - ndvi.min()) / (ndvi.max() - ndvi.min())) ** 2&#10;    &#10;    # Emissivity correction&#10;    emissivity = 0.004 * fv + 0.986&#10;    &#10;    # Thermal radiance to Celsius pipeline&#10;    lst_celsius = (band10 / (1 + (0.00115 * band10 / 1.4388) * np.log(emissivity))) - 273.15&#10;    &#10;    return lst_celsius"></div>
+                                <div class="border-l border-slate-800/80 pl-2.5">
+                                    <div class="text-[9px] text-slate-500">DEBUGGED</div>
+                                    <div class="text-xs sm:text-sm font-bold text-purple-400">89 <span class="text-[9px] text-slate-400 font-normal">fixes</span></div>
                                 </div>
-                                
-                                <div class="mt-4 flex justify-between items-center w-full px-2 text-[10px] font-mono">
-                                    <span class="text-slate-500">Transform Ops: <span class="text-white font-bold">42.5M/sec</span></span>
-                                    <span class="text-slate-500 border border-slate-700/50 px-3 py-1 rounded bg-slate-900/50">Click anywhere to return to frontend</span>
+                                <div class="border-l border-slate-800/80 pl-2.5">
+                                    <div class="text-[9px] text-slate-500">SCENES QA'D</div>
+                                    <div class="text-xs sm:text-sm font-bold text-emerald-400">310+</div>
                                 </div>
                             </div>
                         </div>
@@ -569,7 +588,6 @@
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
-                <div class="brand-tab" style="left: auto; right: 24px;"></div>
 
                 <div class="glass-content relative z-10 flex flex-col h-full">
                     <div class="flex items-center justify-between gap-2 mb-3">
@@ -613,7 +631,6 @@
                 <div class="hud-corner hud-tr"></div>
                 <div class="hud-corner hud-bl"></div>
                 <div class="hud-corner hud-br"></div>
-                <div class="brand-tab" style="left: auto; right: 24px;"></div>
 
                 <div class="glass-content relative z-10">
                     <div class="flex items-baseline justify-between mb-4 pb-3 border-b border-slate-800/80">
@@ -917,54 +934,115 @@
     const floatingPills = Array.from(document.querySelectorAll('.skill-chip, .domain-pill'));
     const waveChars = Array.from(document.querySelectorAll('.wave-char'));
 
-    const cardState = new Map();
-    
-    // Add flip listener and logic to trigger code typer on flip
-    hudCards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        if(e.target.closest('a') || e.target.closest('button')) return;
-        
-        card.classList.toggle('is-flipped');
-        
-        // If flipping to back, trigger the live code typing effect
-        if(card.classList.contains('is-flipped')) {
-            const typer = card.querySelector('.code-typer-fx');
-            if(typer && !typer.dataset.isTyping) {
-                typer.dataset.isTyping = "true";
-                typer.innerHTML = '<span class="code-cursor">_</span>';
-                
-                const codeText = typer.dataset.code;
-                const speed = parseInt(typer.dataset.delay) || 25;
-                let charIdx = 0;
-                
-                function typeCode() {
-                    if(charIdx < codeText.length) {
-                        let chunk = codeText.charAt(charIdx);
-                        if(chunk === '\n') chunk = '<br>';
-                        if(chunk === ' ') chunk = '&nbsp;';
-                        
-                        // Replace cursor with char + cursor
-                        typer.innerHTML = typer.innerHTML.slice(0, -33) + chunk + '<span class="code-cursor">_</span>';
-                        charIdx++;
-                        setTimeout(typeCode, speed + Math.random() * 20);
-                    } else {
-                        // Finish typing, leave cursor blinking
-                        typer.dataset.isTyping = "false";
-                    }
-                }
-                // Small delay before typing starts to let flip animation begin
-                setTimeout(typeCode, 400); 
-            }
-        } else {
-            // Reset typer when flipped back to front
-            const typer = card.querySelector('.code-typer-fx');
-            if(typer) {
-                typer.dataset.isTyping = "false";
-                typer.innerHTML = '';
-            }
+    // Syntax-Highlighted Neon Code Tokens for Card Backs
+    const codeSnippets = {
+      nova: [
+        { text: "// Initialize 60fps WebGL Starfield & Orbital Shaders\n", cls: "text-slate-500" },
+        { text: "const ", cls: "text-purple-400 font-semibold" },
+        { text: "buildCosmicMesh ", cls: "text-teal-300" },
+        { text: "= (", cls: "text-white" },
+        { text: "nodes", cls: "text-amber-300" },
+        { text: ", ", cls: "text-white" },
+        { text: "radius", cls: "text-amber-300" },
+        { text: ") => {\n  ", cls: "text-white" },
+        { text: "const ", cls: "text-purple-400 font-semibold" },
+        { text: "geo = ", cls: "text-white" },
+        { text: "new ", cls: "text-purple-400" },
+        { text: "THREE.BufferGeometry();\n  ", cls: "text-teal-300" },
+        { text: "const ", cls: "text-purple-400 font-semibold" },
+        { text: "pos = ", cls: "text-white" },
+        { text: "new ", cls: "text-purple-400" },
+        { text: "Float32Array(nodes * ", cls: "text-teal-300" },
+        { text: "3", cls: "text-emerald-400" },
+        { text: ");\n  ", cls: "text-white" },
+        { text: "await ", cls: "text-purple-400 font-semibold" },
+        { text: "fastApiClient.syncTelemetry(", cls: "text-teal-300" },
+        { text: "'/ephemeris/v2'", cls: "text-emerald-400" },
+        { text: ");\n  ", cls: "text-white" },
+        { text: "return new ", cls: "text-purple-400 font-semibold" },
+        { text: "THREE.Points(geo, customShaderMat);\n};", cls: "text-white" }
+      ],
+      heat: [
+        { text: "# Calibrate Landsat 8/9 Band 10 Thermal Surface Temp\n", cls: "text-slate-500" },
+        { text: "def ", cls: "text-purple-400 font-semibold" },
+        { text: "compute_urban_lst", cls: "text-teal-300" },
+        { text: "(band10, nir, red):\n    ", cls: "text-white" },
+        { text: "ndvi = (nir - red) / (nir + red + ", cls: "text-white" },
+        { text: "1e-6", cls: "text-emerald-400" },
+        { text: ")\n    ", cls: "text-white" },
+        { text: "pv = ((ndvi - ndvi.min()) / ndvi.ptp()) ** ", cls: "text-white" },
+        { text: "2\n    ", cls: "text-emerald-400" },
+        { text: "emissivity = ", cls: "text-white" },
+        { text: "0.004 ", cls: "text-emerald-400" },
+        { text: "* pv + ", cls: "text-white" },
+        { text: "0.986\n    ", cls: "text-emerald-400" },
+        { text: "lst_c = (band10 / (", cls: "text-white" },
+        { text: "1 ", cls: "text-emerald-400" },
+        { text: "+ (", cls: "text-white" },
+        { text: "10.8e-6 ", cls: "text-teal-300" },
+        { text: "* band10 / ", cls: "text-white" },
+        { text: "1.438e-2", cls: "text-teal-300" },
+        { text: ") * np.log(emissivity))) - ", cls: "text-white" },
+        { text: "273.15\n    ", cls: "text-emerald-400" },
+        { text: "return ", cls: "text-purple-400 font-semibold" },
+        { text: "lst_c", cls: "text-teal-300" }
+      ]
+    };
+
+    const activeCodeTimers = {};
+
+    function startLiveCodeStream(cardId, targetElId) {
+      const el = document.getElementById(targetElId);
+      if (!el) return;
+      if (activeCodeTimers[cardId]) clearTimeout(activeCodeTimers[cardId]);
+
+      const tokens = codeSnippets[cardId];
+      el.innerHTML = '';
+      let tIdx = 0, cIdx = 0;
+      let currentSpan = null;
+
+      function step() {
+        if (tIdx >= tokens.length) {
+          // Pause, then loop the live code typing so it's always "running"
+          activeCodeTimers[cardId] = setTimeout(() => startLiveCodeStream(cardId, targetElId), 3200);
+          return;
         }
-      });
-      
+        const token = tokens[tIdx];
+        if (cIdx === 0) {
+          currentSpan = document.createElement('span');
+          currentSpan.className = token.cls;
+          el.appendChild(currentSpan);
+        }
+        currentSpan.textContent += token.text.charAt(cIdx);
+        cIdx++;
+        if (cIdx >= token.text.length) {
+          tIdx++;
+          cIdx = 0;
+        }
+        activeCodeTimers[cardId] = setTimeout(step, 14 + Math.random() * 18);
+      }
+
+      activeCodeTimers[cardId] = setTimeout(step, 350);
+    }
+
+    const cardState = new Map();
+
+    hudCards.forEach(card => {
+      // Single clean click listener for flippable project cards
+      if (card.classList.contains('flippable-card')) {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('a') || e.target.closest('button')) return;
+          card.classList.toggle('is-flipped');
+
+          const cardId = card.getAttribute('data-card-id');
+          if (card.classList.contains('is-flipped')) {
+            startLiveCodeStream(cardId, `code-stream-${cardId}`);
+          } else if (activeCodeTimers[cardId]) {
+            clearTimeout(activeCodeTimers[cardId]);
+          }
+        });
+      }
+
       cardState.set(card, {
         hoverRx: 0, hoverRy: 0, isHovered: false,
         curX: 0, curY: 0, curZ: 0, curRx: 0, curRy: 0, curSkewX: 0, curSkewY: 0
@@ -1168,13 +1246,14 @@
         const waveEnergy = Math.max(0, Math.min(1, (Math.abs(hCenter) + Math.abs(twistDelta) * 0.45) / 3.2));
         card.style.setProperty('--wave-glow', (waveEnergy * 0.8).toFixed(2));
 
+        const frontFace = card.querySelector('.card-front') || card;
         if (!state.isHovered && !card.classList.contains('card-filtered-active')) {
           const borderAlpha = 0.14 + waveEnergy * 0.42;
           const shadowAlpha = waveEnergy * 0.10;
-          card.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
+          frontFace.style.borderColor = `rgba(45, 212, 191, ${borderAlpha.toFixed(3)})`;
           card.style.boxShadow = `0 20px 50px rgba(45, 212, 191, ${shadowAlpha.toFixed(3)})`;
         } else if (state.isHovered) {
-          card.style.borderColor = 'rgba(45, 212, 191, 0.6)';
+          frontFace.style.borderColor = 'rgba(45, 212, 191, 0.6)';
           card.style.boxShadow = '0 22px 55px rgba(45, 212, 191, 0.14)';
         }
       });
@@ -1313,7 +1392,7 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT -->
+<!-- DYNAMIC FAVICON SCRIPT (Cyan to Dark Gray Blink) -->
 <script>
   (function() {
     const linkTag = document.getElementById('dynamic-favicon');
@@ -1332,7 +1411,7 @@
 
     baseImage.onload = function() {
       function animateFavicon() {
-        time += 0.18; 
+        time += 0.18;
 
         ctx.clearRect(0, 0, 64, 64);
         ctx.drawImage(baseImage, 0, 0, 64, 64);
@@ -1370,9 +1449,10 @@
   })();
 </script>
 
-<!-- UNIFIED TYPEWRITER & KPI COUNTER SCRIPT -->
+<!-- UNIFIED TYPEWRITER, KPI COUNTER & TERMINAL LOG SCRIPT -->
 <script>
   (function() {
+    // 1. Unified Typewriter Engine
     const typewriters = document.querySelectorAll('.typewriter-fx');
     typewriters.forEach(tw => {
       try {
@@ -1407,6 +1487,7 @@
       }
     });
 
+    // 2. KPI Counters
     const counters = document.querySelectorAll('.kpi-counter');
     counters.forEach(counter => {
       const target = +counter.getAttribute('data-target');
@@ -1427,66 +1508,336 @@
       }
       requestAnimationFrame(updateCounter);
     });
+
+    // 3. Interactive Terminal Log Engine (For Architecture Section)
+    window.__typewriterTimeouts = window.__typewriterTimeouts || {};
+
+    window.playTerminalLog = function(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        if (window.__typewriterTimeouts[containerId]) {
+            window.__typewriterTimeouts[containerId].forEach(clearTimeout);
+        }
+        window.__typewriterTimeouts[containerId] = [];
+
+        const nodes = container.querySelectorAll('.term-log');
+        
+        nodes.forEach(node => {
+            if (node.dataset.orig === undefined) {
+                node.dataset.orig = node.textContent;
+            }
+            node.textContent = ''; 
+            node.classList.remove('typing-done', 'is-typing');
+        });
+
+        let currentDelay = 0;
+
+        nodes.forEach((node) => {
+            const text = node.dataset.orig;
+            
+            const tId = setTimeout(() => {
+                node.classList.add('is-typing');
+                let charIdx = 0;
+                
+                function typeChar() {
+                    if (charIdx < text.length) {
+                        node.textContent += text.charAt(charIdx);
+                        charIdx++;
+                        const nextTid = setTimeout(typeChar, 8 + Math.random() * 12);
+                        window.__typewriterTimeouts[containerId].push(nextTid);
+                    } else {
+                        node.classList.remove('is-typing');
+                        node.classList.add('typing-done');
+                    }
+                }
+                typeChar();
+            }, currentDelay);
+            
+            window.__typewriterTimeouts[containerId].push(tId);
+            currentDelay += 50 + (text.length * 10); 
+        });
+    };
+
+    setTimeout(() => {
+        const p1 = document.getElementById('p1-body');
+        if (p1 && !p1.classList.contains('hidden')) {
+            window.playTerminalLog('p1-body');
+        }
+    }, 600);
   })();
 </script>
 
-<!-- INTERACTIVE TERMINAL LOG ENGINE -->
+<!-- 3D GRAPH + TOGGLEABLE FILTERS + PROJECT INDEX -->
 <script>
-  window.__typewriterTimeouts = window.__typewriterTimeouts || {};
+  (function() {
+    const canvas = document.getElementById('constellation-canvas');
+    let activeGraphFilter = 'all';
 
-  window.playTerminalLog = function(containerId) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      
-      if (window.__typewriterTimeouts[containerId]) {
-          window.__typewriterTimeouts[containerId].forEach(clearTimeout);
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+
+      const nodes = [
+        { id: 'core', label: 'Daniel Perez', group: 'core', x: 0, y: 0, z: 0, radius: 6.5, metric: 'Core Stack', desc: 'Applied AI evaluation, satellite remote sensing, and 3D web tools.' },
+        { id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -105, y: -50, z: 50, radius: 5, metric: 'Credential', desc: 'Prompt engineering, structured schemas, and AI Studio workflows.' },
+        { id: 'chromadb', label: 'ChromaDB', group: 'ai', x: -115, y: 45, z: -35, radius: 4.8, metric: 'Vector DB', desc: 'Embeddings, semantic retrieval, and RAG evaluation.' },
+        { id: 'qa_acc', label: 'LLM Evaluation', group: 'ai', x: -45, y: 75, z: 55, radius: 4.8, metric: '4+ Yrs · 99% QA', desc: 'Multimodal dataset auditing and high-precision annotation.' },
+        { id: 'nasa', label: 'NASA ARSET', group: 'geo', x: 105, y: -55, z: 45, radius: 5, metric: 'Credential', desc: 'Remote sensing fundamentals, spectral bands, and Earth observation.' },
+        { id: 'rasterio', label: 'Rasterio · Python', group: 'geo', x: 120, y: 40, z: -40, radius: 5, metric: 'Geospatial', desc: 'GeoTIFF reprojection, STAC queries, and thermal calibration.' },
+        { id: 'folium', label: 'Folium · Streamlit', group: 'geo', x: 50, y: 80, z: 50, radius: 4.5, metric: 'Mapping', desc: 'Interactive browser map layers and spatial dashboards.' },
+        { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', x: 35, y: -80, z: -55, radius: 5, metric: '3D Graphics', desc: 'Custom shaders, particle systems, and 3D scene graphs.' },
+        { id: 'fastapi', label: 'FastAPI', group: 'webgl', x: -45, y: -80, z: -45, radius: 4.5, metric: 'Backend', desc: 'Asynchronous Python REST APIs for interactive web apps.' }
+      ];
+
+      const edges = [
+        ['core', 'google_ai'], ['core', 'chromadb'], ['core', 'qa_acc'],
+        ['core', 'nasa'], ['core', 'rasterio'], ['core', 'folium'],
+        ['core', 'webgl'], ['core', 'fastapi'],
+        ['google_ai', 'chromadb'], ['nasa', 'rasterio'], ['rasterio', 'folium'], ['webgl', 'fastapi']
+      ];
+
+      let lockedNode = nodes[0];
+      let hoveredNode = null;
+      let rotY = 0.25, rotX = 0.15, targetRotY = 0.25, targetRotX = 0.15;
+      let isPointerInside = false, pointerX = -999, pointerY = -999;
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
-      window.__typewriterTimeouts[containerId] = [];
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
 
-      const nodes = container.querySelectorAll('.term-log');
-      
-      nodes.forEach(node => {
-          if (node.dataset.orig === undefined) {
-              node.dataset.orig = node.textContent;
+      function updateInspector(node) {
+        if (!node) return;
+        document.getElementById('inspector-title').textContent = node.label;
+        document.getElementById('inspector-metric').textContent = node.metric;
+        document.getElementById('inspector-desc').textContent = node.desc;
+      }
+
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        isPointerInside = true;
+        pointerX = e.clientX - rect.left;
+        pointerY = e.clientY - rect.top;
+        targetRotY = ((pointerX / rect.width) - 0.5) * 1.5;
+        targetRotX = -((pointerY / rect.height) - 0.5) * 1.0;
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        isPointerInside = false;
+        pointerX = -999;
+        pointerY = -999;
+        hoveredNode = null;
+        updateInspector(lockedNode);
+      });
+
+      canvas.addEventListener('click', () => {
+        if (hoveredNode) {
+          lockedNode = hoveredNode;
+          updateInspector(lockedNode);
+        }
+      });
+
+      window.setConstellationFilter = function(filter) {
+        activeGraphFilter = (activeGraphFilter === filter) ? 'all' : filter;
+
+        ['ai', 'geo', 'webgl'].forEach(k => {
+          const btn = document.getElementById(`net-filter-${k}`);
+          if (!btn) return;
+          if (k === activeGraphFilter) {
+            btn.className = "interactive px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-semibold transition";
+          } else {
+            btn.className = "interactive px-2 py-0.5 rounded text-slate-400 hover:text-white transition";
           }
-          node.textContent = ''; 
-          node.classList.remove('typing-done', 'is-typing');
-      });
+        });
 
-      let currentDelay = 0;
+        const match = nodes.find(n => n.group === activeGraphFilter);
+        lockedNode = match || nodes[0];
+        updateInspector(lockedNode);
+      };
 
-      nodes.forEach((node) => {
-          const text = node.dataset.orig;
-          
-          const tId = setTimeout(() => {
-              node.classList.add('is-typing');
-              let charIdx = 0;
-              
-              function typeChar() {
-                  if (charIdx < text.length) {
-                      node.textContent += text.charAt(charIdx);
-                      charIdx++;
-                      const nextTid = setTimeout(typeChar, 8 + Math.random() * 12);
-                      window.__typewriterTimeouts[containerId].push(nextTid);
-                  } else {
-                      node.classList.remove('is-typing');
-                      node.classList.add('typing-done');
-                  }
-              }
-              typeChar();
-          }, currentDelay);
-          
-          window.__typewriterTimeouts[containerId].push(tId);
-          currentDelay += 50 + (text.length * 10); 
-      });
-  };
+      function renderConstellation() {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width, h = rect.height;
+        ctx.clearRect(0, 0, w, h);
 
-  setTimeout(() => {
-      const p1 = document.getElementById('p1-body');
-      if (p1 && !p1.classList.contains('hidden')) {
-          window.playTerminalLog('p1-body');
+        const cx = w / 2, cy = h / 2;
+
+        if (!isPointerInside) {
+          targetRotY += 0.0028;
+          targetRotX = Math.sin(Date.now() * 0.0006) * 0.15;
+        }
+        rotY += (targetRotY - rotY) * 0.08;
+        rotX += (targetRotX - rotX) * 0.08;
+
+        const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        const fov = 300;
+
+        const projected = {};
+        nodes.forEach(n => {
+          const x1 = n.x * cosY - n.z * sinY;
+          const z1 = n.z * cosY + n.x * sinY;
+          const y2 = n.y * cosX - z1 * sinX;
+          const z2 = z1 * cosX + n.y * sinX;
+
+          const scale = fov / (fov + z2 + 170);
+          const isMatch = activeGraphFilter === 'all' || n.group === 'core' || n.group === activeGraphFilter;
+
+          projected[n.id] = {
+            node: n,
+            px: cx + x1 * scale,
+            py: cy + y2 * scale,
+            z: z2,
+            scale,
+            alpha: isMatch ? Math.max(0.3, Math.min(1, (scale - 0.45) * 1.6)) : 0.1
+          };
+        });
+
+        let nextHover = null, minDist = 24;
+        Object.values(projected).forEach(p => {
+          const d = Math.hypot(pointerX - p.px, pointerY - p.py);
+          if (d < minDist) {
+            minDist = d;
+            nextHover = p.node;
+          }
+        });
+        if (nextHover !== hoveredNode) {
+          hoveredNode = nextHover;
+          updateInspector(hoveredNode || lockedNode);
+        }
+
+        edges.forEach(pair => {
+          const p1 = projected[pair[0]], p2 = projected[pair[1]];
+          const a = Math.min(p1.alpha, p2.alpha) * 0.38;
+          ctx.beginPath();
+          ctx.moveTo(p1.px, p1.py);
+          ctx.lineTo(p2.px, p2.py);
+          ctx.strokeStyle = `rgba(45, 212, 191, ${a})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+
+        Object.values(projected).sort((a, b) => b.z - a.z).forEach(p => {
+          const n = p.node;
+          const isFocus = (lockedNode && lockedNode.id === n.id) || (hoveredNode && hoveredNode.id === n.id);
+          const r = n.radius * p.scale * (isFocus ? 1.25 : 1);
+
+          if (isFocus) {
+            ctx.beginPath();
+            ctx.arc(p.px, p.py, r + 6, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(45, 212, 191, 0.55)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.px, p.py, r, 0, Math.PI * 2);
+          ctx.fillStyle = n.group === 'core'
+            ? `rgba(255, 255, 255, ${p.alpha})`
+            : `rgba(45, 212, 191, ${p.alpha})`;
+          ctx.fill();
+
+          ctx.font = `${isFocus ? '600 ' : ''}10px "JetBrains Mono", monospace`;
+          ctx.fillStyle = isFocus
+            ? `rgba(255, 255, 255, ${Math.min(1, p.alpha + 0.3)})`
+            : `rgba(203, 213, 225, ${p.alpha * 0.85})`;
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, p.px, p.py - r - 5);
+        });
+
+        requestAnimationFrame(renderConstellation);
       }
-  }, 600);
+      renderConstellation();
+    }
+
+    // 2. Toggleable Domain Filter Buttons
+    let currentDomain = null;
+    window.applyPortfolioFilter = function(cat) {
+      currentDomain = (currentDomain === cat) ? null : cat;
+
+      document.querySelectorAll('[data-filter-btn]').forEach(btn => {
+        const bCat = btn.getAttribute('data-filter-btn');
+        if (bCat === currentDomain) {
+          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-teal-500/20 border border-teal-500/50 text-teal-300 font-semibold";
+        } else {
+          btn.className = "domain-pill interactive px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700";
+        }
+      });
+
+      document.querySelectorAll('[data-chip-cat]').forEach(chip => {
+        const cats = chip.getAttribute('data-chip-cat').split(' ');
+        chip.classList.remove('chip-active', 'chip-dim');
+        if (currentDomain) {
+          chip.classList.add(cats.includes(currentDomain) ? 'chip-active' : 'chip-dim');
+        }
+      });
+
+      document.querySelectorAll('[data-card-cat]').forEach(card => {
+        const cats = card.getAttribute('data-card-cat').split(' ');
+        card.classList.remove('card-filtered-dim', 'card-filtered-active');
+        if (currentDomain) {
+          card.classList.add(cats.includes(currentDomain) ? 'card-filtered-active' : 'card-filtered-dim');
+        }
+      });
+
+      if (window.setConstellationFilter) {
+        activeGraphFilter = currentDomain ? 'all' : activeGraphFilter;
+        window.setConstellationFilter(currentDomain || 'all');
+      }
+
+      if (currentDomain === 'webgl') window.toggleProjectRow('p1', true);
+      if (currentDomain === 'geo') window.toggleProjectRow('p2', true);
+    };
+
+    // 3. Minimalist Project Architecture Accordion
+    window.toggleProjectRow = function(id, forceOpen) {
+      const body = document.getElementById(`${id}-body`);
+      const icon = document.getElementById(`${id}-icon`);
+      if (!body || !icon) return;
+
+      const isHidden = body.classList.contains('hidden');
+      const open = forceOpen !== undefined ? forceOpen : isHidden;
+
+      body.classList.toggle('hidden', !open);
+      icon.innerHTML = open ? '&minus;' : '+';
+      icon.className = `font-mono text-xs w-4 text-right ${open ? 'text-teal-400' : 'text-slate-500'}`;
+
+      if (open) {
+          window.playTerminalLog(`${id}-body`);
+      }
+    };
+
+    const sparkCanvases = document.querySelectorAll('.sparkline-canvas');
+    let phase = 0;
+    function animateSparklines() {
+      phase += 0.08;
+      sparkCanvases.forEach((sc, idx) => {
+        const sCtx = sc.getContext('2d');
+        const w = sc.width = 64;
+        const h = sc.height = 20;
+        const freq = parseFloat(sc.getAttribute('data-freq')) || 0.12;
+        const amp = parseFloat(sc.getAttribute('data-amp')) || 6;
+
+        sCtx.clearRect(0, 0, w, h);
+        sCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const y = h / 2 + Math.sin(x * freq + phase + idx) * amp * Math.sin((x / w) * Math.PI);
+          if (x === 0) sCtx.moveTo(x, y);
+          else sCtx.lineTo(x, y);
+        }
+        sCtx.strokeStyle = '#2dd4bf';
+        sCtx.lineWidth = 1.2;
+        sCtx.stroke();
+      });
+      requestAnimationFrame(animateSparklines);
+    }
+    animateSparklines();
+  })();
 </script>
     
 </body>
