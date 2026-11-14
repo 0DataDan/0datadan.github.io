@@ -510,22 +510,11 @@
     border: 1.5px solid #2dd4bf;
     box-shadow: 0 0 16px 3px rgba(45, 212, 191, 0.55);
   }
-
-  #nova-trail-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none !important;
-    z-index: 99997;
-  }
 </style>
 
 <div id="mag-cursor-core"></div>
-<canvas id="nova-trail-canvas"></canvas>
 
-<!-- UNIFIED WAVE-UI COUPLING + 3D MAGNETIC PARTICLE ATTRACTION (Sparse, Smooth Pull) -->
+<!-- UNIFIED WAVE-UI COUPLING + 3D MAGNETIC BACKGROUND PARTICLE ATTRACTION -->
 <script>
   (function() {
     const container = document.getElementById('geospatial-canvas-container');
@@ -554,7 +543,7 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
-    // Floating Data Nodes with Sparse Magnetic Vectors
+    // Floating Data Nodes with Precise Sparse Magnetic Pull on Background Particles
     const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -562,6 +551,7 @@
     const particleSpeeds = new Float32Array(particleCount);
     const particleVelX = new Float32Array(particleCount);
     const particleVelY = new Float32Array(particleCount);
+    const particleVelZ = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
@@ -586,10 +576,10 @@
 
     const particleMat = new THREE.PointsMaterial({
       color: 0x2dd4bf,
-      size: 0.65,
+      size: 0.85,
       map: spriteTex,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.8,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
@@ -608,7 +598,7 @@
     window.addEventListener('mousemove', (e) => {
       const dx = e.clientX - pointerScreenX;
       const dy = e.clientY - pointerScreenY;
-      cursorSpeed = Math.min(Math.hypot(dx, dy), 45);
+      cursorSpeed = Math.min(Math.hypot(dx, dy), 50);
 
       pointerScreenX = e.clientX;
       pointerScreenY = e.clientY;
@@ -616,6 +606,12 @@
       pointerNormY = -(e.clientY / window.innerHeight - 0.5) * 2;
       mouseX = (e.clientX - window.innerWidth / 2) * 0.0008;
       mouseY = (e.clientY - window.innerHeight / 2) * 0.0008;
+
+      const coreEl = document.getElementById('mag-cursor-core');
+      if (coreEl) {
+        coreEl.style.left = `${e.clientX}px`;
+        coreEl.style.top = `${e.clientY}px`;
+      }
     });
 
     window.addEventListener('mousedown', (e) => {
@@ -627,6 +623,18 @@
         startTime: performance.now() * 0.001
       });
       if (clickWaves.length > 5) clickWaves.shift();
+    });
+
+    const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest(interactiveSelectors)) {
+        document.body.classList.add('mag-cursor-hover');
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest(interactiveSelectors)) {
+        document.body.classList.remove('mag-cursor-hover');
+      }
     });
 
     function sampleTerrainWave(wx, wy, t) {
@@ -738,39 +746,40 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // 2. Sparse & Heavy Magnetic Background Particle Physics (Pulls 3-4 distinct particles smoothly)
+      // 2. Sparse & Heavy Magnetic Pull on 3-4 Background Particles
       const cursorWX = pointerNormX * 24;
       const cursorWY = pointerNormY * 18;
-      const magnetRadius = 22.0; // Wider radius
+      const magnetRadius = 26.0; 
       const positions = particleGeo.attributes.position.array;
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         let px = positions[i3];
         let py = positions[i3 + 1];
+        let pz = positions[i3 + 2];
 
         const dx = cursorWX - px;
         const dy = cursorWY - py;
         const dist = Math.hypot(dx, dy);
 
-        if (dist < magnetRadius && dist > 0.4) {
-          // Heavier magnetic pull applied strictly to only ~3-4 nearby particles (using modulo index filtering)
-          if (i % 115 === 0) {
-            const pullStrength = Math.pow(1 - dist / magnetRadius, 2) * (0.095 + cursorSpeed * 0.003);
-            particleVelX[i] += (dx / dist) * pullStrength - (dy / dist) * pullStrength * 0.25;
-            particleVelY[i] += (dy / dist) * pullStrength + (dx / dist) * pullStrength * 0.25;
-            positions[i3 + 2] += (particleBaseZ[i] + 5.0 - positions[i3 + 2]) * 0.09;
-          }
+        // Select exactly 3-4 background particles in proximity using a modulo filter on index `i`
+        if (dist < magnetRadius && dist > 0.3 && (i % 107 === 0 || i % 139 === 0)) {
+          // Heavier, smooth magnetic attraction force
+          const pullStrength = Math.pow(1 - dist / magnetRadius, 1.8) * 0.22;
+          particleVelX[i] += (dx / dist) * pullStrength;
+          particleVelY[i] += (dy / dist) * pullStrength;
+          particleVelZ[i] += (particleBaseZ[i] + 4.5 - pz) * 0.08;
         } else {
-          // Smooth return spring-back to background baseline
-          positions[i3 + 2] += (particleBaseZ[i] - positions[i3 + 2]) * 0.025;
+          // Smooth return spring-back to background baseline position
+          particleVelX[i] *= 0.88;
+          particleVelY[i] *= 0.88;
+          particleVelZ[i] += (particleBaseZ[i] - pz) * 0.05;
+          particleVelZ[i] *= 0.85;
         }
-
-        particleVelX[i] *= 0.92;
-        particleVelY[i] *= 0.92;
 
         px += particleVelX[i];
         py += particleSpeeds[i] + particleVelY[i];
+        pz += particleVelZ[i];
 
         if (py > 35) py = -35;
         if (py < -35) py = 35;
@@ -779,6 +788,7 @@
 
         positions[i3]     = px;
         positions[i3 + 1] = py;
+        positions[i3 + 2] = pz;
       }
       particleGeo.attributes.position.needsUpdate = true;
 
@@ -884,129 +894,6 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
-  })();
-</script>
-
-<!-- FOREGROUND MAGNETIC SPARKLE TRAIL & CLICK RIPPLE SCRIPT -->
-<script>
-  (function() {
-    const core = document.getElementById('mag-cursor-core');
-    const canvas = document.getElementById('nova-trail-canvas');
-    const ctx = canvas.getContext('2d');
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    let mouse = { x: width / 2, y: height / 2, vx: 0, vy: 0 };
-    const sparks = [];
-
-    window.addEventListener('mousemove', (e) => {
-      mouse.vx = e.clientX - mouse.x;
-      mouse.vy = e.clientY - mouse.y;
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-
-      core.style.left = `${mouse.x}px`;
-      core.style.top = `${mouse.y}px`;
-
-      const speed = Math.hypot(mouse.vx, mouse.vy);
-      if (speed > 1.5 && sparks.length < 42) {
-        const angle = Math.random() * Math.PI * 2;
-        const spawnDist = 14 + Math.random() * 28;
-        sparks.push({
-          x: mouse.x + Math.cos(angle) * spawnDist,
-          y: mouse.y + Math.sin(angle) * spawnDist,
-          vx: -mouse.vx * 0.08 + (Math.random() - 0.5) * 0.8,
-          vy: -mouse.vy * 0.08 + (Math.random() - 0.5) * 0.8,
-          size: Math.random() * 1.8 + 0.7,
-          alpha: 0.85,
-          life: 1.0
-        });
-      }
-    });
-
-    const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
-    document.addEventListener('mouseover', (e) => {
-      if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.add('mag-cursor-hover');
-      }
-    });
-    document.addEventListener('mouseout', (e) => {
-      if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.remove('mag-cursor-hover');
-      }
-    });
-
-    function animateMagneticTrail() {
-      ctx.clearRect(0, 0, width, height);
-
-      const clickWaves = window.__portfolioClickWaves || [];
-      const now = performance.now() * 0.001;
-      for (let i = 0; i < clickWaves.length; i++) {
-        const cw = clickWaves[i];
-        const age = now - cw.startTime;
-        if (age < 2.6) {
-          const radius = age * 380;
-          const alpha = Math.pow(1 - age / 2.6, 2) * 0.16;
-          ctx.beginPath();
-          ctx.arc(cw.sx, cw.sy, radius, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(45, 212, 191, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.35;
-          ctx.stroke();
-        }
-      }
-
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        const dx = mouse.x - s.x;
-        const dy = mouse.y - s.y;
-        const dist = Math.hypot(dx, dy);
-
-        if (dist > 2) {
-          const pull = Math.min(0.35, 18 / (dist + 8));
-          s.vx += (dx / dist) * pull;
-          s.vy += (dy / dist) * pull;
-        }
-
-        s.vx *= 0.86;
-        s.vy *= 0.86;
-        s.x += s.vx;
-        s.y += s.vy;
-        s.life -= 0.024;
-
-        if (s.life <= 0 || dist < 3) {
-          sparks.splice(i, 1);
-          continue;
-        }
-
-        const alpha = s.life * s.alpha;
-
-        if (dist < 38) {
-          ctx.beginPath();
-          ctx.moveTo(s.x, s.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(45, 212, 191, ${(alpha * (1 - dist / 38) * 0.28).toFixed(3)})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fillStyle = s.life > 0.6
-          ? `rgba(153, 246, 228, ${alpha.toFixed(3)})`
-          : `rgba(45, 212, 191, ${alpha.toFixed(3)})`;
-        ctx.fill();
-      }
-
-      requestAnimationFrame(animateMagneticTrail);
-    }
-
-    animateMagneticTrail();
   })();
 </script>
 
