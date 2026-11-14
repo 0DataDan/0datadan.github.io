@@ -43,8 +43,8 @@
         .hud-card {
             position: relative;
             transform-style: preserve-3d;
-            will-change: transform;
-            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform, opacity;
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.35s ease;
         }
         .hud-card::before {
             content: "";
@@ -111,6 +111,29 @@
         @keyframes hudScan {
             0% { top: 0%; }
             100% { top: 100%; }
+        }
+
+        /* Filter Highlight & Dimming Transitions */
+        .skill-chip {
+            transition: all 0.25s ease;
+        }
+        .skill-chip.chip-active {
+            border-color: rgba(45, 212, 191, 0.7);
+            background-color: rgba(45, 212, 191, 0.14);
+            color: #5eead4;
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.18);
+            transform: translateY(-1px);
+        }
+        .skill-chip.chip-dim {
+            opacity: 0.3;
+        }
+        .card-filtered-dim {
+            opacity: 0.32;
+            filter: saturate(0.4);
+        }
+        .card-filtered-active {
+            border-color: rgba(45, 212, 191, 0.55) !important;
+            box-shadow: 0 0 35px rgba(45, 212, 191, 0.12);
         }
     </style>
 </head>
@@ -244,7 +267,7 @@
         <header class="mb-16">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-teal-400 text-xs font-mono mb-4 backdrop-blur">
                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                Applied Geospatial AI & Evaluation
+                Applied Geospatial AI &amp; Evaluation
             </div>
             <h1 class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3">danielperez<span class="terminal-cursor">_</span></h1>
 
@@ -295,16 +318,59 @@
                 </div>
             </div>
 
-            <div class="flex flex-wrap gap-3 text-xs font-mono text-slate-400">
-                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
-                    <span class="text-teal-400">Cert:</span> NASA ARSET Remote Sensing
-                </span>
-                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
-                    <span class="text-teal-400">Cert:</span> Google AI Professional
-                </span>
-                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
-                    <span class="text-teal-400">Stack:</span> Python · Rasterio · Folium · ChromaDB · Streamlit
-                </span>
+            <!-- Update 4B: Interactive Category Filter Pills & Dynamic Stack Matrix -->
+            <div class="bg-slate-900/60 border border-slate-800/90 rounded-xl p-4 backdrop-blur-md max-w-3xl">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800/80">
+                    <span class="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                        FILTER TELEMETRY &amp; STACK BY DOMAIN:
+                    </span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <button onclick="applyPortfolioFilter('all')" data-filter-btn="all" class="interactive px-2.5 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 font-semibold transition">
+                            ALL [9]
+                        </button>
+                        <button onclick="applyPortfolioFilter('geo')" data-filter-btn="geo" class="interactive px-2.5 py-1 rounded bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition">
+                            GEOSPATIAL / GIS
+                        </button>
+                        <button onclick="applyPortfolioFilter('ai')" data-filter-btn="ai" class="interactive px-2.5 py-1 rounded bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition">
+                            AI &amp; LLM EVAL
+                        </button>
+                        <button onclick="applyPortfolioFilter('webgl')" data-filter-btn="webgl" class="interactive px-2.5 py-1 rounded bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition">
+                            3D &amp; WEBGL
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Filterable Skill & Cert Chips -->
+                <div class="flex flex-wrap gap-2 text-xs font-mono">
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+                        <span class="text-teal-400">Cert:</span> NASA ARSET Remote Sensing
+                    </span>
+                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+                        <span class="text-teal-400">Cert:</span> Google AI Professional
+                    </span>
+                    <span data-chip-cat="geo ai webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        Python
+                    </span>
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        Rasterio &amp; PyProj
+                    </span>
+                    <span data-chip-cat="geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        Folium &amp; STAC
+                    </span>
+                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        ChromaDB &amp; RAG
+                    </span>
+                    <span data-chip-cat="ai" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        Multimodal QA Auditing
+                    </span>
+                    <span data-chip-cat="webgl" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        Three.js / WebGL
+                    </span>
+                    <span data-chip-cat="webgl geo" class="skill-chip px-2.5 py-1 rounded-md bg-slate-950/90 border border-slate-800 text-slate-300">
+                        FastAPI &amp; Streamlit
+                    </span>
+                </div>
             </div>
         </header>
 
@@ -312,7 +378,7 @@
         <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- NOVA Project Card (Span Full Width) -->
-            <article data-tilt="0.45" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)]">
+            <article data-card-cat="webgl ai" data-tilt="0.45" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)]">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
@@ -372,7 +438,7 @@
             </article>
             
             <!-- Urban Heat Explorer Project Card -->
-            <article data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] flex flex-col">
+            <article data-card-cat="geo" data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] flex flex-col">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
@@ -438,7 +504,7 @@
             </article>
 
             <!-- Update 3: Interactive 3D Constellation / Sensor Network Map -->
-            <article data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
+            <article data-card-cat="ai geo webgl" data-tilt="0.9" class="hud-card group bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-7 backdrop-blur-md flex flex-col justify-between hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
                 <!-- HUD Corner Reticles -->
                 <div class="hud-corner hud-tl"></div>
                 <div class="hud-corner hud-tr"></div>
@@ -511,6 +577,151 @@
                 <div class="relative z-10 mt-4 pt-3 border-t border-slate-800/80 text-xs font-mono text-teal-400 flex items-center justify-between">
                     <span>STATUS: AVAILABLE FOR COLLABORATION // 2026</span>
                     <span class="text-slate-500">[3D_MESH: ACTIVE]</span>
+                </div>
+            </article>
+
+            <!-- Update 4A: "Deep Space Network" Signal Log (Full-Width Telemetry Case Studies) -->
+            <article data-card-cat="ai geo webgl" data-tilt="0.35" class="hud-card group md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col hover:border-teal-500/50 hover:shadow-[0_20px_50px_rgba(45,212,191,0.09)] overflow-hidden">
+                <!-- HUD Corner Reticles -->
+                <div class="hud-corner hud-tl"></div>
+                <div class="hud-corner hud-tr"></div>
+                <div class="hud-corner hud-bl"></div>
+                <div class="hud-corner hud-br"></div>
+
+                <div class="relative z-10">
+                    <!-- Signal Log Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-800/80">
+                        <div>
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                                <h3 class="text-lg sm:text-xl font-bold text-white tracking-tight">
+                                    Deep Space Network // Technical Signal Log
+                                </h3>
+                            </div>
+                            <p class="text-xs font-mono text-slate-400 mt-1">
+                                SIGNAL LOCK: <span class="text-teal-400">ACTIVE</span> // CLICK ANY TELEMETRY PACKET TO INSPECT ARCHITECTURE &amp; METHODOLOGY
+                            </p>
+                        </div>
+                        <div class="text-xs font-mono text-teal-300 bg-slate-950/90 border border-teal-500/30 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+                            DOWNLINK: 142.8 Mbps · 60Hz
+                        </div>
+                    </div>
+
+                    <!-- Packet Rows Container -->
+                    <div class="space-y-3 font-mono">
+
+                        <!-- Packet TX-001: Geospatial Calibration -->
+                        <div data-packet-row="geo" onclick="toggleSignalPacket('tx1')" class="interactive rounded-xl bg-slate-950/75 border border-teal-500/40 p-4 transition hover:border-teal-400 cursor-pointer">
+                            <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-3">
+                                <div class="sm:col-span-2 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-teal-500/15 border border-teal-500/40 text-teal-300 text-xs font-bold">TX-001</span>
+                                    <span class="text-[11px] text-slate-500">EO/TIR</span>
+                                </div>
+                                <div class="sm:col-span-5">
+                                    <div class="text-xs sm:text-sm font-bold text-white font-sans">Landsat 8/9 Radiometric &amp; Thermal Pipeline</div>
+                                    <div class="text-[11px] text-slate-400">BAND_10 STAC Ingest &rarr; Celsius Surface Temp</div>
+                                </div>
+                                <div class="sm:col-span-3 flex items-center gap-2">
+                                    <canvas class="sparkline-canvas w-28 h-8 rounded bg-slate-900/90 border border-slate-800" data-freq="0.09" data-amp="9"></canvas>
+                                    <span class="text-[10px] text-teal-400">LOCKED</span>
+                                </div>
+                                <div class="sm:col-span-2 text-right">
+                                    <span id="tx1-indicator" class="text-xs text-teal-400">[- COLLAPSE]</span>
+                                </div>
+                            </div>
+
+                            <!-- Expanded Technical Write-Up -->
+                            <div id="tx1-details" class="mt-4 pt-3 border-t border-slate-800/80 text-xs font-sans text-slate-300 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">01. Ingestion &amp; Reprojection</span>
+                                    Queries Planetary Computer STAC catalogs for low-cloud scenes, reprojecting GeoTIFF rasters to WGS84 via Rasterio and PyProj.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">02. Spectral Indices (NDVI/NDBI)</span>
+                                    Computes Normalized Difference Vegetation &amp; Built-Up indices from Near-Infrared (NIR) and SWIR bands to isolate urban heat islands.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">03. Output Telemetry</span>
+                                    Applies Collection-2 Level-2 scaling factors ($0.00341802 \times DN + 149.0 - 273.15$) for interactive Folium heatmaps.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Packet TX-002: Multimodal LLM Evaluation -->
+                        <div data-packet-row="ai" onclick="toggleSignalPacket('tx2')" class="interactive rounded-xl bg-slate-950/75 border border-slate-800/90 p-4 transition hover:border-teal-400 cursor-pointer">
+                            <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-3">
+                                <div class="sm:col-span-2 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-teal-500/15 border border-teal-500/40 text-teal-300 text-xs font-bold">TX-002</span>
+                                    <span class="text-[11px] text-slate-500">AI/QA</span>
+                                </div>
+                                <div class="sm:col-span-5">
+                                    <div class="text-xs sm:text-sm font-bold text-white font-sans">Multimodal LLM Evaluation &amp; Dataset Auditing</div>
+                                    <div class="text-[11px] text-slate-400">1,500+ Monthly Audits · 99% Verbatim Precision</div>
+                                </div>
+                                <div class="sm:col-span-3 flex items-center gap-2">
+                                    <canvas class="sparkline-canvas w-28 h-8 rounded bg-slate-900/90 border border-slate-800" data-freq="0.15" data-amp="11"></canvas>
+                                    <span class="text-[10px] text-teal-400">99.0% ACC</span>
+                                </div>
+                                <div class="sm:col-span-2 text-right">
+                                    <span id="tx2-indicator" class="text-xs text-slate-400">[+ INSPECT]</span>
+                                </div>
+                            </div>
+
+                            <!-- Expanded Technical Write-Up -->
+                            <div id="tx2-details" class="hidden mt-4 pt-3 border-t border-slate-800/80 text-xs font-sans text-slate-300 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">01. Factuality &amp; Hallucination QA</span>
+                                    4+ years auditing LLM responses against strict rubric schemas, verifying grounding, instruction following, and edge-case safety.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">02. Acoustic &amp; Verbatim Precision</span>
+                                    High-precision multi-speaker transcription and acoustic dataset segmentation maintaining 99% verbatim accuracy.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">03. Structured Prompt Engineering</span>
+                                    Designing system prompts, JSON schemas, and ChromaDB retrieval benchmarks in Google AI Studio.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Packet TX-003: 3D WebGL & FastAPI -->
+                        <div data-packet-row="webgl" onclick="toggleSignalPacket('tx3')" class="interactive rounded-xl bg-slate-950/75 border border-slate-800/90 p-4 transition hover:border-teal-400 cursor-pointer">
+                            <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-3">
+                                <div class="sm:col-span-2 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-teal-500/15 border border-teal-500/40 text-teal-300 text-xs font-bold">TX-003</span>
+                                    <span class="text-[11px] text-slate-500">3D/SYS</span>
+                                </div>
+                                <div class="sm:col-span-5">
+                                    <div class="text-xs sm:text-sm font-bold text-white font-sans">NOVA 3D WebGL &amp; FastAPI Orbital Telemetry</div>
+                                    <div class="text-[11px] text-slate-400">60FPS Shader Scene Graph &amp; REST Endpoints</div>
+                                </div>
+                                <div class="sm:col-span-3 flex items-center gap-2">
+                                    <canvas class="sparkline-canvas w-28 h-8 rounded bg-slate-900/90 border border-slate-800" data-freq="0.21" data-amp="8"></canvas>
+                                    <span class="text-[10px] text-teal-400">60.0 FPS</span>
+                                </div>
+                                <div class="sm:col-span-2 text-right">
+                                    <span id="tx3-indicator" class="text-xs text-slate-400">[+ INSPECT]</span>
+                                </div>
+                            </div>
+
+                            <!-- Expanded Technical Write-Up -->
+                            <div id="tx3-details" class="hidden mt-4 pt-3 border-t border-slate-800/80 text-xs font-sans text-slate-300 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">01. Three.js Spatial Rendering</span>
+                                    Custom particle buffers, procedural terrain meshes, and camera interpolation for smooth planetary flythroughs.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">02. FastAPI Telemetry Backend</span>
+                                    Asynchronous Python REST API serving astronomical metadata, orbital parameters, and guided tour sequences.
+                                </div>
+                                <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-800/70">
+                                    <span class="font-mono text-[10px] text-teal-400 uppercase block mb-1">03. Tactile HUD Interface</span>
+                                    Zero-latency canvas overlays, optical lock-on reticles, and synchronized audio-visual boot sequences.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </article>
 
@@ -815,7 +1026,7 @@
   })();
 </script>
 
-<!-- 3D CARD TILT + INTERACTIVE 3D CONSTELLATION SENSOR NETWORK -->
+<!-- 3D CARD TILT + 3D CONSTELLATION NETWORK + UPDATE 4 SIGNAL LOG & FILTERS -->
 <script>
   (function() {
     // 1. 3D Gyroscope Perspective Tilt & Specular Spotlight on Bento Cards
@@ -844,315 +1055,403 @@
 
     // 2. Interactive 3D Constellation Topology Graph
     const canvas = document.getElementById('constellation-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
 
-    const nodes = [
-      {
-        id: 'core', label: 'CORE // DP', group: 'core', x: 0, y: 0, z: 0, radius: 7,
-        badge: 'CORE OPERATOR // NODE_00', metric: '4+ YRS · 99% QA ACC',
-        title: 'Daniel Perez — Applied AI & Geospatial Systems',
-        desc: 'Bridging 4+ years of multimodal LLM evaluation and dataset auditing with Python satellite remote sensing pipelines (Rasterio, STAC, Three.js).'
-      },
-      {
-        id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -115, y: -55, z: 55, radius: 5.5,
-        badge: 'VERIFIED CREDENTIAL // AI-01', metric: 'CERTIFIED · 2026',
-        title: 'Google AI Professional Certificate',
-        desc: 'Specialized in LLM workflow configuration, structured schema design, few-shot prompt engineering, and rapid prototyping in Google AI Studio.'
-      },
-      {
-        id: 'audits', label: '1,500+ Audits/Mo', group: 'ai', x: -135, y: 45, z: -40, radius: 5.5,
-        badge: 'PRODUCTION TELEMETRY // AI-02', metric: '1,500+ TASKS / MO',
-        title: 'High-Volume LLM & Multimodal Dataset Auditing',
-        desc: '4+ years auditing machine learning training datasets, validating prompt-response fidelity, and classifying complex edge cases.'
-      },
-      {
-        id: 'qa_acc', label: '99% Verbatim QA', group: 'ai', x: -55, y: 85, z: 65, radius: 5,
-        badge: 'QUALITY BENCHMARK // AI-03', metric: '99.0% PRECISION',
-        title: 'Multi-Speaker Acoustic & Verbatim QA Analysis',
-        desc: 'Maintained 99% verbatim accuracy across complex multi-speaker audio transcription and high-precision market research evaluation.'
-      },
-      {
-        id: 'chromadb', label: 'ChromaDB / RAG', group: 'ai', x: -45, y: -90, z: -55, radius: 4.8,
-        badge: 'AI STACK NODE // AI-04', metric: 'VECTOR EMBEDDINGS',
-        title: 'ChromaDB & Multimodal Evaluation Pipelines',
-        desc: 'Vector database indexing, semantic retrieval testing, and structured LLM output validation.'
-      },
-      {
-        id: 'nasa', label: 'NASA ARSET Cert', group: 'geo', x: 115, y: -60, z: 50, radius: 5.5,
-        badge: 'VERIFIED CREDENTIAL // GEO-01', metric: 'CERTIFIED · 2026',
-        title: 'NASA ARSET Fundamentals of Remote Sensing',
-        desc: 'Trained in satellite orbital mechanics, spectral resolution, atmospheric aerosol optical depth (AOD), and Earth observation data products.'
-      },
-      {
-        id: 'landsat', label: 'Landsat 8/9 STAC', group: 'geo', x: 135, y: 40, z: -45, radius: 5.5,
-        badge: 'EARTH OBSERVATION // GEO-02', metric: '30m THERMAL TIR',
-        title: 'Landsat 8/9 Level-2 Thermal & Surface Reflectance',
-        desc: 'Automated STAC catalog queries, radiometric calibration to Celsius, and NDVI / NDBI biome indexing for urban heat island analysis.'
-      },
-      {
-        id: 'rasterio', label: 'Python · Rasterio', group: 'geo', x: 60, y: 85, z: 55, radius: 5,
-        badge: 'GEOSPATIAL STACK // GEO-03', metric: 'GDAL / PYPROJ',
-        title: 'Rasterio, PyProj, Folium & Streamlit Pipelines',
-        desc: 'Coordinate reprojection, multi-band GeoTIFF array processing, and interactive browser map rendering.'
-      },
-      {
-        id: 'webgl', label: 'Three.js / WebGL', group: 'geo', x: 55, y: -85, z: -60, radius: 5,
-        badge: '3D VISUALIZATION // GEO-04', metric: '60 FPS SHADERS',
-        title: 'Three.js, WebGL & FastAPI 3D Telemetry',
-        desc: 'Custom 3D terrain meshes, orbital mechanics simulations (NOVA Observatory), and real-time browser telemetry interfaces.'
+      const nodes = [
+        {
+          id: 'core', label: 'CORE // DP', group: 'core', x: 0, y: 0, z: 0, radius: 7,
+          badge: 'CORE OPERATOR // NODE_00', metric: '4+ YRS · 99% QA ACC',
+          title: 'Daniel Perez — Applied AI & Geospatial Systems',
+          desc: 'Bridging 4+ years of multimodal LLM evaluation and dataset auditing with Python satellite remote sensing pipelines (Rasterio, STAC, Three.js).'
+        },
+        {
+          id: 'google_ai', label: 'Google AI Cert', group: 'ai', x: -115, y: -55, z: 55, radius: 5.5,
+          badge: 'VERIFIED CREDENTIAL // AI-01', metric: 'CERTIFIED · 2026',
+          title: 'Google AI Professional Certificate',
+          desc: 'Specialized in LLM workflow configuration, structured schema design, few-shot prompt engineering, and rapid prototyping in Google AI Studio.'
+        },
+        {
+          id: 'audits', label: '1,500+ Audits/Mo', group: 'ai', x: -135, y: 45, z: -40, radius: 5.5,
+          badge: 'PRODUCTION TELEMETRY // AI-02', metric: '1,500+ TASKS / MO',
+          title: 'High-Volume LLM & Multimodal Dataset Auditing',
+          desc: '4+ years auditing machine learning training datasets, validating prompt-response fidelity, and classifying complex edge cases.'
+        },
+        {
+          id: 'qa_acc', label: '99% Verbatim QA', group: 'ai', x: -55, y: 85, z: 65, radius: 5,
+          badge: 'QUALITY BENCHMARK // AI-03', metric: '99.0% PRECISION',
+          title: 'Multi-Speaker Acoustic & Verbatim QA Analysis',
+          desc: 'Maintained 99% verbatim accuracy across complex multi-speaker audio transcription and high-precision market research evaluation.'
+        },
+        {
+          id: 'chromadb', label: 'ChromaDB / RAG', group: 'ai', x: -45, y: -90, z: -55, radius: 4.8,
+          badge: 'AI STACK NODE // AI-04', metric: 'VECTOR EMBEDDINGS',
+          title: 'ChromaDB & Multimodal Evaluation Pipelines',
+          desc: 'Vector database indexing, semantic retrieval testing, and structured LLM output validation.'
+        },
+        {
+          id: 'nasa', label: 'NASA ARSET Cert', group: 'geo', x: 115, y: -60, z: 50, radius: 5.5,
+          badge: 'VERIFIED CREDENTIAL // GEO-01', metric: 'CERTIFIED · 2026',
+          title: 'NASA ARSET Fundamentals of Remote Sensing',
+          desc: 'Trained in satellite orbital mechanics, spectral resolution, atmospheric aerosol optical depth (AOD), and Earth observation data products.'
+        },
+        {
+          id: 'landsat', label: 'Landsat 8/9 STAC', group: 'geo', x: 135, y: 40, z: -45, radius: 5.5,
+          badge: 'EARTH OBSERVATION // GEO-02', metric: '30m THERMAL TIR',
+          title: 'Landsat 8/9 Level-2 Thermal & Surface Reflectance',
+          desc: 'Automated STAC catalog queries, radiometric calibration to Celsius, and NDVI / NDBI biome indexing for urban heat island analysis.'
+        },
+        {
+          id: 'rasterio', label: 'Python · Rasterio', group: 'geo', x: 60, y: 85, z: 55, radius: 5,
+          badge: 'GEOSPATIAL STACK // GEO-03', metric: 'GDAL / PYPROJ',
+          title: 'Rasterio, PyProj, Folium & Streamlit Pipelines',
+          desc: 'Coordinate reprojection, multi-band GeoTIFF array processing, and interactive browser map rendering.'
+        },
+        {
+          id: 'webgl', label: 'Three.js / WebGL', group: 'webgl', x: 55, y: -85, z: -60, radius: 5,
+          badge: '3D VISUALIZATION // WEBGL-04', metric: '60 FPS SHADERS',
+          title: 'Three.js, WebGL & FastAPI 3D Telemetry',
+          desc: 'Custom 3D terrain meshes, orbital mechanics simulations (NOVA Observatory), and real-time browser telemetry interfaces.'
+        }
+      ];
+
+      const edges = [
+        ['core', 'google_ai'], ['core', 'audits'], ['core', 'qa_acc'], ['core', 'chromadb'],
+        ['core', 'nasa'], ['core', 'landsat'], ['core', 'rasterio'], ['core', 'webgl'],
+        ['google_ai', 'chromadb'], ['google_ai', 'audits'], ['audits', 'qa_acc'],
+        ['nasa', 'landsat'], ['landsat', 'rasterio'], ['rasterio', 'webgl'], ['chromadb', 'webgl']
+      ];
+
+      const packets = edges.map((edge, idx) => ({
+        edgeIdx: idx,
+        progress: (idx * 0.19) % 1,
+        speed: 0.004 + (idx % 3) * 0.0018
+      }));
+
+      let activeFilter = 'all';
+      let lockedNode = nodes[0];
+      let hoveredNode = null;
+
+      let rotY = 0.25;
+      let rotX = 0.15;
+      let targetRotY = 0.25;
+      let targetRotX = 0.15;
+      let isPointerInside = false;
+      let pointerX = -999, pointerY = -999;
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
-    ];
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
 
-    const edges = [
-      ['core', 'google_ai'], ['core', 'audits'], ['core', 'qa_acc'], ['core', 'chromadb'],
-      ['core', 'nasa'], ['core', 'landsat'], ['core', 'rasterio'], ['core', 'webgl'],
-      ['google_ai', 'chromadb'], ['google_ai', 'audits'], ['audits', 'qa_acc'],
-      ['nasa', 'landsat'], ['landsat', 'rasterio'], ['rasterio', 'webgl'], ['chromadb', 'webgl']
-    ];
+      function updateInspector(node, isLocked) {
+        if (!node) return;
+        document.getElementById('inspector-badge').textContent = isLocked ? `${node.badge} [LOCKED]` : `${node.badge} [PREVIEW]`;
+        document.getElementById('inspector-metric').textContent = node.metric;
+        document.getElementById('inspector-title').textContent = node.title;
+        document.getElementById('inspector-desc').textContent = node.desc;
+      }
 
-    // Travelling telemetry packets along edges
-    const packets = edges.map((edge, idx) => ({
-      edgeIdx: idx,
-      progress: (idx * 0.19) % 1,
-      speed: 0.004 + (idx % 3) * 0.0018
-    }));
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        isPointerInside = true;
+        pointerX = e.clientX - rect.left;
+        pointerY = e.clientY - rect.top;
 
-    let activeFilter = 'all';
-    let lockedNode = nodes[0];
-    let hoveredNode = null;
+        const normX = (pointerX / rect.width - 0.5) * 2;
+        const normY = (pointerY / rect.height - 0.5) * 2;
+        targetRotY = normX * 0.85;
+        targetRotX = -normY * 0.55;
+      });
 
-    let rotY = 0.25;
-    let rotX = 0.15;
-    let targetRotY = 0.25;
-    let targetRotX = 0.15;
-    let isPointerInside = false;
-    let pointerX = -999, pointerY = -999;
-
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    function updateInspector(node, isLocked) {
-      if (!node) return;
-      document.getElementById('inspector-badge').textContent = isLocked ? `${node.badge} [LOCKED]` : `${node.badge} [PREVIEW]`;
-      document.getElementById('inspector-metric').textContent = node.metric;
-      document.getElementById('inspector-title').textContent = node.title;
-      document.getElementById('inspector-desc').textContent = node.desc;
-    }
-
-    canvas.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      isPointerInside = true;
-      pointerX = e.clientX - rect.left;
-      pointerY = e.clientY - rect.top;
-
-      const normX = (pointerX / rect.width - 0.5) * 2;
-      const normY = (pointerY / rect.height - 0.5) * 2;
-      targetRotY = normX * 0.85;
-      targetRotX = -normY * 0.55;
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-      isPointerInside = false;
-      pointerX = -999;
-      pointerY = -999;
-      hoveredNode = null;
-      updateInspector(lockedNode, true);
-    });
-
-    canvas.addEventListener('click', () => {
-      if (hoveredNode) {
-        lockedNode = hoveredNode;
+      canvas.addEventListener('mouseleave', () => {
+        isPointerInside = false;
+        pointerX = -999;
+        pointerY = -999;
+        hoveredNode = null;
         updateInspector(lockedNode, true);
-      }
-    });
-
-    window.setConstellationFilter = function(filter) {
-      activeFilter = filter;
-      const btns = {
-        all: document.getElementById('net-filter-all'),
-        ai: document.getElementById('net-filter-ai'),
-        geo: document.getElementById('net-filter-geo')
-      };
-      Object.keys(btns).forEach(k => {
-        if (k === filter) {
-          btns[k].className = "interactive px-2 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 transition font-semibold";
-        } else {
-          btns[k].className = "interactive px-2 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition";
-        }
       });
 
-      if (filter === 'ai') {
-        lockedNode = nodes.find(n => n.id === 'google_ai');
-        targetRotY = -0.45;
-      } else if (filter === 'geo') {
-        lockedNode = nodes.find(n => n.id === 'nasa');
-        targetRotY = 0.45;
-      } else {
-        lockedNode = nodes[0];
-      }
-      updateInspector(lockedNode, true);
-    };
-
-    const coordsEl = document.getElementById('net-coords');
-
-    function renderConstellation() {
-      const rect = canvas.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-      ctx.clearRect(0, 0, w, h);
-
-      // Subtle background radar rings
-      const cx = w / 2;
-      const cy = h / 2;
-      ctx.strokeStyle = 'rgba(45, 212, 191, 0.06)';
-      ctx.lineWidth = 1;
-      [48, 96, 144].forEach(r => {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.stroke();
-      });
-
-      if (!isPointerInside) {
-        targetRotY += 0.0032;
-        targetRotX = Math.sin(Date.now() * 0.0007) * 0.18;
-      }
-      rotY += (targetRotY - rotY) * 0.08;
-      rotX += (targetRotX - rotX) * 0.08;
-
-      if (coordsEl) {
-        coordsEl.textContent = `ROT_X: ${(rotX * 57.3).toFixed(1)}° | ROT_Y: ${((rotY * 57.3) % 360).toFixed(1)}°`;
-      }
-
-      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-      const fov = 320;
-
-      // Project 3D coordinates into 2D canvas space with depth scaling
-      const projected = {};
-      nodes.forEach(n => {
-        const x1 = n.x * cosY - n.z * sinY;
-        const z1 = n.z * cosY + n.x * sinY;
-        const y2 = n.y * cosX - z1 * sinX;
-        const z2 = z1 * cosX + n.y * sinX;
-
-        const scale = fov / (fov + z2 + 180);
-        const px = cx + x1 * scale;
-        const py = cy + y2 * scale;
-
-        const isVisibleGroup = activeFilter === 'all' || n.group === 'core' || n.group === activeFilter;
-        projected[n.id] = {
-          node: n,
-          px, py, z: z2, scale,
-          alpha: isVisibleGroup ? Math.max(0.25, Math.min(1, (scale - 0.45) * 1.6)) : 0.12
-        };
-      });
-
-      // Check hover hit-testing
-      letnewHover = null;
-      let minDist = 26;
-      Object.values(projected).forEach(p => {
-        const d = Math.hypot(pointerX - p.px, pointerY - p.py);
-        if (d < minDist) {
-          minDist = d;
-          letnewHover = p.node;
-        }
-      });
-      if (letnewHover !== hoveredNode) {
-        hoveredNode = letnewHover;
+      canvas.addEventListener('click', () => {
         if (hoveredNode) {
-          updateInspector(hoveredNode, false);
-        } else {
+          lockedNode = hoveredNode;
           updateInspector(lockedNode, true);
         }
+      });
+
+      window.setConstellationFilter = function(filter) {
+        activeFilter = filter;
+        const btns = {
+          all: document.getElementById('net-filter-all'),
+          ai: document.getElementById('net-filter-ai'),
+          geo: document.getElementById('net-filter-geo')
+        };
+        Object.keys(btns).forEach(k => {
+          if (!btns[k]) return;
+          if (k === filter || (filter === 'webgl' && k === 'geo')) {
+            btns[k].className = "interactive px-2 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 transition font-semibold";
+          } else {
+            btns[k].className = "interactive px-2 py-1 rounded bg-transparent border border-transparent text-slate-400 hover:text-slate-200 transition";
+          }
+        });
+
+        if (filter === 'ai') {
+          lockedNode = nodes.find(n => n.id === 'google_ai');
+          targetRotY = -0.45;
+        } else if (filter === 'geo') {
+          lockedNode = nodes.find(n => n.id === 'nasa');
+          targetRotY = 0.45;
+        } else if (filter === 'webgl') {
+          lockedNode = nodes.find(n => n.id === 'webgl');
+          targetRotY = 0.25;
+        } else {
+          lockedNode = nodes[0];
+        }
+        updateInspector(lockedNode, true);
+      };
+
+      const coordsEl = document.getElementById('net-coords');
+
+      function renderConstellation() {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.06)';
+        ctx.lineWidth = 1;
+        [48, 96, 144].forEach(r => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        if (!isPointerInside) {
+          targetRotY += 0.0032;
+          targetRotX = Math.sin(Date.now() * 0.0007) * 0.18;
+        }
+        rotY += (targetRotY - rotY) * 0.08;
+        rotX += (targetRotX - rotX) * 0.08;
+
+        if (coordsEl) {
+          coordsEl.textContent = `ROT_X: ${(rotX * 57.3).toFixed(1)}° | ROT_Y: ${((rotY * 57.3) % 360).toFixed(1)}°`;
+        }
+
+        const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        const fov = 320;
+
+        const projected = {};
+        nodes.forEach(n => {
+          const x1 = n.x * cosY - n.z * sinY;
+          const z1 = n.z * cosY + n.x * sinY;
+          const y2 = n.y * cosX - z1 * sinX;
+          const z2 = z1 * cosX + n.y * sinX;
+
+          const scale = fov / (fov + z2 + 180);
+          const px = cx + x1 * scale;
+          const py = cy + y2 * scale;
+
+          const isVisibleGroup = activeFilter === 'all' || n.group === 'core' || n.group === activeFilter;
+          projected[n.id] = {
+            node: n,
+            px, py, z: z2, scale,
+            alpha: isVisibleGroup ? Math.max(0.25, Math.min(1, (scale - 0.45) * 1.6)) : 0.12
+          };
+        });
+
+        let newHover = null;
+        let minDist = 26;
+        Object.values(projected).forEach(p => {
+          const d = Math.hypot(pointerX - p.px, pointerY - p.py);
+          if (d < minDist) {
+            minDist = d;
+            newHover = p.node;
+          }
+        });
+        if (newHover !== hoveredNode) {
+          hoveredNode = newHover;
+          if (hoveredNode) {
+            updateInspector(hoveredNode, false);
+          } else {
+            updateInspector(lockedNode, true);
+          }
+        }
+
+        edges.forEach((pair, idx) => {
+          const p1 = projected[pair[0]];
+          const p2 = projected[pair[1]];
+          const edgeAlpha = Math.min(p1.alpha, p2.alpha) * 0.45;
+
+          ctx.beginPath();
+          ctx.moveTo(p1.px, p1.py);
+          ctx.lineTo(p2.px, p2.py);
+          ctx.strokeStyle = `rgba(45, 212, 191, ${edgeAlpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          const pkt = packets[idx];
+          pkt.progress = (pkt.progress + pkt.speed) % 1;
+          if (edgeAlpha > 0.15) {
+            const kx = p1.px + (p2.px - p1.px) * pkt.progress;
+            const ky = p1.py + (p2.py - p1.py) * pkt.progress;
+            ctx.beginPath();
+            ctx.arc(kx, ky, 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(153, 246, 228, ${edgeAlpha * 1.8})`;
+            ctx.fill();
+          }
+        });
+
+        const sorted = Object.values(projected).sort((a, b) => b.z - a.z);
+
+        sorted.forEach(p => {
+          const n = p.node;
+          const isLocked = lockedNode && lockedNode.id === n.id;
+          const isHovered = hoveredNode && hoveredNode.id === n.id;
+          const r = n.radius * p.scale * (isHovered || isLocked ? 1.3 : 1);
+
+          if (isLocked || isHovered || n.group === 'core') {
+            ctx.beginPath();
+            ctx.arc(p.px, p.py, r + 6, 0, Math.PI * 2);
+            ctx.fillStyle = isHovered
+              ? 'rgba(56, 189, 248, 0.28)'
+              : 'rgba(45, 212, 191, 0.2)';
+            ctx.fill();
+          }
+
+          if (isLocked || isHovered) {
+            ctx.beginPath();
+            ctx.arc(p.px, p.py, r + 10, 0, Math.PI * 2);
+            ctx.strokeStyle = isHovered ? '#38bdf8' : '#2dd4bf';
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([3, 3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.px, p.py, r, 0, Math.PI * 2);
+          ctx.fillStyle = n.group === 'core'
+            ? `rgba(255, 255, 255, ${p.alpha})`
+            : n.group === 'ai'
+              ? `rgba(45, 212, 191, ${p.alpha})`
+              : `rgba(56, 189, 248, ${p.alpha})`;
+          ctx.fill();
+
+          ctx.font = `${isLocked || isHovered ? '600 ' : ''}10px "JetBrains Mono", monospace`;
+          ctx.fillStyle = isLocked || isHovered
+            ? `rgba(255, 255, 255, ${Math.min(1, p.alpha + 0.3)})`
+            : `rgba(203, 213, 225, ${p.alpha * 0.9})`;
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, p.px, p.py - r - 6);
+        });
+
+        requestAnimationFrame(renderConstellation);
       }
 
-      // Draw edges & data packets
-      edges.forEach((pair, idx) => {
-        const p1 = projected[pair[0]];
-        const p2 = projected[pair[1]];
-        const edgeAlpha = Math.min(p1.alpha, p2.alpha) * 0.45;
-
-        ctx.beginPath();
-        ctx.moveTo(p1.px, p1.py);
-        ctx.lineTo(p2.px, p2.py);
-        ctx.strokeStyle = `rgba(45, 212, 191, ${edgeAlpha})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Data packet pulse along active links
-        const pkt = packets[idx];
-        pkt.progress = (pkt.progress + pkt.speed) % 1;
-        if (edgeAlpha > 0.15) {
-          const kx = p1.px + (p2.px - p1.px) * pkt.progress;
-          const ky = p1.py + (p2.py - p1.py) * pkt.progress;
-          ctx.beginPath();
-          ctx.arc(kx, ky, 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(153, 246, 228, ${edgeAlpha * 1.8})`;
-          ctx.fill();
-        }
-      });
-
-      // Sort back-to-front by Z depth so foreground nodes render on top
-      const sorted = Object.values(projected).sort((a, b) => b.z - a.z);
-
-      sorted.forEach(p => {
-        const n = p.node;
-        const isLocked = lockedNode && lockedNode.id === n.id;
-        const isHovered = hoveredNode && hoveredNode.id === n.id;
-        const r = n.radius * p.scale * (isHovered || isLocked ? 1.3 : 1);
-
-        // Outer glow
-        if (isLocked || isHovered || n.group === 'core') {
-          ctx.beginPath();
-          ctx.arc(p.px, p.py, r + 6, 0, Math.PI * 2);
-          ctx.fillStyle = isHovered
-            ? 'rgba(56, 189, 248, 0.28)'
-            : 'rgba(45, 212, 191, 0.2)';
-          ctx.fill();
-        }
-
-        // Targeting reticle ring for locked/hovered node
-        if (isLocked || isHovered) {
-          ctx.beginPath();
-          ctx.arc(p.px, p.py, r + 10, 0, Math.PI * 2);
-          ctx.strokeStyle = isHovered ? '#38bdf8' : '#2dd4bf';
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([3, 3]);
-          ctx.stroke();
-          ctx.setLineDash([]);
-        }
-
-        // Core node circle
-        ctx.beginPath();
-        ctx.arc(p.px, p.py, r, 0, Math.PI * 2);
-        ctx.fillStyle = n.group === 'core'
-          ? `rgba(255, 255, 255, ${p.alpha})`
-          : n.group === 'ai'
-            ? `rgba(45, 212, 191, ${p.alpha})`
-            : `rgba(56, 189, 248, ${p.alpha})`;
-        ctx.fill();
-
-        // Node text label
-        ctx.font = `${isLocked || isHovered ? '600 ' : ''}10px "JetBrains Mono", monospace`;
-        ctx.fillStyle = isLocked || isHovered
-          ? `rgba(255, 255, 255, ${Math.min(1, p.alpha + 0.3)})`
-          : `rgba(203, 213, 225, ${p.alpha * 0.9})`;
-        ctx.textAlign = 'center';
-        ctx.fillText(n.label, p.px, p.py - r - 6);
-      });
-
-      requestAnimationFrame(renderConstellation);
+      renderConstellation();
     }
 
-    renderConstellation();
+    // 3. Update 4B: Global Portfolio Category Filter Pills
+    window.applyPortfolioFilter = function(cat) {
+      // Update Filter Buttons
+      document.querySelectorAll('[data-filter-btn]').forEach(btn => {
+        const bCat = btn.getAttribute('data-filter-btn');
+        if (bCat === cat) {
+          btn.className = "interactive px-2.5 py-1 rounded bg-teal-500/20 border border-teal-500/50 text-teal-300 font-semibold transition";
+        } else {
+          btn.className = "interactive px-2.5 py-1 rounded bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition";
+        }
+      });
+
+      // Highlight or Dim Skill Chips
+      document.querySelectorAll('[data-chip-cat]').forEach(chip => {
+        const cats = chip.getAttribute('data-chip-cat').split(' ');
+        chip.classList.remove('chip-active', 'chip-dim');
+        if (cat !== 'all') {
+          if (cats.includes(cat)) {
+            chip.classList.add('chip-active');
+          } else {
+            chip.classList.add('chip-dim');
+          }
+        }
+      });
+
+      // Highlight or Dim Project Cards
+      document.querySelectorAll('[data-card-cat]').forEach(card => {
+        const cats = card.getAttribute('data-card-cat').split(' ');
+        card.classList.remove('card-filtered-dim', 'card-filtered-active');
+        if (cat !== 'all') {
+          if (cats.includes(cat)) {
+            card.classList.add('card-filtered-active');
+          } else {
+            card.classList.add('card-filtered-dim');
+          }
+        }
+      });
+
+      // Sync with 3D Constellation Map and Signal Log Packet Rows
+      if (window.setConstellationFilter) {
+        window.setConstellationFilter(cat);
+      }
+      if (cat === 'geo') window.toggleSignalPacket('tx1', true);
+      if (cat === 'ai') window.toggleSignalPacket('tx2', true);
+      if (cat === 'webgl') window.toggleSignalPacket('tx3', true);
+    };
+
+    // 4. Update 4A: Deep Space Network Signal Log Packet Accordion & Live Waveform Sparklines
+    window.toggleSignalPacket = function(txId, forceOpen) {
+      const details = document.getElementById(`${txId}-details`);
+      const indicator = document.getElementById(`${txId}-indicator`);
+      if (!details || !indicator) return;
+
+      const isHidden = details.classList.contains('hidden');
+      const shouldOpen = forceOpen !== undefined ? forceOpen : isHidden;
+
+      if (shouldOpen) {
+        details.classList.remove('hidden');
+        indicator.textContent = '[- COLLAPSE]';
+        indicator.className = 'text-xs text-teal-400';
+      } else {
+        details.classList.add('hidden');
+        indicator.textContent = '[+ INSPECT]';
+        indicator.className = 'text-xs text-slate-400';
+      }
+    };
+
+    // Live 60FPS Waveform Sparklines
+    const sparkCanvases = document.querySelectorAll('.sparkline-canvas');
+    let phase = 0;
+    function animateSparklines() {
+      phase += 0.12;
+      sparkCanvases.forEach((sc, idx) => {
+        const sCtx = sc.getContext('2d');
+        const w = sc.width = 112;
+        const h = sc.height = 32;
+        const freq = parseFloat(sc.getAttribute('data-freq')) || 0.12;
+        const amp = parseFloat(sc.getAttribute('data-amp')) || 9;
+
+        sCtx.clearRect(0, 0, w, h);
+        sCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const y = h / 2 + Math.sin(x * freq + phase + idx) * amp * Math.sin(x / w * Math.PI);
+          if (x === 0) sCtx.moveTo(x, y);
+          else sCtx.lineTo(x, y);
+        }
+        sCtx.strokeStyle = '#2dd4bf';
+        sCtx.lineWidth = 1.4;
+        sCtx.stroke();
+      });
+      requestAnimationFrame(animateSparklines);
+    }
+    animateSparklines();
   })();
 </script>
     
