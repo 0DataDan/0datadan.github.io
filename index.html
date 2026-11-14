@@ -552,6 +552,11 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
+    // Raycaster for exact 3D-to-2D screen alignment
+    const raycaster = new THREE.Raycaster();
+    const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const cursorWorld = new THREE.Vector3();
+
     // Floating Data Nodes with Targeted Spring Physics
     const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
@@ -623,19 +628,26 @@
     });
 
     window.addEventListener('mousedown', (e) => {
+      const mVec = new THREE.Vector2(
+        (e.clientX / window.innerWidth - 0.5) * 2,
+        -(e.clientY / window.innerHeight - 0.5) * 2
+      );
+      raycaster.setFromCamera(mVec, camera);
+      const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
+      
       clickWaves.push({
         sx: e.clientX,
         sy: e.clientY,
-        wx: ((e.clientX / window.innerWidth) - 0.5) * 44,
-        wy: -((e.clientY / window.innerHeight) - 0.5) * 36,
+        wx: intersectResult ? cursorWorld.x : ((e.clientX / window.innerWidth) - 0.5) * 44,
+        wy: intersectResult ? cursorWorld.y : -((e.clientY / window.innerHeight) - 0.5) * 36,
         startTime: performance.now() * 0.001
       });
       if (clickWaves.length > 5) clickWaves.shift();
     });
 
     function sampleTerrainWave(wx, wy, t) {
-      const cursorWX = pointerNormX * 24;
-      const cursorWY = pointerNormY * 18;
+      const cursorWX = cursorWorld.x;
+      const cursorWY = cursorWorld.y;
       const distCursor = Math.hypot(wx - cursorWX, wy - cursorWY);
       const concentricRipple = Math.sin(distCursor * 0.35 - t * 2.3) * Math.exp(-distCursor * 0.031) * 1.35;
       const ambientSwell = Math.sin(wx * 0.13 + t * 0.58) * Math.cos(wy * 0.13 + t * 0.48) * 1.3;
@@ -732,6 +744,9 @@
       camera.position.x = targetX * 14;
       camera.position.y = -18 - targetY * 14;
       camera.lookAt(0, 0, 0);
+      
+      // Update camera matrix so Raycaster calculations are accurate
+      camera.updateMatrixWorld();
 
       const posArr = geometry.attributes.position.array;
       for (let i = 0; i < posArr.length; i += 3) {
@@ -741,9 +756,12 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // 2. Heavy, Targeted Spring Physics (Strictly limits pull to the 4 nearest particles)
-      const cursorWX = pointerNormX * 24;
-      const cursorWY = pointerNormY * 18;
+      // 2. Exact Raycaster Coordinates (Fixes particles running away from cursor)
+      raycaster.setFromCamera(new THREE.Vector2(pointerNormX, pointerNormY), camera);
+      const intersectResult = raycaster.ray.intersectPlane(planeZ, cursorWorld);
+      const cursorWX = intersectResult ? cursorWorld.x : pointerNormX * 24 + camera.position.x;
+      const cursorWY = intersectResult ? cursorWorld.y : pointerNormY * 18 + camera.position.y + 18;
+
       const positions = particleGeo.attributes.position.array;
 
       // Advance the invisible anchor grid
@@ -755,7 +773,7 @@
         }
       }
 
-      // Locate the 4 absolute closest anchor points to the cursor
+      // Locate the 4 absolute closest anchor points to the exact 3D cursor position
       let closest = [
         { id: -1, d: Infinity }, { id: -1, d: Infinity },
         { id: -1, d: Infinity }, { id: -1, d: Infinity }
@@ -772,8 +790,8 @@
         }
       }
 
-      // Ensure particles are within a 21-unit magnetic radius before grabbing them
-      const targetIds = closest.filter(c => c.d < 441).map(c => c.id);
+      // Ensure particles are reasonably nearby (dSq < 500) before targeting
+      const targetIds = closest.filter(c => c.d < 500).map(c => c.id);
 
       // Apply Spring Hooke's Law (F = -kX) to every particle
       for (let i = 0; i < particleCount; i++) {
@@ -784,19 +802,19 @@
         let ty = baseY[i];
         let tz = baseZ[i];
         
-        // Moderate spring tension + gliding momentum for natural return to grid
-        let stiffness = 0.006; 
+        // Default: Moderate spring tension + fluid momentum for natural return to grid
+        let stiffness = 0.003; 
         let damping = 0.90;    
         
         if (isTarget) {
-          // Slowly drag towards cursor, forming a tight ring so they don't overlap into a single dot
-          tx = cursorWX + Math.cos(i * 1.57) * 1.8;
-          ty = cursorWY + Math.sin(i * 1.57) * 1.8;
-          tz = baseZ[i] + 4.5; 
+          // Add micro-offset so particles orbit cursor smoothly instead of condensing into 1 dot
+          tx = cursorWX + Math.cos(i * 1.57) * 2.0;
+          ty = cursorWY + Math.sin(i * 1.57) * 2.0;
+          tz = baseZ[i] + 4.0; 
           
-          // Heavy, deliberate molasses pull (lower stiffness, higher friction)
-          stiffness = 0.0025; 
-          damping = 0.85; 
+          // Slow, deliberate acceleration (heavy feel) + smooth glide friction
+          stiffness = 0.0012; 
+          damping = 0.95; 
         }
 
         // Apply Spring Force
