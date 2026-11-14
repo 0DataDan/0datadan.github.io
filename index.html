@@ -38,7 +38,7 @@
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
-    <!-- Atmospheric Geospatial Background (Refined Opacity & Cinematic Inertia) -->
+    <!-- Atmospheric Geospatial Background -->
     <div id="geospatial-canvas-container" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #0b0f19;"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
@@ -56,7 +56,6 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 1. Topographic Elevation Grid (Geospatial Wireframe Mesh)
         const width = 60, height = 60, segments = 40;
         const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
         const posAttribute = geometry.attributes.position;
@@ -79,7 +78,6 @@
         terrain.position.z = -5;
         scene.add(terrain);
 
-        // 2. Floating Data Annotation & Geospatial Node Particles (Boosted Opacity)
         const particleCount = 400;
         const particleGeo = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
@@ -108,7 +106,7 @@
           size: 0.42,
           map: spriteTex,
           transparent: true,
-          opacity: 0.52, // <--- TWEAK 1: Increased opacity for better legibility
+          opacity: 0.52,
           blending: THREE.AdditiveBlending,
           depthWrite: false
         });
@@ -116,7 +114,6 @@
         const dataNodes = new THREE.Points(particleGeo, particleMat);
         scene.add(dataNodes);
 
-        // Mouse Parallax Interaction with Heavy Cinematic Damping
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
 
@@ -130,7 +127,6 @@
           requestAnimationFrame(animateTerrain);
           const elapsedTime = clock.getElapsedTime();
 
-          // <--- TWEAK 2: Slower lerp factor (0.025 instead of 0.05) for smooth cinematic float
           targetX += (mouseX - targetX) * 0.025;
           targetY += (mouseY - targetY) * 0.025;
           camera.position.x = targetX * 14;
@@ -164,11 +160,11 @@
       })();
     </script>
 
-    <div class="max-w-4xl mx-auto px-6 py-16 sm:py-24">
+    <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
 
         <!-- Header / Intro -->
         <header class="mb-16">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-teal-400 text-xs font-mono mb-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-teal-400 text-xs font-mono mb-4 backdrop-blur">
                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
                 Applied Geospatial AI & Evaluation
             </div>
@@ -181,117 +177,118 @@
                 After working extensively in LLM annotation and model rating, I started building hands-on projects bridging interactive 3D web applications with real-world satellite data. These projects represent my practical work translating complex datasets and technical documentation into responsive, browser-based tools.
             </p>
             <div class="flex flex-wrap gap-3 text-xs font-mono text-slate-400">
-                <span class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
                     <span class="text-teal-400">Cert:</span> NASA ARSET Remote Sensing
                 </span>
-                <span class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
                     <span class="text-teal-400">Cert:</span> Google AI Professional
                 </span>
-                <span class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+                <span class="flex items-center gap-1.5 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 backdrop-blur">
                     <span class="text-teal-400">Stack:</span> Python · Rasterio · Folium · ChromaDB · Streamlit
                 </span>
             </div>
         </header>
 
-        <!-- Projects Section -->
-        <main class="space-y-16">
+        <!-- Bento Grid Projects Section -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <article class="bg-slate-900/60 border border-slate-800/80 rounded-xl overflow-hidden shadow-2xl flex flex-col">
-                <!-- Dual MP4 Video Showcase Container -->
-                <div class="w-full bg-slate-950 border-b border-slate-800/80 aspect-video grid grid-cols-2 gap-1 p-1">
-                    <video autoplay muted loop playsinline class="w-full h-full object-cover rounded">
+            <!-- NOVA Project Card (Span Full Width) -->
+            <article class="md:col-span-2 bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col transition duration-300 hover:border-slate-700 hover:shadow-teal-500/5">
+                <div class="w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg">
                         <source src="SR10.mp4" type="video/mp4">
                     </video>
-                    <video autoplay muted loop playsinline class="w-full h-full object-cover rounded">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg">
                         <source src="SR12.mp4" type="video/mp4">
                     </video>
                 </div>
 
-                <!-- Project Details -->
                 <div class="p-6 sm:p-8 flex flex-col flex-grow">
                     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
-                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                        <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
                             NOVA
+                            <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/60 px-3 py-1 rounded-full">
+                                Full-Stack / 3D & FastAPI
+                            </span>
                         </h2>
-                        <span class="text-xs font-mono text-teal-400 bg-teal-950/60 border border-teal-800/60 px-3 py-1 rounded-full">
-                            Full-Stack / 3D & FastAPI
-                        </span>
                     </div>
 
-                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
                         An interactive 3D cinematic cosmic map featuring the NOVA boot sequence, planetary tiers, orbital telemetry, and automated guided tours powered by FastAPI and Three.js.
                     </p>
 
-                    <div class="flex flex-wrap gap-4 text-xs font-mono mt-auto">
-                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="text-teal-400 hover:underline">Live Demo →</a>
-                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="text-teal-400 hover:underline">GitHub Repo →</a>
+                    <div class="flex flex-wrap gap-6 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                        <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1 transition">Live Demo <span>↗</span></a>
+                        <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="text-slate-400 hover:text-white transition flex items-center gap-1">GitHub Repo <span>&rarr;</span></a>
                     </div>
                 </div>
             </article>
             
-            <!-- Project 2: Urban Heat Island Explorer -->
-            <article class="bg-slate-900/60 border border-slate-800/80 rounded-xl overflow-hidden backdrop-blur transition hover:border-slate-700">
-                <div class="w-full bg-slate-950 border-b border-slate-800/80 aspect-video relative overflow-hidden group flex items-center justify-center">
+            <!-- Urban Heat Explorer Project Card -->
+            <article class="bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden backdrop-blur-md transition duration-300 hover:border-slate-700 hover:shadow-teal-500/5 flex flex-col">
+                <div class="w-full bg-slate-950 border-b border-slate-800/80 aspect-video relative overflow-hidden flex items-center justify-center">
                     <img src="urban-heat-demo.gif" alt="Urban Heat Island Explorer Demo" class="w-full h-full object-cover object-top" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs flex flex-col items-center gap-2 p-6 text-center\'><span>[Add urban-heat-demo.gif to repository root]</span><span class=\'text-slate-600\'>Landsat 8/9 thermal calibration & Folium interactive map walkthrough</span></div>';">
                 </div>
 
-                <div class="p-6 sm:p-8">
-                    <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
-                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                            Urban Heat Explorer
-                        </h2>
-                        <span class="text-xs font-mono text-teal-400 bg-teal-950/60 border border-teal-800/50 px-2 py-0.5 rounded w-fit">
+                <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                    <div class="flex flex-col gap-2 mb-4">
+                        <div class="flex items-baseline justify-between">
+                            <h2 class="text-xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                        </div>
+                        <span class="text-xs font-mono text-teal-400 bg-teal-950/80 border border-teal-800/50 px-2.5 py-0.5 rounded w-fit">
                             Geospatial / Earth Observation
                         </span>
                     </div>
 
                     <p class="text-sm text-slate-300 leading-relaxed mb-6">
-                        An interactive geospatial application that processes Landsat 8/9 Level-2 satellite scenes to evaluate land surface temperature variations across urban areas. Computes calibrated surface temperature from thermal bands and calculates vegetation (NDVI) and built-up indices (NDBI) across four distinct metropolitan biomes.
+                        An interactive geospatial application that processes Landsat 8/9 Level-2 satellite scenes to evaluate land surface temperature variations across urban areas, calculating NDVI and NDBI across metropolitan biomes.
                     </p>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mb-6">
-                        <div class="bg-slate-950/50 border border-slate-800/60 p-3.5 rounded-lg">
+                    <div class="space-y-3 text-xs mb-6">
+                        <div class="bg-slate-950/50 border border-slate-800/60 p-3 rounded-lg">
                             <span class="text-slate-400 font-mono block mb-1">Key Pipeline:</span>
-                            <p class="text-slate-300">STAC queries, coordinate reprojection to native UTM via Rasterio, and radiometric calibration from raw digital numbers to Celsius.</p>
-                        </div>
-                        <div class="bg-slate-950/50 border border-slate-800/60 p-3.5 rounded-lg">
-                            <span class="text-slate-400 font-mono block mb-1">Interactive Features:</span>
-                            <p class="text-slate-300">Water-masked Folium thermal slippy maps, Plotly density contours, and Gemini multimodal scene diagnostic evaluation.</p>
+                            <p class="text-slate-300">STAC queries, coordinate reprojection via Rasterio, and radiometric calibration to Celsius.</p>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-800/80">
-                        <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
-                            <span class="bg-slate-800/50 px-2 py-0.5 rounded">Python</span>
+                    <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex flex-wrap gap-1.5 text-xs font-mono text-slate-400">
                             <span class="bg-slate-800/50 px-2 py-0.5 rounded">Rasterio</span>
                             <span class="bg-slate-800/50 px-2 py-0.5 rounded">Folium</span>
-                            <span class="bg-slate-800/50 px-2 py-0.5 rounded">Gemini API</span>
                             <span class="bg-slate-800/50 px-2 py-0.5 rounded">Streamlit</span>
                         </div>
-                        <div class="flex items-center gap-4 text-xs font-mono">
-                            <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="px-3 py-1.5 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 transition flex items-center gap-1 font-semibold">
-                                Live Demo <span>↗</span>
+                        <div class="flex items-center gap-3 text-xs font-mono">
+                            <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 transition flex items-center gap-1 font-semibold">
+                                Demo <span>↗</span>
                             </a>
-                            <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="text-slate-400 hover:text-white transition flex items-center gap-1 font-semibold">
-                                Source Code <span>&rarr;</span>
+                            <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="text-slate-400 hover:text-white transition">
+                                Code <span>&rarr;</span>
                             </a>
                         </div>
                     </div>
                 </div>
             </article>
-           
-            <!-- Background -->
-            <section class="border-t border-slate-800 pt-12">
-                <h3 class="text-lg font-bold text-white mb-4">Background</h3>
-                <div class="space-y-4 text-sm text-slate-400 leading-relaxed max-w-2xl">
-                    <p>
-                        With over 4 years of experience evaluating AI outputs, assessing prompt fidelity, and conducting rigorous data annotation, my focus centers on dataset integrity and practical system performance.
-                    </p>
-                    <p>
-                        My recent work expands this background into Earth observation—combining Python spatial libraries like Rasterio and PyProj with vector retrieval workflows to turn raw scientific datasets into clear, usable applications.
-                    </p>
+
+            <!-- Background / Credentials Card (Bento Tile) -->
+            <article class="bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col justify-between transition duration-300 hover:border-slate-700">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                        Professional Background
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
+                        <p>
+                            With over 4 years of experience evaluating AI outputs, assessing prompt fidelity, and conducting rigorous data annotation, my focus centers on dataset integrity and practical system performance.
+                        </p>
+                        <p>
+                            My recent work expands this background into Earth observation—combining Python spatial libraries like Rasterio and PyProj to turn raw scientific datasets into clear, usable web tools.
+                        </p>
+                    </div>
                 </div>
-            </section>
+                <div class="mt-6 pt-4 border-t border-slate-800 text-xs font-mono text-teal-400">
+                    STATUS: AVAILABLE FOR COLLABORATION // 2026
+                </div>
+            </article>
 
         </main>
 
