@@ -470,62 +470,58 @@
   })();
 </script>
 
+    <!-- DYNAMIC FAVICON ANIMATION SCRIPT -->
     <script>
-  (function() {
-    const linkTag = document.getElementById('dynamic-favicon');
-    if (!linkTag) return;
+      (function() {
+        const linkTag = document.getElementById('dynamic-favicon');
+        if (!linkTag) return;
 
-    // Create an off-screen canvas to draw our animated favicon frames
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
 
-    // Load your base favicon image
-    const baseImage = new Image();
-    baseImage.crossOrigin = 'anonymous';
-    baseImage.src = 'faviconR1.ico';
+        const baseImage = new Image();
+        baseImage.crossOrigin = 'anonymous';
+        baseImage.src = 'faviconR1.ico';
 
-    let angle = 0;
+        let angle = 0;
 
-    baseImage.onload = function() {
-      function animateFavicon() {
-        angle += 0.06; // Speed of the pulsing/orbiting node
+        baseImage.onload = function() {
+          function animateFavicon() {
+            angle += 0.12; // Speed of the orbiting node
 
-        // 1. Draw the base favicon image onto the canvas
-        ctx.clearRect(0, 0, 64, 64);
-        ctx.drawImage(baseImage, 0, 0, 64, 64);
+            ctx.clearRect(0, 0, 64, 64);
+            ctx.drawImage(baseImage, 0, 0, 64, 64);
 
-        // 2. Calculate smooth pulsing coordinates for the teal dot overlay
-        // (Matching the approximate position of your existing teal dot near the top right)
-        const centerX = 47;
-        const centerY = 16;
-        const radius = 3 + Math.sin(angle) * 1.5; // Subtle breathing/pulsing effect
+            // Coordinates for the orbiting teal telemetry node
+            const orbitRadius = 8;
+            const centerX = 44;
+            const centerY = 20;
+            
+            const x = centerX + Math.cos(angle) * orbitRadius;
+            const y = centerY + Math.sin(angle) * orbitRadius;
 
-        // Draw a glowing outer aura ring
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius + 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(45, 212, 191, 0.35)';
-        ctx.fill();
+            // Draw glowing outer aura
+            ctx.beginPath();
+            ctx.arc(x, y, 7, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(45, 212, 191, 0.4)';
+            ctx.fill();
 
-        // Draw the solid inner teal core
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#2dd4bf';
-        ctx.fill();
+            // Draw solid teal core
+            ctx.beginPath();
+            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#2dd4bf';
+            ctx.fill();
 
-        // 3. Push the canvas frame directly into the browser tab's favicon href
-        linkTag.href = canvas.toDataURL('image/png');
+            linkTag.href = canvas.toDataURL('image/png');
+            requestAnimationFrame(animateFavicon);
+          }
 
-        // Loop the animation
-        requestAnimationFrame(animateFavicon);
-      }
-
-      // Kick off the loop once the image is ready
-      requestAnimationFrame(animateFavicon);
-    };
-  })();
-</script>
+          requestAnimationFrame(animateFavicon);
+        };
+      })();
+    </script>
     
 </body>
 </html>
