@@ -549,14 +549,12 @@
                                         </p>
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                            <!-- Unboxed Terminal Line -->
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
                                                 <span class="typewriter-fx text-teal-300" data-phrases='["Full-Stack 3D Web Application", "3D Scene Animation & REST APIs", "Click panel to view code"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
-                                            <!-- Minimalist Footer-Style Links -->
                                             <div class="flex items-center gap-6 ml-auto">
                                                 <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live App <span>↗</span>
@@ -576,48 +574,53 @@
                                     <div class="hud-corner hud-bl"></div>
                                     <div class="hud-corner hud-br"></div>
 
-                                    <!-- Top Full-Bleed Code Viewport -->
+                                    <!-- Top Full-Bleed Code Viewport + Toggleable Architecture Overlay -->
                                     <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] p-5 sm:p-7 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-start">
                                         <div id="code-stream-nova" class="space-y-1.5 text-left w-full"></div>
+
+                                        <!-- Slide-In Architecture Drawer (Hidden by Default) -->
+                                        <div id="arch-drawer-nova" onclick="event.stopPropagation();" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 sm:p-7 flex flex-col justify-center opacity-0 pointer-events-none translate-y-3 transition-all duration-300 z-20 font-sans">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
+                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Rendering</h4>
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
+                                                        Maintained a stable <span class="text-white font-medium">60 FPS</span> across massive scale disparities using logarithmic depth calculations and adaptive camera clipping bounds.
+                                                    </p>
+                                                </div>
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
+                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Pipelines</h4>
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
+                                                        Engineered centralized state guards and cleanup handlers to abort active audio streams and prevent desynchronization during rapid tour inputs.
+                                                    </p>
+                                                </div>
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
+                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Interaction</h4>
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
+                                                        Eliminated UI jitter near screen boundaries by implementing spatial hysteresis zones paired with weighted physics transitions and grace timers.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Bottom Body Section -->
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
                                         <div>
-                                            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                                                 <div class="flex items-baseline gap-3">
                                                     <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
                                                     <span class="text-xs font-mono text-teal-400/80">/ under the hood</span>
                                                 </div>
-                                                <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
+                                                <div class="flex items-center gap-3">
+                                                    <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
+                                                        [ + Architecture ]
+                                                    </button>
+                                                    <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
+                                                </div>
                                             </div>
-                                            <p class="text-sm text-slate-300 leading-relaxed mb-4 max-w-3xl">
+                                            <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
                                                 Combines a FastAPI backend with a Three.js frontend to load star data, animate planet orbits, and smoothly move the 3D camera between stops on the guided tour.
                                             </p>
-
-                                            <!-- Engineering Architecture Breakdown -->
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-5 pt-4 border-t border-slate-800/60 text-left">
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Rendering</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
-                                                        Maintained a stable <span class="text-slate-200">60 FPS</span> across massive scale disparities using logarithmic depth calculations and adaptive camera clipping bounds.
-                                                    </p>
-                                                </div>
-
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Pipelines</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
-                                                        Engineered centralized state guards and cleanup handlers to abort active audio streams and prevent desynchronization during rapid tour inputs.
-                                                    </p>
-                                                </div>
-
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Interaction</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
-                                                        Eliminated UI jitter near screen boundaries by implementing spatial hysteresis zones paired with weighted physics transitions and grace timers.
-                                                    </p>
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
@@ -628,10 +631,10 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live App <span>↗</span>
                                                 </a>
-                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
                                             </div>
@@ -680,14 +683,12 @@
                                         </p>
 
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                            <!-- Unboxed Terminal Line -->
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
                                                 <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space", "Click panel to view code"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
-                                            <!-- Minimalist Footer-Style Links -->
                                             <div class="flex items-center gap-6 ml-auto">
                                                 <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live Demo <span>↗</span>
@@ -700,29 +701,80 @@
                                     </div>
                                 </div>
 
-                               <!-- Engineering Architecture Breakdown: Urban Heat Explorer -->
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-5 pt-4 border-t border-slate-800/60 text-left">
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
+                                <!-- BACK OF URBAN HEAT CARD -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <!-- Top Full-Bleed Code Viewport + Toggleable Architecture Overlay -->
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] p-5 sm:p-7 font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden flex flex-col justify-start">
+                                        <div id="code-stream-heat" class="space-y-1.5 text-left w-full"></div>
+
+                                        <!-- Slide-In Architecture Drawer (Hidden by Default) -->
+                                        <div id="arch-drawer-heat" onclick="event.stopPropagation();" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 sm:p-7 flex flex-col justify-center opacity-0 pointer-events-none translate-y-3 transition-all duration-300 z-20 font-sans">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
                                                     <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Raster Data</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
-                                                        Cropped <span class="text-slate-200">30m Landsat 8/9</span> satellite scenes to specific city bounds using Rasterio, keeping memory usage low while calculating surface temperatures from raw thermal bands.
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
+                                                        Cropped <span class="text-white font-medium">30m Landsat 8/9</span> satellite scenes to specific city bounds using Rasterio, keeping memory usage low while calculating surface temperatures.
                                                     </p>
                                                 </div>
-
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
                                                     <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Map Alignment</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
                                                         Reprojected satellite grid coordinates to match standard web map projections, ensuring thermal heatmaps align accurately over street-level base maps.
                                                     </p>
                                                 </div>
-
-                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors duration-300">
+                                                <div class="border-l-2 border-teal-500/40 pl-3 hover:border-teal-400 transition-colors">
                                                     <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Visual Masking</h4>
-                                                    <p class="text-slate-400 text-xs leading-relaxed">
+                                                    <p class="text-slate-300 text-xs leading-relaxed">
                                                         Filtered out water pixels and empty border data so thermal overlays blend cleanly into the natural coastline without harsh bounding boxes.
                                                     </p>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Body Section -->
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-baseline gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                                    <span class="text-xs font-mono text-teal-400/80">/ under the hood</span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
+                                                        [ + Architecture ]
+                                                    </button>
+                                                    <span class="text-xs font-mono text-purple-400">30m GeoTIFF</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                                Processes multispectral satellite rasters in Python with Rasterio to calculate land surface temperatures and render interactive microclimate heat overlays.
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-purple-400">Landsat 8/9</strong> Thermal Bands</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-emerald-400">Folium</strong> GIS Layers</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live Demo <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -1608,63 +1660,6 @@
   })();
 </script>
 
-<!-- DYNAMIC FAVICON SCRIPT (Cyan to Dark Gray Blink) -->
-<script>
-  (function() {
-    const linkTag = document.getElementById('dynamic-favicon');
-    if (!linkTag) return;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
-
-    const baseImage = new Image();
-    baseImage.crossOrigin = 'anonymous';
-    baseImage.src = 'faviconR1.ico';
-
-    let time = 0;
-
-    baseImage.onload = function() {
-      function animateFavicon() {
-        time += 0.18;
-
-        ctx.clearRect(0, 0, 64, 64);
-        ctx.drawImage(baseImage, 0, 0, 64, 64);
-
-        const x = 48;
-        const y = 16;
-        const radius = 5;
-
-        const isCyan = Math.sin(time) > 0;
-
-        if (isCyan) {
-          const auraAlpha = 0.75;
-          ctx.beginPath();
-          ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha * 0.4})`;
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(45, 212, 191, ${auraAlpha})`;
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(x, y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgb(45, 212, 191)`;
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
-          ctx.fillStyle = '#1e202e';
-          ctx.fill();
-        }
-        linkTag.href = canvas.toDataURL('image/png');
-      }
-      setInterval(animateFavicon, 33);
-    };
-  })();
-</script>
-
 <!-- UNIFIED TYPEWRITER & KPI COUNTER SCRIPT -->
 <script>
   (function() {
@@ -1984,6 +1979,23 @@
       renderConstellation();
     }
   })();
+</script>
+
+    <script>
+  window.toggleArchDrawer = function(projectKey, btnEl) {
+    const drawer = document.getElementById(`arch-drawer-${projectKey}`);
+    if (!drawer) return;
+    const isOpen = drawer.classList.contains('opacity-100');
+    if (isOpen) {
+      drawer.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+      drawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      btnEl.textContent = '[ + Architecture ]';
+    } else {
+      drawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      drawer.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+      btnEl.textContent = '[ - Code Stream ]';
+    }
+  };
 </script>
     
 </body>
