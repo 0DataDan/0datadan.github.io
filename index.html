@@ -799,91 +799,167 @@
         #cmd-palette-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(11, 15, 25, 0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 90000; /* Sits above UI (z-20) but below #mag-cursor-core (z-99999) */
+            background: rgba(7, 10, 18, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 90000;
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding-top: 12vh;
+            padding-top: 18vh;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
         #cmd-palette-overlay.palette-open {
             opacity: 1;
             pointer-events: auto;
         }
+        /* Hide custom magnetic dot while typing in keyboard-first CLI mode */
+        body.cmd-cursor-hidden #mag-cursor-core {
+            opacity: 0 !important;
+            transform: translate(-50%, -50%) scale(0.2) !important;
+        }
         #cmd-palette-container {
             width: 100%;
-            max-width: 540px;
-            background: rgba(15, 23, 42, 0.88);
-            border: 1px solid rgba(45, 212, 191, 0.3);
-            border-radius: 0.75rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(45, 212, 191, 0.12);
-            transform: scale(0.96) translateY(-10px);
-            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-            overflow: hidden;
+            max-width: 560px;
+            padding: 0 1.25rem;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            transform: translateY(-8px);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         #cmd-palette-overlay.palette-open #cmd-palette-container {
-            transform: scale(1) translateY(0);
+            transform: translateY(0);
         }
         #cmd-input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
-            padding: 1.1rem 1.25rem;
-            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 0.25rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
-        #cmd-prompt-char {
-            color: #2dd4bf;
+        #cmd-palette-overlay.palette-open #cmd-input-wrapper {
+            border-bottom-color: rgba(248, 250, 252, 0.65);
+            box-shadow: 0 8px 24px -12px rgba(45, 212, 191, 0.25);
+        }
+        #cmd-prompt-prefix {
+            color: #64748b;
             font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-right: 0.6rem;
+            user-select: none;
+            white-space: nowrap;
+        }
+        #cmd-prompt-prefix strong {
+            color: #2dd4bf;
             font-weight: 600;
-            margin-right: 0.75rem;
+        }
+        .cmd-input-stack {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        #cmd-ghost {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.98rem;
+            color: rgba(100, 116, 139, 0.45);
+            pointer-events: none;
+            white-space: pre;
+            overflow: hidden;
         }
         #cmd-input {
-            flex: 1;
+            position: relative;
+            z-index: 2;
+            width: 100%;
             background: transparent;
             border: none;
             outline: none;
             color: #f8fafc;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
+            caret-color: #2dd4bf;
         }
-        #cmd-input::placeholder { color: #475569; }
-        #cmd-results {
-            max-height: 320px;
-            overflow-y: auto;
-            padding: 0.5rem;
+        #cmd-input::placeholder {
+            color: rgba(100, 116, 139, 0.5);
         }
-        .cmd-result-item {
+        #cmd-zero-hints {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            padding: 0.7rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            color: #94a3b8;
+            gap: 0.5rem;
+            padding: 0.65rem 0.25rem;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            transition: all 0.15s ease;
-        }
-        .cmd-result-item[aria-selected="true"],
-        .cmd-result-item:hover {
-            background: rgba(45, 212, 191, 0.12);
-            color: #fff;
-        }
-        .cmd-result-item[aria-selected="true"] .cmd-item-shortcut {
-            color: #2dd4bf;
-            border-color: rgba(45, 212, 191, 0.4);
-        }
-        .cmd-item-shortcut {
-            font-size: 0.7rem;
-            padding: 0.1rem 0.38rem;
-            border: 1px solid rgba(71, 85, 105, 0.5);
-            border-radius: 0.25rem;
+            font-size: 0.72rem;
             color: #64748b;
+            transition: opacity 0.2s ease;
+        }
+        .cmd-token-btn {
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .cmd-token-btn:hover {
+            color: #f8fafc;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        #cmd-results {
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 0.35rem 0;
+        }
+        .cmd-result-item {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 0.55rem 0.75rem;
+            cursor: pointer;
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+        .cmd-result-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            width: 2px;
+            height: 55%;
+            background-color: #f8fafc;
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cmd-result-item[aria-selected="true"] {
+            color: #f8fafc;
+            transform: translateX(4px);
+        }
+        .cmd-result-item[aria-selected="true"]::before {
+            transform: translateY(-50%) scaleY(1);
+        }
+        .cmd-item-cmd {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+        .cmd-result-item[aria-selected="true"] .cmd-item-cmd {
+            color: #2dd4bf;
+        }
+        .cmd-item-desc {
+            font-size: 0.73rem;
+            color: #475569;
+        }
+        .cmd-result-item[aria-selected="true"] .cmd-item-desc {
+            color: #94a3b8;
         }
         /* === STOP: 04 // GLOBAL COMMAND PALETTE === */
 
@@ -1591,8 +1667,22 @@
     <div id="cmd-palette-overlay" aria-hidden="true">
         <div id="cmd-palette-container" role="dialog" aria-modal="true">
             <div id="cmd-input-wrapper">
-                <span id="cmd-prompt-char">&gt;</span>
-                <input type="text" id="cmd-input" class="interactive" placeholder="Type a command or search... (Esc to close)" autocomplete="off" spellcheck="false" />
+                <span id="cmd-prompt-prefix">guest@0datadan:<strong>~</strong>$</span>
+                <div class="cmd-input-stack">
+                    <div id="cmd-ghost" aria-hidden="true"></div>
+                    <input type="text" id="cmd-input" placeholder="type command or 'help'..." autocomplete="off" spellcheck="false" />
+                </div>
+            </div>
+            <div id="cmd-zero-hints">
+                <div>
+                    <span>cmds:</span>
+                    <button type="button" class="cmd-token-btn" data-fill="open ">open</button> ·
+                    <button type="button" class="cmd-token-btn" data-fill="cat skills.md">cat</button> ·
+                    <button type="button" class="cmd-token-btn" data-fill="./send-message">./send-message</button> ·
+                    <button type="button" class="cmd-token-btn" data-fill="ssh ">ssh</button> ·
+                    <button type="button" class="cmd-token-btn" data-fill="help">help</button>
+                </div>
+                <span>[Tab] complete · [Esc] exit</span>
             </div>
             <div id="cmd-results" role="listbox"></div>
         </div>
@@ -2991,11 +3081,14 @@
   (function initCommandPalette() {
     const overlay = document.getElementById('cmd-palette-overlay');
     const input = document.getElementById('cmd-input');
+    const ghost = document.getElementById('cmd-ghost');
+    const zeroHints = document.getElementById('cmd-zero-hints');
     const resultsContainer = document.getElementById('cmd-results');
-    if (!overlay || !input || !resultsContainer) return;
+    if (!overlay || !input || !ghost || !resultsContainer) return;
 
     let isOpen = false;
     let selectedIndex = 0;
+    let pointerUnlocked = false;
 
     const focusContactTerminal = () => {
       const contactSec = document.getElementById('contact-dedicated-section');
@@ -3007,13 +3100,10 @@
       if (contactSec) {
         contactSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
-      // If terminal hasn't started booting yet, trigger it
       if (stage && !stage.classList.contains('holo-awake') && trigger) {
         trigger.click();
       }
 
-      // Focus input once the terminal prompt is visible
       const checkReady = setInterval(() => {
         const lineActions = stage && stage.querySelector('.reveal-4');
         if (lineActions && lineActions.classList.contains('line-visible')) {
@@ -3025,65 +3115,122 @@
     };
 
     const commands = [
-      { id: 'nova', title: 'Project 01 // NOVA Observatory', hint: 'open nova', action: () => {
+      { id: 'nova', cmd: 'open nova', desc: '01 // NOVA Observatory 3D App', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(0);
           document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
       }},
-      { id: 'heat', title: 'Project 02 // Urban Heat Explorer', hint: 'open heat', action: () => {
+      { id: 'heat', cmd: 'open heat', desc: '02 // Urban Heat Explorer GIS', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(1);
           document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
       }},
-      { id: 'skills', title: 'Navigate to Skills & Credentials Matrix', hint: 'cat skills.md', action: () => {
+      { id: 'skills', cmd: 'cat skills.md', desc: 'Inspect Skills & Credentials Matrix', action: () => {
           document.getElementById('constellation-canvas').scrollIntoView({ behavior: 'smooth', block: 'center' });
       }},
-      { id: 'contact', title: 'Initialize Contact Terminal Uplink', hint: './send-message', action: focusContactTerminal },
-      { id: 'github', title: 'Open GitHub Profile (0DataDan)', hint: 'ssh github', action: () => window.open('https://github.com/0DataDan', '_blank') },
-      { id: 'linkedin', title: 'Open LinkedIn Profile', hint: 'ssh linkedin', action: () => window.open('https://www.linkedin.com/in/daniel-perez1/', '_blank') }
+      { id: 'contact', cmd: './send-message', desc: 'Initialize Contact Terminal Uplink', action: focusContactTerminal },
+      { id: 'github', cmd: 'ssh github', desc: 'Launch github.com/0DataDan ↗', action: () => window.open('https://github.com/0DataDan', '_blank') },
+      { id: 'linkedin', cmd: 'ssh linkedin', desc: 'Launch linkedin.com/in/daniel-perez1 ↗', action: () => window.open('https://www.linkedin.com/in/daniel-perez1/', '_blank') }
     ];
 
-    let filteredCommands = [...commands];
+    let filteredCommands = [];
 
-    const renderResults = () => {
+    const updateGhostAndResults = (forceShowAll = false) => {
+      const raw = input.value;
+      const query = raw.trim().toLowerCase();
+
+      // Only reveal list when user types, runs 'help'/'ls', or explicitly presses Down Arrow
+      if (!query && !forceShowAll) {
+        filteredCommands = [];
+        ghost.textContent = '';
+        resultsContainer.innerHTML = '';
+        if (zeroHints) zeroHints.style.opacity = '1';
+        return;
+      }
+
+      if (query === 'help' || query === 'ls' || query === '?' || forceShowAll) {
+        filteredCommands = [...commands];
+      } else {
+        filteredCommands = commands.filter(c =>
+          c.cmd.toLowerCase().includes(query) || c.desc.toLowerCase().includes(query)
+        );
+      }
+
+      if (selectedIndex >= filteredCommands.length) selectedIndex = 0;
+
+      // Compute inline ghost autocomplete if the active command starts with the typed query
+      const activeCmd = filteredCommands[selectedIndex];
+      if (query && activeCmd && activeCmd.cmd.toLowerCase().startsWith(query)) {
+        ghost.textContent = raw + activeCmd.cmd.slice(raw.length);
+      } else {
+        ghost.textContent = '';
+      }
+
       resultsContainer.innerHTML = '';
-      filteredCommands.forEach((cmd, idx) => {
-        const item = document.createElement('div');
-        item.className = 'cmd-result-item interactive';
-        item.setAttribute('aria-selected', idx === selectedIndex);
-        item.innerHTML = `<span>${cmd.title}</span><span class="cmd-item-shortcut">${cmd.hint}</span>`;
+      filteredCommands.forEach((itemObj, idx) => {
+        const row = document.createElement('div');
+        row.className = 'cmd-result-item';
+        row.setAttribute('aria-selected', idx === selectedIndex);
+        row.innerHTML = `<span class="cmd-item-cmd">${itemObj.cmd}</span><span class="cmd-item-desc">${itemObj.desc}</span>`;
 
-        item.addEventListener('mouseenter', () => {
-          selectedIndex = idx;
-          renderResults();
+        row.addEventListener('mousemove', () => {
+          if (!pointerUnlocked) return;
+          if (selectedIndex !== idx) {
+            selectedIndex = idx;
+            updateGhostAndResults(forceShowAll);
+          }
         });
-        item.addEventListener('click', () => {
+        row.addEventListener('click', () => {
           closePalette();
-          cmd.action();
+          itemObj.action();
         });
 
-        resultsContainer.appendChild(item);
+        resultsContainer.appendChild(row);
       });
-
-      const selectedEl = resultsContainer.children[selectedIndex];
-      if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
     };
 
     const openPalette = () => {
       isOpen = true;
+      pointerUnlocked = false;
+      document.body.classList.add('cmd-cursor-hidden');
       overlay.classList.add('palette-open');
       overlay.setAttribute('aria-hidden', 'false');
       input.value = '';
-      filteredCommands = [...commands];
       selectedIndex = 0;
-      renderResults();
-      setTimeout(() => input.focus(), 50);
+      updateGhostAndResults(false);
+      setTimeout(() => input.focus(), 40);
     };
 
     const closePalette = () => {
       isOpen = false;
+      document.body.classList.remove('cmd-cursor-hidden');
       overlay.classList.remove('palette-open');
       overlay.setAttribute('aria-hidden', 'true');
       input.blur();
     };
+
+    // Wake cursor back up only if the user deliberately moves the mouse while open
+    let lastMouseX = 0, lastMouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      if (!isOpen) {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        return;
+      }
+      if (Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY) > 10) {
+        pointerUnlocked = true;
+        document.body.classList.remove('cmd-cursor-hidden');
+      }
+    });
+
+    // Clickable syntax tokens in the hint bar
+    document.querySelectorAll('.cmd-token-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        input.value = btn.getAttribute('data-fill') || '';
+        selectedIndex = 0;
+        updateGhostAndResults(false);
+        input.focus();
+      });
+    });
 
     window.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -3099,31 +3246,44 @@
       if (e.target === overlay) closePalette();
     });
 
-    input.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      filteredCommands = commands.filter(c =>
-        c.title.toLowerCase().includes(query) || c.hint.toLowerCase().includes(query)
-      );
+    input.addEventListener('input', () => {
       selectedIndex = 0;
-      renderResults();
+      document.body.classList.add('cmd-cursor-hidden');
+      pointerUnlocked = false;
+      updateGhostAndResults(false);
     });
 
     input.addEventListener('keydown', (e) => {
-      if (!isOpen || filteredCommands.length === 0) return;
+      if (!isOpen) return;
+
+      // Tab or Right-Arrow at end of input accepts the ghost autocomplete
+      if ((e.key === 'Tab' || (e.key === 'ArrowRight' && input.selectionStart === input.value.length)) && filteredCommands[selectedIndex]) {
+        e.preventDefault();
+        input.value = filteredCommands[selectedIndex].cmd;
+        updateGhostAndResults(false);
+        return;
+      }
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % filteredCommands.length;
-        renderResults();
-      } else if (e.key === 'ArrowUp') {
+        if (filteredCommands.length === 0) {
+          selectedIndex = 0;
+          updateGhostAndResults(true);
+        } else {
+          selectedIndex = (selectedIndex + 1) % filteredCommands.length;
+          updateGhostAndResults(true);
+        }
+      } else if (e.key === 'ArrowUp' && filteredCommands.length > 0) {
         e.preventDefault();
         selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
-        renderResults();
+        updateGhostAndResults(true);
       } else if (e.key === 'Enter') {
         e.preventDefault();
         const targetCmd = filteredCommands[selectedIndex];
-        closePalette();
-        if (targetCmd) targetCmd.action();
+        if (targetCmd) {
+          closePalette();
+          targetCmd.action();
+        }
       }
     });
   })();
