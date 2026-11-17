@@ -728,25 +728,22 @@
         }
         /* Matches [ + Architecture ] button styling */
         .terminal-exec-btn {
-            background: rgba(20, 184, 166, 0.10);
-            color: #2dd4bf;
-            border: 1px solid rgba(45, 212, 191, 0.38);
-            border-radius: 6px;
-            padding: 0.4rem 0.95rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            text-shadow: 0 0 8px rgba(45, 212, 191, 0.35);
-            cursor: pointer;
-            transition: all 0.22s ease;
-        }
-        .terminal-exec-btn:hover:not(:disabled) {
-            background: rgba(20, 184, 166, 0.22);
-            border-color: #2dd4bf;
-            color: #5eead4;
-            box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
-            transform: translateY(-1px);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 4px 2px;
+    color: #64748b; /* Subtle slate gray when idle */
+    font-family: monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.terminal-exec-btn:hover {
+    color: #2dd4bf; /* Lights up in your primary teal on hover */
+    background: transparent !important;
+    
         }
         .terminal-exec-btn:disabled {
             opacity: 0.5;
@@ -1433,7 +1430,7 @@
 
                             <div class="terminal-actions holo-line-reveal reveal-4">
                                 <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">
-                                    [ + Execute ↵ ]
+                                    &crarr; send
                                 </button>
                             </div>
                         </form>
