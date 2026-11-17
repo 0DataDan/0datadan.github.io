@@ -1583,10 +1583,11 @@
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
-      // Decryption Wake 2D HUD Overlay for Magnetically Captured 3D Nodes
+      // Decryption Wake 2D HUD Overlay (Mounted inside the Three.js container)
     const decryptCanvas = document.createElement('canvas');
-    decryptCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;';
-    document.body.appendChild(decryptCanvas);
+    decryptCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+    container.appendChild(decryptCanvas);
+    
     const decryptCtx = decryptCanvas.getContext('2d');
     const decryptGlyphs = ['0', '1', '>', '_', '/', '[', ']', '+', '#', '$'];
     const decryptEnergy = new Float32Array(particleCount);
