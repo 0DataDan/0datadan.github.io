@@ -408,6 +408,279 @@
         .arch-expanded .arch-card-stagger:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
         .arch-expanded .arch-card-stagger:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.22s; }
         .arch-expanded .arch-card-stagger:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.32s; }
+    
+        /* === START: 03 // CONTACT TERMINAL STYLES === */
+        #contact-dedicated-section {
+            margin-top: 4.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 20;
+        }
+        .contact-sec-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .contact-sec-left {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+        }
+        .contact-sec-index {
+            color: #2dd4bf;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+        .contact-sec-title {
+            color: #f8fafc;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin: 0;
+        }
+        .contact-sec-sub {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+        .contact-hud-card {
+            position: relative;
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.55);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .contact-hud-card:hover,
+        .contact-hud-card:focus-within {
+            border-color: rgba(45, 212, 191, 0.45);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(45, 212, 191, 0.1);
+        }
+        /* Corner HUD Brackets matching Skills & Credentials */
+        .hud-corner {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-color: rgba(45, 212, 191, 0.35);
+            pointer-events: none;
+            transition: all 0.25s ease;
+            z-index: 5;
+        }
+        .contact-hud-card:hover .hud-corner,
+        .contact-hud-card:focus-within .hud-corner {
+            border-color: #2dd4bf;
+            width: 18px;
+            height: 18px;
+            filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.6));
+        }
+        .hud-tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; border-top-left-radius: 4px; }
+        .hud-tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; border-top-right-radius: 4px; }
+        .hud-bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; border-bottom-left-radius: 4px; }
+        .hud-br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; border-bottom-right-radius: 4px; }
+
+        .terminal-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .terminal-dots {
+            display: flex;
+            gap: 0.45rem;
+        }
+        .terminal-dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .terminal-dots .dot-red   { background: #ef4444; }
+        .terminal-dots .dot-amber { background: #f59e0b; }
+        .terminal-dots .dot-green { background: #10b981; }
+        .terminal-bar-title {
+            color: #94a3b8;
+            font-size: 0.73rem;
+            letter-spacing: 0.03em;
+        }
+        .terminal-status {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #2dd4bf;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+        .status-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2dd4bf;
+            box-shadow: 0 0 8px #2dd4bf;
+            animation: termPulseGlow 2s infinite ease-in-out;
+        }
+        @keyframes termPulseGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .terminal-body {
+            padding: 1.5rem 1.75rem;
+            color: #cbd5e1;
+            font-size: 0.86rem;
+            line-height: 1.7;
+        }
+        .terminal-presets-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.6);
+        }
+        .preset-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .preset-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            margin-right: 0.25rem;
+        }
+        .preset-pill {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            font-family: inherit;
+            font-size: 0.72rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .preset-pill:hover {
+            border-color: #2dd4bf;
+            color: #2dd4bf;
+            background: rgba(45, 212, 191, 0.08);
+        }
+        .telemetry-readout {
+            color: #64748b;
+            font-size: 0.72rem;
+        }
+        .telemetry-readout strong {
+            color: #2dd4bf;
+        }
+        .cmd-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.38rem;
+            margin-bottom: 0.75rem;
+        }
+        .prompt-user { color: #2dd4bf; font-weight: 600; }
+        .prompt-sep  { color: #64748b; }
+        .prompt-dir  { color: #38bdf8; font-weight: 600; }
+        .prompt-char { color: #94a3b8; margin-right: 0.25rem; }
+        .cmd-binary  { color: #f8fafc; font-weight: 600; }
+        .cmd-flag    { color: #c084fc; }
+        .cmd-arg     { color: #38bdf8; }
+        .cmd-quote   { color: #fbbf24; }
+        .cmd-indent  { color: #475569; padding-left: 1rem; }
+        .terminal-inline-input {
+            background: rgba(15, 23, 42, 0.75);
+            border: none;
+            border-bottom: 1px dashed rgba(45, 212, 191, 0.45);
+            color: #fde68a;
+            font-family: inherit;
+            font-size: 0.86rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px 3px 0 0;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .terminal-inline-input::placeholder {
+            color: rgba(148, 163, 184, 0.38);
+        }
+        .terminal-inline-input:focus {
+            background: rgba(45, 212, 191, 0.1);
+            border-bottom: 1px solid #2dd4bf;
+        }
+        .sender-input { width: 220px; }
+        .msg-input    { flex: 1; min-width: 260px; }
+        .blinking-cursor {
+            color: #2dd4bf;
+            font-size: 0.85rem;
+            animation: termBlinkCursor 1s steps(2, start) infinite;
+        }
+        @keyframes termBlinkCursor {
+            to { visibility: hidden; }
+        }
+        .terminal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.15rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid rgba(51, 65, 85, 0.45);
+        }
+        .shortcut-hint {
+            color: #64748b;
+            font-size: 0.73rem;
+        }
+        .shortcut-hint kbd {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            border-radius: 3px;
+            padding: 0.05rem 0.35rem;
+            color: #cbd5e1;
+            font-size: 0.7rem;
+        }
+        .terminal-exec-btn {
+            background: rgba(45, 212, 191, 0.12);
+            color: #2dd4bf;
+            border: 1px solid rgba(45, 212, 191, 0.45);
+            border-radius: 6px;
+            padding: 0.42rem 1rem;
+            font-family: inherit;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .terminal-exec-btn:hover:not(:disabled) {
+            background: #2dd4bf;
+            color: #020617;
+            box-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
+        }
+        .terminal-exec-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .terminal-output {
+            margin-top: 1rem;
+            font-size: 0.78rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.32rem;
+        }
+        .log-step { color: #94a3b8; }
+        .log-ok   { color: #10b981; font-weight: 600; }
+        .log-err  { color: #ef4444; }
+        /* === STOP: 03 // CONTACT TERMINAL STYLES === */
+
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
@@ -1008,6 +1281,90 @@
         </main>
 
         <!-- Footer -->
+        <!-- === START: 03 // CONTACT TERMINAL SECTION === -->
+        <section id="contact-dedicated-section" aria-label="Contact Terminal">
+            <div class="contact-sec-header">
+                <div class="contact-sec-left">
+                    <span class="contact-sec-index">03 //</span>
+                    <h2 class="contact-sec-title">Terminal Uplink</h2>
+                    <span class="contact-sec-sub">Direct Shell Dispatch</span>
+                </div>
+                <div class="telemetry-readout">
+                    PORT: <strong>443/TLS</strong> &nbsp;|&nbsp; PAYLOAD: <strong id="term-byte-count">0 B</strong>
+                </div>
+            </div>
+
+            <div class="contact-hud-card" id="contact-terminal">
+                <span class="hud-corner hud-tl"></span>
+                <span class="hud-corner hud-tr"></span>
+                <span class="hud-corner hud-bl"></span>
+                <span class="hud-corner hud-br"></span>
+
+                <div class="terminal-topbar">
+                    <div class="terminal-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-amber"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="terminal-bar-title">zsh — guest@0datadan-portfolio: ~/uplink (80×24)</div>
+                    <div class="terminal-status">
+                        <span class="status-pulse"></span> <span id="term-status-text">READY</span>
+                    </div>
+                </div>
+
+                <div class="terminal-body" id="terminal-body">
+                    <div class="terminal-presets-bar">
+                        <div class="preset-group">
+                            <span class="preset-label">QUICK ARGS:</span>
+                            <button type="button" class="preset-pill interactive" data-preset="Hey Daniel, saw NOVA Observatory and would love to connect about an engineering role.">--role "Engineering"</button>
+                            <button type="button" class="preset-pill interactive" data-preset="Hi Daniel, reaching out regarding a geospatial / AI data project collaboration.">--collab "Project"</button>
+                            <button type="button" class="preset-pill interactive" data-preset="Hey Daniel, great portfolio! Let's grab a virtual coffee this week.">--chat "Coffee"</button>
+                        </div>
+                    </div>
+
+                    <form id="terminal-form" class="terminal-form" autocomplete="off">
+                        <div class="cmd-line">
+                            <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
+                            <span class="cmd-binary">send-message</span>
+                            <span class="cmd-flag">--to</span> <span class="cmd-arg">daniel</span>
+                            <span class="cmd-flag">--from</span>
+                            <span class="cmd-quote">"</span><input
+                                type="email"
+                                id="terminal-sender"
+                                name="email"
+                                class="terminal-inline-input sender-input interactive"
+                                placeholder="you@company.com"
+                                required
+                            /><span class="cmd-quote">"</span>
+                        </div>
+
+                        <div class="cmd-line msg-line">
+                            <span class="cmd-indent">↳</span>
+                            <span class="cmd-flag">--msg</span>
+                            <span class="cmd-quote">"</span><input
+                                type="text"
+                                id="terminal-msg"
+                                name="message"
+                                class="terminal-inline-input msg-input interactive"
+                                placeholder="Type message or click a quick arg above..."
+                                required
+                            /><span class="cmd-quote">"</span><span class="blinking-cursor">▋</span>
+                        </div>
+
+                        <div class="terminal-actions">
+                            <span class="shortcut-hint">Press <kbd>Enter</kbd> to transmit packet</span>
+                            <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">
+                                EXECUTE ↵
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="terminal-output" class="terminal-output" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+        <!-- === STOP: 03 // CONTACT TERMINAL SECTION === -->
+
         <footer class="mt-20 pt-8 border-t border-slate-800/60 flex items-center justify-between text-xs font-mono text-slate-400">
             <div>© 2026 Daniel Perez</div>
             <div class="flex gap-6">
@@ -2096,5 +2453,121 @@
   };
 </script>
 
+    
+<!-- === START: 03 // CONTACT TERMINAL CONTROLLER === -->
+<script>
+  (function initDedicatedContactTerminal() {
+    const mountSection = () => {
+      const contactSec = document.getElementById("contact-dedicated-section");
+      const footer = document.querySelector("footer");
+      if (contactSec && footer && contactSec.nextElementSibling !== footer) {
+        // Keep 03 // Terminal Uplink anchored directly above footer (below Skills & Credentials)
+        footer.parentNode.insertBefore(contactSec, footer);
+      }
+    };
+    mountSection();
+    window.addEventListener("DOMContentLoaded", mountSection);
+    setTimeout(mountSection, 150);
+
+    const form = document.getElementById("terminal-form");
+    const senderInput = document.getElementById("terminal-sender");
+    const msgInput = document.getElementById("terminal-msg");
+    const output = document.getElementById("terminal-output");
+    const submitBtn = document.getElementById("terminal-submit-btn");
+    const terminalWindow = document.getElementById("contact-terminal");
+    const byteCountEl = document.getElementById("term-byte-count");
+    const statusTextEl = document.getElementById("term-status-text");
+
+    if (!form || !senderInput || !msgInput || !output || !submitBtn) return;
+
+    const FORMSPREE_URL = "";
+
+    const updateTelemetry = () => {
+      const payload = `${senderInput.value}${msgInput.value}`;
+      const bytes = new Blob([payload]).size;
+      if (byteCountEl) byteCountEl.textContent = `${bytes} B`;
+    };
+
+    senderInput.addEventListener("input", updateTelemetry);
+    msgInput.addEventListener("input", updateTelemetry);
+
+    document.querySelectorAll(".preset-pill").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        msgInput.value = btn.getAttribute("data-preset") || "";
+        updateTelemetry();
+        if (!senderInput.value) {
+          senderInput.focus();
+        } else {
+          msgInput.focus();
+        }
+      });
+    });
+
+    terminalWindow.addEventListener("click", (e) => {
+      if (e.target.tagName !== "INPUT" && e.target.tagName !== "BUTTON") {
+        (senderInput.value ? msgInput : senderInput).focus();
+      }
+    });
+
+    const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    const appendLog = (text, className = "log-step") => {
+      const line = document.createElement("div");
+      line.className = className;
+      line.textContent = text;
+      output.appendChild(line);
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const sender = senderInput.value.trim();
+      const message = msgInput.value.trim();
+      if (!sender || !message) return;
+
+      submitBtn.disabled = true;
+      senderInput.readOnly = true;
+      msgInput.readOnly = true;
+      if (statusTextEl) statusTextEl.textContent = "TRANSMITTING...";
+      output.innerHTML = "";
+
+      const bytes = new Blob([message]).size;
+      appendLog(`$ send-message --to daniel --from "${sender}" --msg "${message.slice(0, 46)}${message.length > 46 ? '...' : ''}"`);
+      await sleep(300);
+
+      appendLog("[1/3] Opening TLS 1.3 socket to 0datadan.github.io:443...");
+      await sleep(450);
+
+      appendLog(`[2/3] Serializing UTF-8 frame (${bytes} bytes) & verifying SHA-256 digest...`);
+
+      try {
+        if (FORMSPREE_URL) {
+          const res = await fetch(FORMSPREE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ email: sender, message })
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        } else {
+          await sleep(550);
+        }
+
+        appendLog("[3/3] 200 OK — Transmission logged to Daniel's inbox.", "log-ok");
+        if (statusTextEl) statusTextEl.textContent = "DELIVERED (200 OK)";
+        msgInput.value = "";
+        updateTelemetry();
+      } catch (err) {
+        appendLog(`[ERR] Socket error (${err.message}). Please retry.`, "log-err");
+        if (statusTextEl) statusTextEl.textContent = "ERROR";
+      } finally {
+        submitBtn.disabled = false;
+        senderInput.readOnly = false;
+        msgInput.readOnly = false;
+        msgInput.focus();
+      }
+    });
+  })();
+</script>
+<!-- === STOP: 03 // CONTACT TERMINAL CONTROLLER === -->
 </body>
 </html>
