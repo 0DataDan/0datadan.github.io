@@ -2100,21 +2100,6 @@
 
       core.style.left = `${mouse.x}px`;
       core.style.top = `${mouse.y}px`;
-
-      const speed = Math.hypot(mouse.vx, mouse.vy);
-      if (speed > 1.5 && sparks.length < 42) {
-        const angle = Math.random() * Math.PI * 2;
-        const spawnDist = 14 + Math.random() * 28;
-        sparks.push({
-          x: mouse.x + Math.cos(angle) * spawnDist,
-          y: mouse.y + Math.sin(angle) * spawnDist,
-          vx: -mouse.vx * 0.08 + (Math.random() - 0.5) * 0.8,
-          vy: -mouse.vy * 0.08 + (Math.random() - 0.5) * 0.8,
-          size: Math.random() * 1.8 + 0.7,
-          alpha: 0.85,
-          life: 1.0
-        });
-      }
     });
 
     const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
