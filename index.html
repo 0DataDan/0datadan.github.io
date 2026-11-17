@@ -1399,6 +1399,14 @@
                     <!-- Active Holographic Shell Workspace -->
                     <div class="holo-active-workspace" id="holo-workspace">
 
+                        <!-- Micro-Boot Sequence Container -->
+                        <div id="pre-boot-sequence" class="text-[0.65rem] text-slate-500 font-mono mb-2 hidden">
+                          <div id="boot-line-1"></div>
+                          <div id="boot-line-2"></div>
+                          <div id="boot-line-3"></div>
+                          <div id="boot-line-4"></div>
+                        </div>
+
                         <form id="terminal-form" class="terminal-form" autocomplete="off">
                             <div class="cmd-line holo-line-reveal reveal-2">
                                 <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
@@ -2636,12 +2644,36 @@
       if (statusTextEl) statusTextEl.textContent = "ONLINE";
       keystrokePulse = 1.0;
 
-      // Typewriter effect synced with .reveal-2 boot delay
-      if (typedCmdEl) {
-        const targetText = "send-message";
-        typedCmdEl.textContent = "";
-        let idx = 0;
+      const bootContainer = document.getElementById("pre-boot-sequence");
+      const b1 = document.getElementById("boot-line-1");
+      const b2 = document.getElementById("boot-line-2");
+      const b3 = document.getElementById("boot-line-3");
+      const b4 = document.getElementById("boot-line-4");
+
+      // Hide the main prompt temporarily while booting
+      const mainPrompt = document.getElementById("terminal-form");
+      if (mainPrompt) mainPrompt.style.opacity = '0';
+
+      if (bootContainer && typedCmdEl) {
+        bootContainer.classList.remove("hidden");
+        
+        // Staggered micro-boot text injection
+        setTimeout(() => { b1.textContent = "[ OK ] Mounted /contact/fs"; }, 50);
+        setTimeout(() => { b2.textContent = "[ OK ] Started TLS handshake..."; }, 180);
+        setTimeout(() => { b3.textContent = "[ OK ] Resolved host 0datadan.github.io"; }, 320);
+        setTimeout(() => { b4.textContent = "Starting Holo-Terminal Interface..."; }, 450);
+
+        // Clear boot sequence, reveal main prompt, and start typewriter
         setTimeout(() => {
+          bootContainer.classList.add("hidden");
+          if (mainPrompt) {
+             mainPrompt.style.opacity = '1';
+             mainPrompt.style.transition = 'opacity 0.25s ease';
+          }
+          
+          const targetText = "send-message";
+          typedCmdEl.textContent = "";
+          let idx = 0;
           const typeTimer = setInterval(() => {
             idx++;
             typedCmdEl.textContent = targetText.slice(0, idx);
@@ -2650,7 +2682,7 @@
               if (focusInput) (senderInput.value ? msgInput : senderInput).focus();
             }
           }, 28);
-        }, 220);
+        }, 650); // Total boot time before prompt appears
       }
     };
 
