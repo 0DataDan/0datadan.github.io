@@ -2461,7 +2461,6 @@
       const contactSec = document.getElementById("contact-dedicated-section");
       const footer = document.querySelector("footer");
       if (contactSec && footer && contactSec.nextElementSibling !== footer) {
-        // Keep 03 // Terminal Uplink anchored directly above footer (below Skills & Credentials)
         footer.parentNode.insertBefore(contactSec, footer);
       }
     };
@@ -2480,7 +2479,8 @@
 
     if (!form || !senderInput || !msgInput || !output || !submitBtn) return;
 
-    const FORMSPREE_URL = "";
+    // Live Email Endpoint Configuration (Supports Web3Forms Access Key or Formspree URL)
+    const ENDPOINT_CONFIG = "927074b6-c81c-46a8-a989-39c843b7ed71";
 
     const updateTelemetry = () => {
       const payload = `${senderInput.value}${msgInput.value}`;
@@ -2533,31 +2533,44 @@
 
       const bytes = new Blob([message]).size;
       appendLog(`$ send-message --to daniel --from "${sender}" --msg "${message.slice(0, 46)}${message.length > 46 ? '...' : ''}"`);
-      await sleep(300);
+      await sleep(260);
 
       appendLog("[1/3] Opening TLS 1.3 socket to 0datadan.github.io:443...");
-      await sleep(450);
+      await sleep(380);
 
-      appendLog(`[2/3] Serializing UTF-8 frame (${bytes} bytes) & verifying SHA-256 digest...`);
+      appendLog(`[2/3] Serializing UTF-8 frame (${bytes} bytes) & dispatching packet...`);
 
       try {
-        if (FORMSPREE_URL) {
-          const res = await fetch(FORMSPREE_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify({ email: sender, message })
-          });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        } else {
-          await sleep(550);
+        const isUrl = ENDPOINT_CONFIG.startsWith("http");
+        const targetUrl = isUrl ? ENDPOINT_CONFIG : "https://api.web3forms.com/submit";
+        const payload = isUrl
+          ? { email: sender, message, _subject: `Portfolio Terminal Uplink from ${sender}` }
+          : {
+              access_key: ENDPOINT_CONFIG,
+              subject: `[0datadan.github.io] Terminal Uplink from ${sender}`,
+              from_name: sender,
+              email: sender,
+              replyto: sender,
+              message: message
+            };
+
+        const res = await fetch(targetUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || (data.success === false)) {
+          throw new Error(data.message || `HTTP ${res.status}`);
         }
 
-        appendLog("[3/3] 200 OK — Transmission logged to Daniel's inbox.", "log-ok");
+        appendLog("[3/3] 200 OK — Packet delivered to Daniel's inbox. Expect a response soon.", "log-ok");
         if (statusTextEl) statusTextEl.textContent = "DELIVERED (200 OK)";
         msgInput.value = "";
         updateTelemetry();
       } catch (err) {
-        appendLog(`[ERR] Socket error (${err.message}). Please retry.`, "log-err");
+        appendLog(`[ERR] Transmission failed (${err.message}). Check key/network and retry.`, "log-err");
         if (statusTextEl) statusTextEl.textContent = "ERROR";
       } finally {
         submitBtn.disabled = false;
