@@ -795,6 +795,98 @@
         .log-err  { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
         /* === STOP: 03 // CONTACT TERMINAL STYLES === */
 
+        /* === START: 04 // GLOBAL COMMAND PALETTE === */
+        #cmd-palette-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 90000; /* Sits above UI (z-20) but below #mag-cursor-core (z-99999) */
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 12vh;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #cmd-palette-overlay.palette-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #cmd-palette-container {
+            width: 100%;
+            max-width: 540px;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(45, 212, 191, 0.3);
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(45, 212, 191, 0.12);
+            transform: scale(0.96) translateY(-10px);
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+        }
+        #cmd-palette-overlay.palette-open #cmd-palette-container {
+            transform: scale(1) translateY(0);
+        }
+        #cmd-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+        }
+        #cmd-prompt-char {
+            color: #2dd4bf;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+        #cmd-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f8fafc;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+        }
+        #cmd-input::placeholder { color: #475569; }
+        #cmd-results {
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .cmd-result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            transition: all 0.15s ease;
+        }
+        .cmd-result-item[aria-selected="true"],
+        .cmd-result-item:hover {
+            background: rgba(45, 212, 191, 0.12);
+            color: #fff;
+        }
+        .cmd-result-item[aria-selected="true"] .cmd-item-shortcut {
+            color: #2dd4bf;
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+        .cmd-item-shortcut {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.38rem;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 0.25rem;
+            color: #64748b;
+        }
+        /* === STOP: 04 // GLOBAL COMMAND PALETTE === */
+
     </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
@@ -1495,6 +1587,18 @@
 
     </div>
 
+    <!-- === START: 04 // GLOBAL COMMAND PALETTE HTML === -->
+    <div id="cmd-palette-overlay" aria-hidden="true">
+        <div id="cmd-palette-container" role="dialog" aria-modal="true">
+            <div id="cmd-input-wrapper">
+                <span id="cmd-prompt-char">&gt;</span>
+                <input type="text" id="cmd-input" class="interactive" placeholder="Type a command or search... (Esc to close)" autocomplete="off" spellcheck="false" />
+            </div>
+            <div id="cmd-results" role="listbox"></div>
+        </div>
+    </div>
+    <!-- === STOP: 04 // GLOBAL COMMAND PALETTE HTML === -->
+
 <style>
   *, *::before, *::after, html, body, canvas, div, span, a, button {
     cursor: none !important;
@@ -1885,6 +1989,7 @@
     };
 
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.key === 'ArrowRight') window.stepProjectSlide(1);
       if (e.key === 'ArrowLeft') window.stepProjectSlide(-1);
     });
@@ -2881,5 +2986,148 @@
   })();
 </script>
 <!-- === STOP: 03 // CONTACT TERMINAL CONTROLLER === -->
+    <!-- === START: 04 // GLOBAL COMMAND PALETTE CONTROLLER === -->
+<script>
+  (function initCommandPalette() {
+    const overlay = document.getElementById('cmd-palette-overlay');
+    const input = document.getElementById('cmd-input');
+    const resultsContainer = document.getElementById('cmd-results');
+    if (!overlay || !input || !resultsContainer) return;
+
+    let isOpen = false;
+    let selectedIndex = 0;
+
+    const focusContactTerminal = () => {
+      const contactSec = document.getElementById('contact-dedicated-section');
+      const stage = document.getElementById('contact-terminal');
+      const trigger = document.getElementById('holo-standby-trigger');
+      const sender = document.getElementById('terminal-sender');
+      const msg = document.getElementById('terminal-msg');
+
+      if (contactSec) {
+        contactSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // If terminal hasn't started booting yet, trigger it
+      if (stage && !stage.classList.contains('holo-awake') && trigger) {
+        trigger.click();
+      }
+
+      // Focus input once the terminal prompt is visible
+      const checkReady = setInterval(() => {
+        const lineActions = stage && stage.querySelector('.reveal-4');
+        if (lineActions && lineActions.classList.contains('line-visible')) {
+          clearInterval(checkReady);
+          if (sender && msg) (sender.value ? msg : sender).focus();
+        }
+      }, 120);
+      setTimeout(() => clearInterval(checkReady), 3000);
+    };
+
+    const commands = [
+      { id: 'nova', title: 'Project 01 // NOVA Observatory', hint: 'open nova', action: () => {
+          if (window.switchProjectSlide) window.switchProjectSlide(0);
+          document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }},
+      { id: 'heat', title: 'Project 02 // Urban Heat Explorer', hint: 'open heat', action: () => {
+          if (window.switchProjectSlide) window.switchProjectSlide(1);
+          document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }},
+      { id: 'skills', title: 'Navigate to Skills & Credentials Matrix', hint: 'cat skills.md', action: () => {
+          document.getElementById('constellation-canvas').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }},
+      { id: 'contact', title: 'Initialize Contact Terminal Uplink', hint: './send-message', action: focusContactTerminal },
+      { id: 'github', title: 'Open GitHub Profile (0DataDan)', hint: 'ssh github', action: () => window.open('https://github.com/0DataDan', '_blank') },
+      { id: 'linkedin', title: 'Open LinkedIn Profile', hint: 'ssh linkedin', action: () => window.open('https://www.linkedin.com/in/daniel-perez1/', '_blank') }
+    ];
+
+    let filteredCommands = [...commands];
+
+    const renderResults = () => {
+      resultsContainer.innerHTML = '';
+      filteredCommands.forEach((cmd, idx) => {
+        const item = document.createElement('div');
+        item.className = 'cmd-result-item interactive';
+        item.setAttribute('aria-selected', idx === selectedIndex);
+        item.innerHTML = `<span>${cmd.title}</span><span class="cmd-item-shortcut">${cmd.hint}</span>`;
+
+        item.addEventListener('mouseenter', () => {
+          selectedIndex = idx;
+          renderResults();
+        });
+        item.addEventListener('click', () => {
+          closePalette();
+          cmd.action();
+        });
+
+        resultsContainer.appendChild(item);
+      });
+
+      const selectedEl = resultsContainer.children[selectedIndex];
+      if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
+    };
+
+    const openPalette = () => {
+      isOpen = true;
+      overlay.classList.add('palette-open');
+      overlay.setAttribute('aria-hidden', 'false');
+      input.value = '';
+      filteredCommands = [...commands];
+      selectedIndex = 0;
+      renderResults();
+      setTimeout(() => input.focus(), 50);
+    };
+
+    const closePalette = () => {
+      isOpen = false;
+      overlay.classList.remove('palette-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      input.blur();
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        isOpen ? closePalette() : openPalette();
+      } else if (isOpen && e.key === 'Escape') {
+        e.preventDefault();
+        closePalette();
+      }
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closePalette();
+    });
+
+    input.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      filteredCommands = commands.filter(c =>
+        c.title.toLowerCase().includes(query) || c.hint.toLowerCase().includes(query)
+      );
+      selectedIndex = 0;
+      renderResults();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (!isOpen || filteredCommands.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % filteredCommands.length;
+        renderResults();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
+        renderResults();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const targetCmd = filteredCommands[selectedIndex];
+        closePalette();
+        if (targetCmd) targetCmd.action();
+      }
+    });
+  })();
+</script>
+<!-- === STOP: 04 // GLOBAL COMMAND PALETTE CONTROLLER === -->
 </body>
 </html>
