@@ -1589,11 +1589,14 @@
     document.body.appendChild(decryptCanvas);
     const decryptCtx = decryptCanvas.getContext('2d');
     const decryptGlyphs = ['0', '1', '>', '_', '/', '[', ']', '+', '#', '$'];
+    const decryptEnergy = new Float32Array(particleCount);
     const projVec = new THREE.Vector3();
 
     const resizeDecryptCanvas = () => {
-      decryptCanvas.width = window.innerWidth;
-      decryptCanvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      decryptCanvas.width = window.innerWidth * dpr;
+      decryptCanvas.height = window.innerHeight * dpr;
+      decryptCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resizeDecryptCanvas();
     window.addEventListener('resize', resizeDecryptCanvas);
@@ -1947,25 +1950,39 @@
         }
       }
 
-      const targetIds = closest.filter(c => c.d < 500).map(c => c.id);
+      const targetIds = closest.filter(c => c.d < 320).map(c => c.id);
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
-        const isTarget = targetIds.includes(i);
-        
+        const targetRank = targetIds.indexOf(i);
+        const isTarget = targetRank !== -1;
+
+        // Smoothly charge decryption energy when captured; linger & decay when released
+        if (isTarget) {
+          decryptEnergy[i] = Math.min(1.0, decryptEnergy[i] + 0.12);
+        } else {
+          decryptEnergy[i] *= 0.962;
+        }
+
         let tx = baseX[i];
         let ty = baseY[i];
         let tz = baseZ[i];
-        
-        let stiffness = 0.0035; 
-        let damping = 0.88;    
-        
+
+        // Smooth viscous return spring when returning to background drift
+        let stiffness = 0.0045;
+        let damping = 0.89;
+
         if (isTarget) {
-          tx = cursorWX;
-          ty = cursorWY;
-          tz = baseZ[i] + 4.5; 
-          stiffness = 0.0018;  
-          damping = 0.94;      
+          // Pull into a tight, heavy orbital cluster around the cursor instead of a single point
+          const slotAngle = targetRank * (Math.PI * 0.5) + t * 0.45;
+          const orbitRadius = 1.85;
+          tx = cursorWX + Math.cos(slotAngle) * orbitRadius;
+          ty = cursorWY + Math.sin(slotAngle) * orbitRadius;
+          tz = baseZ[i] + 3.2;
+
+          // Heavy, unmistakable gravitational pull toward the cursor
+          stiffness = 0.011;
+          damping = 0.86;
         }
 
         const fx = (tx - positions[i3]) * stiffness;
@@ -1984,38 +2001,45 @@
 
       renderer.render(scene, camera);
 
-        // Render Decryption Wake glyphs on the 3-4 magnetically pulled particles
-      decryptCtx.clearRect(0, 0, decryptCanvas.width, decryptCanvas.height);
-      if (targetIds.length > 0) {
-        decryptCtx.font = '600 11px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
-        decryptCtx.textAlign = 'center';
-        decryptCtx.textBaseline = 'middle';
+      // Render Decryption Wake glyphs on any particle with remaining decryptEnergy
+      decryptCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      decryptCtx.textAlign = 'center';
+      decryptCtx.textBaseline = 'middle';
 
-        const tick = Math.floor(t * 14);
-        for (let k = 0; k < targetIds.length; k++) {
-          const idx = targetIds[k];
-          const i3 = idx * 3;
-          projVec.set(positions[i3], positions[i3 + 1], positions[i3 + 2]);
-          projVec.project(camera);
+      // Deliberate 3.2 Hz character cadence so glyphs are readable
+      const tick = Math.floor(t * 3.2);
 
-          if (projVec.z < 1) {
-            const sx = (projVec.x * 0.5 + 0.5) * decryptCanvas.width;
-            const sy = (-projVec.y * 0.5 + 0.5) * decryptCanvas.height;
-            const glyph = decryptGlyphs[(idx + tick) % decryptGlyphs.length];
+      for (let i = 0; i < particleCount; i++) {
+        const energy = decryptEnergy[i];
+        if (energy < 0.08) continue;
 
-            // Subtle dark backing so the character reads crisply over the 3D dot
-            decryptCtx.fillStyle = 'rgba(11, 15, 25, 0.72)';
-            decryptCtx.beginPath();
-            decryptCtx.arc(sx, sy, 7, 0, Math.PI * 2);
-            decryptCtx.fill();
+        const i3 = i * 3;
+        projVec.set(positions[i3], positions[i3 + 1], positions[i3 + 2]);
+        projVec.project(camera);
 
-            // Glowing terminal character (alternating teal and purple accent)
-            decryptCtx.fillStyle = (k === 0) ? '#c084fc' : '#2dd4bf';
-            decryptCtx.shadowColor = (k === 0) ? 'rgba(192, 132, 252, 0.8)' : 'rgba(45, 212, 191, 0.8)';
-            decryptCtx.shadowBlur = 8;
-            decryptCtx.fillText(glyph, sx, sy);
-            decryptCtx.shadowBlur = 0;
-          }
+        if (projVec.z < 1) {
+          const sx = (projVec.x * 0.5 + 0.5) * window.innerWidth;
+          const sy = (-projVec.y * 0.5 + 0.5) * window.innerHeight;
+          const isPrimary = (targetIds[0] === i);
+          const glyph = decryptGlyphs[(i * 3 + tick) % decryptGlyphs.length];
+
+          decryptCtx.save();
+          decryptCtx.globalAlpha = Math.min(1, energy * 1.15);
+
+          // Dark halo mask so the 3D dot underneath doesn't wash out the character
+          decryptCtx.fillStyle = 'rgba(11, 15, 25, 0.88)';
+          decryptCtx.beginPath();
+          decryptCtx.arc(sx, sy, 10 * (0.7 + energy * 0.3), 0, Math.PI * 2);
+          decryptCtx.fill();
+
+          // Crisp, readable terminal typography that scales with gravitational energy
+          const fontSize = Math.round(12 + energy * 3);
+          decryptCtx.font = `700 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+          decryptCtx.fillStyle = isPrimary ? '#c084fc' : '#2dd4bf';
+          decryptCtx.shadowColor = isPrimary ? 'rgba(192, 132, 252, 0.9)' : 'rgba(45, 212, 191, 0.9)';
+          decryptCtx.shadowBlur = 10;
+          decryptCtx.fillText(glyph, sx, sy);
+          decryptCtx.restore();
         }
       }
 
