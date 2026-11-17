@@ -977,11 +977,18 @@
         <header id="header-interaction-zone" class="mb-14 pb-2 group relative">
             <div id="header-scanline"></div>
             
-            <!-- Clean Kinetic Wave Title -->
-            <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2" aria-label="danielperez">
-                <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span>
-            </h1>
+            <!-- Top Row: Kinetic Wave Title + Subtle ⌘K Command Trigger -->
+            <div class="flex items-baseline justify-between gap-4">
+                <h1 id="wave-title" class="terminal-header text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2" aria-label="danielperez">
+                    <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span>
+                </h1>
 
+                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link font-mono text-[11px] text-slate-500 hover:text-teal-400 transition flex items-center gap-1.5 shrink-0" title="Open Command Palette (⌘K / Ctrl+K)">
+                    <span class="px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-800 text-slate-400 text-[10px]">⌘K</span>
+                    <span class="hidden sm:inline">terminal</span>
+                </button>
+            </div>
+            
             <!-- Unboxed, Pure Terminal Typewriter Line -->
             <div class="mt-1 mb-6 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400">
                 <span class="text-slate-500 select-none">&gt;</span>
@@ -1151,7 +1158,7 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                <a href="https://universe-explorer-static.vercel.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live App <span>↗</span>
                                                 </a>
                                                 <a href="https://github.com/0DataDan/universe-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
@@ -1258,7 +1265,7 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://universe-explorer-z9k4.onrender.com/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                <a href="https://universe-explorer-static.vercel.app/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live App <span>↗</span>
                                                 </a>
                                                 <a href="https://github.com/0DataDan/universe-explorer" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
@@ -1653,9 +1660,12 @@
         </section>
         <!-- === STOP: 03 // CONTACT TERMINAL SECTION === -->
 
-        <footer class="mt-20 pt-8 border-t border-slate-800/60 flex items-center justify-between text-xs font-mono text-slate-400">
+        <footer class="mt-20 pt-8 border-t border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-400">
             <div>© 2026 Daniel Perez</div>
-            <div class="flex gap-6">
+            <div class="flex items-center gap-6">
+                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link text-slate-500 hover:text-teal-400">
+                    [ ⌘K Command ]
+                </button>
                 <a href="https://github.com/0DataDan" target="_blank" class="interactive mag-link hover:text-teal-400">GitHub ↗</a>
                 <a href="https://www.linkedin.com/in/daniel-perez1/" target="_blank" class="interactive mag-link hover:text-teal-400">LinkedIn ↗</a>
             </div>
@@ -3115,13 +3125,13 @@
     };
 
     const commands = [
-      { id: 'nova', cmd: 'open nova', desc: '01 // NOVA Observatory 3D App', action: () => {
+      { id: 'nova', cmd: 'open nova', desc: 'Launch NOVA Observatory Live App ↗', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(0);
-          document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          window.open('https://universe-explorer-static.vercel.app/', '_blank');
       }},
-      { id: 'heat', cmd: 'open heat', desc: '02 // Urban Heat Explorer GIS', action: () => {
+      { id: 'heat', cmd: 'open heat', desc: 'Launch Urban Heat Explorer Live Demo ↗', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(1);
-          document.querySelector('.project-deck-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          window.open('https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/', '_blank');
       }},
       { id: 'skills', cmd: 'cat skills.md', desc: 'Inspect Skills & Credentials Matrix', action: () => {
           document.getElementById('constellation-canvas').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3130,7 +3140,7 @@
       { id: 'github', cmd: 'ssh github', desc: 'Launch github.com/0DataDan ↗', action: () => window.open('https://github.com/0DataDan', '_blank') },
       { id: 'linkedin', cmd: 'ssh linkedin', desc: 'Launch linkedin.com/in/daniel-perez1 ↗', action: () => window.open('https://www.linkedin.com/in/daniel-perez1/', '_blank') }
     ];
-
+      
     let filteredCommands = [];
 
     const updateGhostAndResults = (forceShowAll = false) => {
@@ -3199,6 +3209,8 @@
       setTimeout(() => input.focus(), 40);
     };
 
+      window.openCommandPalette = openPalette;
+      
     const closePalette = () => {
       isOpen = false;
       document.body.classList.remove('cmd-cursor-hidden');
