@@ -412,18 +412,23 @@
         /* === START: 03 // CONTACT TERMINAL STYLES === */
         #contact-dedicated-section {
             margin-top: 4.5rem;
-            margin-bottom: 3.5rem;
+            margin-bottom: 3rem;
             position: relative;
             z-index: 20;
         }
         .contact-sec-header {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .contact-sec-left {
+            display: flex;
             align-items: baseline;
             gap: 0.75rem;
-            margin-bottom: 1.1rem;
-            padding-bottom: 0.65rem;
-            border-bottom: 1px solid rgba(30, 41, 59, 0.7);
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         .contact-sec-index {
             color: #2dd4bf;
@@ -438,45 +443,71 @@
             letter-spacing: 0.02em;
             margin: 0;
         }
-        /* Translucent Glassmorphic Panel that pops out from the constellation canvas */
+        .contact-sec-sub {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
         .contact-hud-card {
             position: relative;
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.50) 0%, rgba(2, 6, 23, 0.36) 100%);
-            backdrop-filter: blur(16px) saturate(140%);
-            -webkit-backdrop-filter: blur(16px) saturate(140%);
-            border: 1px solid rgba(45, 212, 191, 0.28);
-            border-top: 1px solid rgba(94, 234, 212, 0.45);
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.55);
             border-radius: 12px;
-            box-shadow:
-                0 28px 60px -12px rgba(0, 0, 0, 0.85),
-                0 12px 28px -8px rgba(0, 0, 0, 0.65),
-                0 0 32px rgba(20, 184, 166, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
             overflow: hidden;
-            transform: translateY(0);
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         .contact-hud-card:hover,
         .contact-hud-card:focus-within {
-            transform: translateY(-3px);
-            border-color: rgba(45, 212, 191, 0.48);
-            box-shadow:
-                0 34px 70px -12px rgba(0, 0, 0, 0.92),
-                0 0 40px rgba(45, 212, 191, 0.14),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            border-color: rgba(45, 212, 191, 0.45);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(45, 212, 191, 0.1);
         }
+        .hud-corner {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-color: rgba(45, 212, 191, 0.35);
+            pointer-events: none;
+            transition: all 0.25s ease;
+            z-index: 5;
+        }
+        .contact-hud-card:hover .hud-corner,
+        .contact-hud-card:focus-within .hud-corner {
+            border-color: #2dd4bf;
+            width: 18px;
+            height: 18px;
+            filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.6));
+        }
+        .hud-tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; border-top-left-radius: 4px; }
+        .hud-tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; border-top-right-radius: 4px; }
+        .hud-bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; border-bottom-left-radius: 4px; }
+        .hud-br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; border-bottom-right-radius: 4px; }
+
         .terminal-topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.7rem 1.4rem;
-            background: rgba(15, 23, 42, 0.45);
-            border-bottom: 1px solid rgba(51, 65, 85, 0.45);
+            padding: 0.75rem 1.25rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
         }
+        .terminal-dots {
+            display: flex;
+            gap: 0.45rem;
+        }
+        .terminal-dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .terminal-dots .dot-red   { background: #ef4444; }
+        .terminal-dots .dot-amber { background: #f59e0b; }
+        .terminal-dots .dot-green { background: #10b981; }
         .terminal-bar-title {
             color: #94a3b8;
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             letter-spacing: 0.03em;
         }
         .terminal-status {
@@ -501,17 +532,61 @@
             50% { opacity: 0.3; }
         }
         .terminal-body {
-            padding: 1.6rem 1.75rem 1.4rem;
+            padding: 1.5rem 1.75rem;
             color: #cbd5e1;
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             line-height: 1.7;
+        }
+        .terminal-presets-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px dashed rgba(51, 65, 85, 0.6);
+        }
+        .preset-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .preset-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            margin-right: 0.25rem;
+        }
+        .preset-pill {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            font-family: inherit;
+            font-size: 0.72rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .preset-pill:hover {
+            border-color: #2dd4bf;
+            color: #2dd4bf;
+            background: rgba(45, 212, 191, 0.08);
+        }
+        .telemetry-readout {
+            color: #64748b;
+            font-size: 0.72rem;
+        }
+        .telemetry-readout strong {
+            color: #2dd4bf;
         }
         .cmd-line {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 0.4rem;
-            margin-bottom: 0.85rem;
+            gap: 0.38rem;
+            margin-bottom: 0.75rem;
         }
         .prompt-user { color: #2dd4bf; font-weight: 600; }
         .prompt-sep  { color: #64748b; }
@@ -523,25 +598,25 @@
         .cmd-quote   { color: #fbbf24; }
         .cmd-indent  { color: #475569; padding-left: 1rem; }
         .terminal-inline-input {
-            background: rgba(15, 23, 42, 0.55);
+            background: rgba(15, 23, 42, 0.75);
             border: none;
             border-bottom: 1px dashed rgba(45, 212, 191, 0.45);
             color: #fde68a;
             font-family: inherit;
-            font-size: 0.88rem;
-            padding: 0.22rem 0.55rem;
-            border-radius: 4px 4px 0 0;
+            font-size: 0.86rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px 3px 0 0;
             outline: none;
             transition: all 0.2s ease;
         }
         .terminal-inline-input::placeholder {
-            color: rgba(148, 163, 184, 0.42);
+            color: rgba(148, 163, 184, 0.38);
         }
         .terminal-inline-input:focus {
             background: rgba(45, 212, 191, 0.1);
             border-bottom: 1px solid #2dd4bf;
         }
-        .sender-input { width: 230px; }
+        .sender-input { width: 220px; }
         .msg-input    { flex: 1; min-width: 260px; }
         .blinking-cursor {
             color: #2dd4bf;
@@ -553,45 +628,55 @@
         }
         .terminal-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            margin-top: 1.1rem;
+            margin-top: 1.15rem;
             padding-top: 0.85rem;
-            border-top: 1px solid rgba(51, 65, 85, 0.35);
+            border-top: 1px solid rgba(51, 65, 85, 0.45);
         }
-        /* Matches [ + Architecture ] button styling */
+        .shortcut-hint {
+            color: #64748b;
+            font-size: 0.73rem;
+        }
+        .shortcut-hint kbd {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            border-radius: 3px;
+            padding: 0.05rem 0.35rem;
+            color: #cbd5e1;
+            font-size: 0.7rem;
+        }
         .terminal-exec-btn {
-            background: rgba(20, 184, 166, 0.10);
+            background: rgba(45, 212, 191, 0.12);
             color: #2dd4bf;
-            border: 1px solid rgba(45, 212, 191, 0.35);
+            border: 1px solid rgba(45, 212, 191, 0.45);
             border-radius: 6px;
-            padding: 0.38rem 0.9rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
+            padding: 0.42rem 1rem;
+            font-family: inherit;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         .terminal-exec-btn:hover:not(:disabled) {
-            background: rgba(20, 184, 166, 0.20);
-            border-color: rgba(45, 212, 191, 0.65);
-            color: #5eead4;
-            box-shadow: 0 0 14px rgba(45, 212, 191, 0.2);
+            background: #2dd4bf;
+            color: #020617;
+            box-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
         }
         .terminal-exec-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
         .terminal-output {
-            margin-top: 0.75rem;
-            font-size: 0.8rem;
+            margin-top: 1rem;
+            font-size: 0.78rem;
             display: flex;
             flex-direction: column;
-            gap: 0.3rem;
+            gap: 0.32rem;
         }
         .log-step { color: #94a3b8; }
-        .log-ok   { color: #2dd4bf; font-weight: 600; }
+        .log-ok   { color: #10b981; font-weight: 600; }
         .log-err  { color: #ef4444; }
         /* === STOP: 03 // CONTACT TERMINAL STYLES === */
 
@@ -1196,21 +1281,46 @@
 
         <!-- Footer -->
         <!-- === START: 03 // CONTACT TERMINAL SECTION === -->
-        <section id="contact-dedicated-section" aria-label="Contact">
+        <section id="contact-dedicated-section" aria-label="Contact Terminal">
             <div class="contact-sec-header">
-                <span class="contact-sec-index">03 //</span>
-                <h2 class="contact-sec-title">Contact</h2>
+                <div class="contact-sec-left">
+                    <span class="contact-sec-index">03 //</span>
+                    <h2 class="contact-sec-title">Terminal Uplink</h2>
+                    <span class="contact-sec-sub">Direct Shell Dispatch</span>
+                </div>
+                <div class="telemetry-readout">
+                    PORT: <strong>443/TLS</strong> &nbsp;|&nbsp; PAYLOAD: <strong id="term-byte-count">0 B</strong>
+                </div>
             </div>
 
             <div class="contact-hud-card" id="contact-terminal">
+                <span class="hud-corner hud-tl"></span>
+                <span class="hud-corner hud-tr"></span>
+                <span class="hud-corner hud-bl"></span>
+                <span class="hud-corner hud-br"></span>
+
                 <div class="terminal-topbar">
-                    <div class="terminal-bar-title">guest@0datadan-portfolio: ~</div>
+                    <div class="terminal-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-amber"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="terminal-bar-title">zsh — guest@0datadan-portfolio: ~/uplink (80×24)</div>
                     <div class="terminal-status">
                         <span class="status-pulse"></span> <span id="term-status-text">READY</span>
                     </div>
                 </div>
 
                 <div class="terminal-body" id="terminal-body">
+                    <div class="terminal-presets-bar">
+                        <div class="preset-group">
+                            <span class="preset-label">QUICK ARGS:</span>
+                            <button type="button" class="preset-pill interactive" data-preset="Hey Daniel, saw NOVA Observatory and would love to connect about an engineering role.">--role "Engineering"</button>
+                            <button type="button" class="preset-pill interactive" data-preset="Hi Daniel, reaching out regarding a geospatial / AI data project collaboration.">--collab "Project"</button>
+                            <button type="button" class="preset-pill interactive" data-preset="Hey Daniel, great portfolio! Let's grab a virtual coffee this week.">--chat "Coffee"</button>
+                        </div>
+                    </div>
+
                     <form id="terminal-form" class="terminal-form" autocomplete="off">
                         <div class="cmd-line">
                             <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
@@ -1222,7 +1332,7 @@
                                 id="terminal-sender"
                                 name="email"
                                 class="terminal-inline-input sender-input interactive"
-                                placeholder="you@email.com"
+                                placeholder="you@company.com"
                                 required
                             /><span class="cmd-quote">"</span>
                         </div>
@@ -1235,14 +1345,15 @@
                                 id="terminal-msg"
                                 name="message"
                                 class="terminal-inline-input msg-input interactive"
-                                placeholder="Write your message here..."
+                                placeholder="Type message or click a quick arg above..."
                                 required
                             /><span class="cmd-quote">"</span><span class="blinking-cursor">▋</span>
                         </div>
 
                         <div class="terminal-actions">
+                            <span class="shortcut-hint">Press <kbd>Enter</kbd> to transmit packet</span>
                             <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">
-                                [ + Execute ]
+                                EXECUTE ↵
                             </button>
                         </div>
                     </form>
@@ -2362,11 +2473,34 @@
     const output = document.getElementById("terminal-output");
     const submitBtn = document.getElementById("terminal-submit-btn");
     const terminalWindow = document.getElementById("contact-terminal");
+    const byteCountEl = document.getElementById("term-byte-count");
     const statusTextEl = document.getElementById("term-status-text");
 
     if (!form || !senderInput || !msgInput || !output || !submitBtn) return;
 
     const ENDPOINT_CONFIG = "927074b6-c81c-46a8-a989-39c843b7ed71";
+
+    const updateTelemetry = () => {
+      const payload = `${senderInput.value}${msgInput.value}`;
+      const bytes = new Blob([payload]).size;
+      if (byteCountEl) byteCountEl.textContent = `${bytes} B`;
+    };
+
+    senderInput.addEventListener("input", updateTelemetry);
+    msgInput.addEventListener("input", updateTelemetry);
+
+    document.querySelectorAll(".preset-pill").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        msgInput.value = btn.getAttribute("data-preset") || "";
+        updateTelemetry();
+        if (!senderInput.value) {
+          senderInput.focus();
+        } else {
+          msgInput.focus();
+        }
+      });
+    });
 
     terminalWindow.addEventListener("click", (e) => {
       if (e.target.tagName !== "INPUT" && e.target.tagName !== "BUTTON") {
@@ -2392,20 +2526,27 @@
       submitBtn.disabled = true;
       senderInput.readOnly = true;
       msgInput.readOnly = true;
-      if (statusTextEl) statusTextEl.textContent = "SENDING...";
+      if (statusTextEl) statusTextEl.textContent = "TRANSMITTING...";
       output.innerHTML = "";
 
-      appendLog("> Sending message to Daniel...");
+      const bytes = new Blob([message]).size;
+      appendLog(`$ send-message --to daniel --from "${sender}" --msg "${message.slice(0, 46)}${message.length > 46 ? '...' : ''}"`);
+      await sleep(260);
+
+      appendLog("[1/3] Opening TLS 1.3 socket to 0datadan.github.io:443...");
+      await sleep(380);
+
+      appendLog(`[2/3] Serializing UTF-8 frame (${bytes} bytes) & dispatching packet...`);
 
       try {
         if (ENDPOINT_CONFIG) {
           const isUrl = ENDPOINT_CONFIG.startsWith("http");
           const targetUrl = isUrl ? ENDPOINT_CONFIG : "https://api.web3forms.com/submit";
           const payload = isUrl
-            ? { email: sender, message, _subject: `Portfolio message from ${sender}` }
+            ? { email: sender, message, _subject: `Portfolio Terminal Uplink from ${sender}` }
             : {
                 access_key: ENDPOINT_CONFIG,
-                subject: `[0datadan.github.io] Message from ${sender}`,
+                subject: `[0datadan.github.io] Terminal Uplink from ${sender}`,
                 from_name: sender,
                 email: sender,
                 replyto: sender,
@@ -2423,14 +2564,15 @@
             throw new Error(data.message || `HTTP ${res.status}`);
           }
         } else {
-          await sleep(500);
+          await sleep(550);
         }
 
-        appendLog("✓ Message sent — thanks for reaching out!", "log-ok");
-        if (statusTextEl) statusTextEl.textContent = "SENT";
+        appendLog("[3/3] 200 OK — Packet delivered to Daniel's inbox. Expect a response soon.", "log-ok");
+        if (statusTextEl) statusTextEl.textContent = "DELIVERED (200 OK)";
         msgInput.value = "";
+        updateTelemetry();
       } catch (err) {
-        appendLog(`✕ Could not send message (${err.message}). Please try again.`, "log-err");
+        appendLog(`[ERR] Transmission failed (${err.message}). Check key/network and retry.`, "log-err");
         if (statusTextEl) statusTextEl.textContent = "ERROR";
       } finally {
         submitBtn.disabled = false;
