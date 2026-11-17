@@ -1585,7 +1585,7 @@
 
       // Decryption Wake 2D HUD Overlay for Magnetically Captured 3D Nodes
     const decryptCanvas = document.createElement('canvas');
-    decryptCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2;';
+    decryptCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;';
     document.body.appendChild(decryptCanvas);
     const decryptCtx = decryptCanvas.getContext('2d');
     const decryptGlyphs = ['0', '1', '>', '_', '/', '[', ']', '+', '#', '$'];
@@ -2024,10 +2024,11 @@
           const glyph = decryptGlyphs[(i * 3 + tick) % decryptGlyphs.length];
 
           decryptCtx.save();
-          decryptCtx.globalAlpha = Math.min(1, energy * 1.15);
+          // Cap maximum opacity at 65% for a muted, deep-background feel
+          decryptCtx.globalAlpha = Math.min(0.65, energy * 0.9);
 
-          // Dark halo mask so the 3D dot underneath doesn't wash out the character
-          decryptCtx.fillStyle = 'rgba(11, 15, 25, 0.88)';
+          // Soften the dark halo mask so it blends better with the environment
+          decryptCtx.fillStyle = 'rgba(11, 15, 25, 0.45)';
           decryptCtx.beginPath();
           decryptCtx.arc(sx, sy, 10 * (0.7 + energy * 0.3), 0, Math.PI * 2);
           decryptCtx.fill();
