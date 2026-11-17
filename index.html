@@ -574,24 +574,57 @@
             overflow: visible;
         }
 
-        /* Staggered Holographic Scan-In Lines */
+        /* Staggered Holographic Scan-In Lines (Triggered sequentially by JS) */
         .holo-line-reveal {
             opacity: 0;
-            transform: translateX(-8px);
+            transform: translateY(6px);
             filter: blur(3px);
-            transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+            pointer-events: none;
+            transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.45s ease;
         }
-        .holo-projection-stage.holo-awake .holo-line-reveal.reveal-1 {
-            opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.08s;
+        .holo-line-reveal.line-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            pointer-events: auto;
         }
-        .holo-projection-stage.holo-awake .holo-line-reveal.reveal-2 {
-            opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.22s;
+
+        /* Inline arguments after send-message wait until typing finishes */
+        .cmd-args-reveal {
+            opacity: 0;
+            transform: translateX(-6px);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.42rem;
         }
-        .holo-projection-stage.holo-awake .holo-line-reveal.reveal-3 {
-            opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.36s;
+        .cmd-args-reveal.args-visible {
+            opacity: 1;
+            transform: translateX(0);
         }
-        .holo-projection-stage.holo-awake .holo-line-reveal.reveal-4 {
-            opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.48s;
+
+        /* Persistent Micro-Boot Session Log */
+        #pre-boot-sequence {
+            transition: opacity 0.6s ease;
+            border-left: 1px solid rgba(45, 212, 191, 0.22);
+            padding-left: 0.75rem;
+            margin-bottom: 1.1rem;
+        }
+        #pre-boot-sequence.boot-dimmed {
+            opacity: 0.48;
+        }
+        .boot-line-item {
+            opacity: 0;
+            transform: translateX(-6px);
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            line-height: 1.65;
+        }
+        .boot-line-item.boot-line-show {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         /* Floating Quick-Arg Chips (Borderless Ghost Pills) */
@@ -1399,28 +1432,30 @@
                     <!-- Active Holographic Shell Workspace -->
                     <div class="holo-active-workspace" id="holo-workspace">
 
-                        <!-- Micro-Boot Sequence Container -->
-                        <div id="pre-boot-sequence" class="text-[0.65rem] text-slate-500 font-mono mb-2 hidden">
-                          <div id="boot-line-1"></div>
-                          <div id="boot-line-2"></div>
-                          <div id="boot-line-3"></div>
-                          <div id="boot-line-4"></div>
+                        <!-- Persistent Micro-Boot Session Log -->
+                        <div id="pre-boot-sequence" class="text-[0.7rem] text-slate-400 font-mono hidden">
+                            <div id="boot-line-1" class="boot-line-item"></div>
+                            <div id="boot-line-2" class="boot-line-item"></div>
+                            <div id="boot-line-3" class="boot-line-item"></div>
+                            <div id="boot-line-4" class="boot-line-item"></div>
                         </div>
 
                         <form id="terminal-form" class="terminal-form" autocomplete="off">
                             <div class="cmd-line holo-line-reveal reveal-2">
                                 <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
-                                <span class="cmd-binary" id="holo-typed-cmd">send-message</span>
-                                <span class="cmd-flag">--to</span> <span class="cmd-arg">daniel</span>
-                                <span class="cmd-flag">--from</span>
-                                <span class="cmd-quote">"</span><input
-                                    type="email"
-                                    id="terminal-sender"
-                                    name="email"
-                                    class="terminal-inline-input sender-input interactive"
-                                    placeholder="you@company.com"
-                                    required
-                                /><span class="cmd-quote">"</span>
+                                <span class="cmd-binary" id="holo-typed-cmd"></span>
+                                <span id="holo-cmd-args" class="cmd-args-reveal">
+                                    <span class="cmd-flag">--to</span> <span class="cmd-arg">daniel</span>
+                                    <span class="cmd-flag">--from</span>
+                                    <span class="cmd-quote">"</span><input
+                                        type="email"
+                                        id="terminal-sender"
+                                        name="email"
+                                        class="terminal-inline-input sender-input interactive"
+                                        placeholder="you@company.com"
+                                        required
+                                    /><span class="cmd-quote">"</span>
+                                </span>
                             </div>
 
                             <div class="cmd-line msg-line holo-line-reveal reveal-3">
@@ -2641,7 +2676,7 @@
       isAwake = true;
       if (standbyTrigger) standbyTrigger.classList.add("holo-hidden");
       stage.classList.add("holo-awake");
-      if (statusTextEl) statusTextEl.textContent = "ONLINE";
+      if (statusTextEl) statusTextEl.textContent = "BOOTING...";
       keystrokePulse = 1.0;
 
       const bootContainer = document.getElementById("pre-boot-sequence");
@@ -2650,39 +2685,62 @@
       const b3 = document.getElementById("boot-line-3");
       const b4 = document.getElementById("boot-line-4");
 
-      // Hide the main prompt temporarily while booting
-      const mainPrompt = document.getElementById("terminal-form");
-      if (mainPrompt) mainPrompt.style.opacity = '0';
+      const linePrompt = stage.querySelector(".reveal-2");
+      const cmdArgs = document.getElementById("holo-cmd-args");
+      const lineMsg = stage.querySelector(".reveal-3");
+      const lineActions = stage.querySelector(".reveal-4");
 
       if (bootContainer && typedCmdEl) {
         bootContainer.classList.remove("hidden");
-        
-        // Staggered micro-boot text injection
-        setTimeout(() => { b1.textContent = "[ OK ] Mounted /contact/fs"; }, 50);
-        setTimeout(() => { b2.textContent = "[ OK ] Started TLS handshake..."; }, 180);
-        setTimeout(() => { b3.textContent = "[ OK ] Resolved host 0datadan.github.io"; }, 320);
-        setTimeout(() => { b4.textContent = "Starting Holo-Terminal Interface..."; }, 450);
 
-        // Clear boot sequence, reveal main prompt, and start typewriter
+        const steps = [
+          { el: b1, delay: 80,  status: "MOUNTING...",  html: '<span class="text-teal-400">[ OK ]</span> Mounted /dev/contact-uplink' },
+          { el: b2, delay: 400, status: "HANDSHAKE...", html: '<span class="text-teal-400">[ OK ]</span> Verified TLS 1.3 cipher suite' },
+          { el: b3, delay: 720, status: "RESOLVING...", html: '<span class="text-teal-400">[ OK ]</span> Bound host 0datadan.github.io:443' },
+          { el: b4, delay: 1040, status: "INITIALIZING", html: '<span class="text-purple-400">[ &gt;&gt; ]</span> Launching interactive shell v2.4...' }
+        ];
+
+        steps.forEach((step) => {
+          setTimeout(() => {
+            if (statusTextEl) statusTextEl.textContent = step.status;
+            if (step.el) {
+              step.el.innerHTML = step.html;
+              step.el.classList.add("boot-line-show");
+            }
+          }, step.delay);
+        });
+
+        // Dim boot log in-place (zero jump) and slide in the command prompt line
         setTimeout(() => {
-          bootContainer.classList.add("hidden");
-          if (mainPrompt) {
-             mainPrompt.style.opacity = '1';
-             mainPrompt.style.transition = 'opacity 0.25s ease';
-          }
-          
+          bootContainer.classList.add("boot-dimmed");
+          if (statusTextEl) statusTextEl.textContent = "ONLINE";
+          if (linePrompt) linePrompt.classList.add("line-visible");
+
+          // Begin typing 'send-message' once prompt line settles
           const targetText = "send-message";
           typedCmdEl.textContent = "";
           let idx = 0;
-          const typeTimer = setInterval(() => {
-            idx++;
-            typedCmdEl.textContent = targetText.slice(0, idx);
-            if (idx >= targetText.length) {
-              clearInterval(typeTimer);
-              if (focusInput) (senderInput.value ? msgInput : senderInput).focus();
-            }
-          }, 28);
-        }, 650); // Total boot time before prompt appears
+
+          setTimeout(() => {
+            const typeTimer = setInterval(() => {
+              idx++;
+              typedCmdEl.textContent = targetText.slice(0, idx);
+              if (idx >= targetText.length) {
+                clearInterval(typeTimer);
+
+                // Cascade the inline arguments, message row, and send button
+                if (cmdArgs) cmdArgs.classList.add("args-visible");
+                setTimeout(() => {
+                  if (lineMsg) lineMsg.classList.add("line-visible");
+                }, 160);
+                setTimeout(() => {
+                  if (lineActions) lineActions.classList.add("line-visible");
+                  if (focusInput) (senderInput.value ? msgInput : senderInput).focus();
+                }, 320);
+              }
+            }, 42);
+          }, 220);
+        }, 1400);
       }
     };
 
