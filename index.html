@@ -2610,19 +2610,21 @@
       if (statusTextEl) statusTextEl.textContent = "ONLINE";
       keystrokePulse = 1.0;
 
-      // Typewriter effect on the command binary
+      // Typewriter effect synced with .reveal-2 boot delay
       if (typedCmdEl) {
         const targetText = "send-message";
         typedCmdEl.textContent = "";
         let idx = 0;
-        const typeTimer = setInterval(() => {
-          idx++;
-          typedCmdEl.textContent = targetText.slice(0, idx);
-          if (idx >= targetText.length) {
-            clearInterval(typeTimer);
-            if (focusInput) (senderInput.value ? msgInput : senderInput).focus();
-          }
-        }, 28);
+        setTimeout(() => {
+          const typeTimer = setInterval(() => {
+            idx++;
+            typedCmdEl.textContent = targetText.slice(0, idx);
+            if (idx >= targetText.length) {
+              clearInterval(typeTimer);
+              if (focusInput) (senderInput.value ? msgInput : senderInput).focus();
+            }
+          }, 28);
+        }, 220);
       }
     };
 
@@ -2631,15 +2633,16 @@
       standbyTrigger.addEventListener("mouseenter", () => awakenHologram(false));
     }
 
-    // Also wake up automatically when scrolled into clear view
+    // Trigger Cold Boot when 35% of the terminal scrolls into view
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
+          if (entry.isIntersecting) {
             awakenHologram(false);
+            observer.unobserve(entry.target);
           }
         });
-      }, { threshold: [0.65] });
+      }, { threshold: 0.35 });
       observer.observe(stage);
     }
 
