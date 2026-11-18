@@ -462,6 +462,23 @@
             background: #2dd4bf;
             transform: scale(1.25);
         }
+
+        .flow-node {
+            cursor: pointer;
+        }
+        .flow-inspector-bar {
+            margin-top: 0.65rem;
+            padding: 0.45rem 0.75rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(45, 212, 191, 0.25);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+        }
         
         /* === START: 03 // CONTACT TERMINAL STYLES === */
         #contact-dedicated-section {
@@ -1237,7 +1254,7 @@
                                             <div id="code-stream-nova" class="space-y-1.5 text-left w-full"></div>
                                         </div>
 
-                                        <!-- Right: Interactive Telemetry Minimap -->
+                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'nova') -->
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
                                             <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
                                                 <span>SYS.TELEMETRY</span>
@@ -1245,75 +1262,89 @@
                                             </div>
 
                                             <div class="space-y-2 my-auto">
-                                                <button type="button" onclick="toggleArchDrawer('heat', null, 0)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-emerald-400">30m Rasters</span>
+                                                    <span class="text-[10px] text-emerald-400">World Matrix</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('heat', null, 1)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-teal-400">CRS Alignment</span>
+                                                    <span class="text-[10px] text-teal-400">Tour Audio</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('heat', null, 2)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-purple-400">Coast Masking</span>
+                                                    <span class="text-[10px] text-purple-400">HUD Hold</span>
                                                 </button>
                                             </div>
 
                                             <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
-                                                <span>Click node to inspect</span>
+                                                <span>Select node</span>
                                                 <span class="text-teal-400">&larr;</span>
                                             </div>
                                         </div>
 
-                                        <!-- Full-Width Sliding Curtain Architecture Drawer -->
-                                        <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-6 flex flex-col justify-center z-20 font-sans shadow-2xl cursor-pointer">
+                                        <!-- Full-Width Sliding Architecture Drawer for NOVA (Click empty backdrop or [×] to close) -->
+                                        <div id="arch-drawer-nova" onclick="event.stopPropagation(); toggleArchDrawer('nova');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             
-                                            <div class="mb-3 flex items-center justify-between gap-3">
+                                            <div class="mb-2.5 flex items-center justify-between gap-3">
                                                 <div class="flex items-center gap-2.5">
-                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Gis.Architecture</span>
-                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat Thermal Processing Pipeline</h4>
+                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Sys.Architecture</span>
+                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">3D Camera, Audio Synthesis &amp; State Pacing</h4>
                                                 </div>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="interactive px-2.5 py-1 rounded bg-slate-900/80 border border-slate-700/80 text-[10px] font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition flex items-center gap-1.5">
-                                                    <span>&larr;</span> Back to Code
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova');" aria-label="Close Architecture Drawer" class="interactive px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                    [ &times; ]
                                                 </button>
                                             </div>
 
                                             <div class="flowchart-grid text-center" onclick="event.stopPropagation();">
-                                                <div class="flow-node arch-card-stagger" data-flow-idx="0">
+                                                
+                                                <!-- Node 1: Camera & Coordinate Space Architecture PDF -->
+                                                <div onclick="selectArchNode('nova', 0)" class="flow-node flow-node-active arch-card-stagger interactive" data-flow-idx="0" data-snippet="window.smoothFlyToTarget(2800); // Evaluates getWorldPosition() across nested solar groups">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // Raster Windowing</h5>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // World Matrix</h5>
                                                     <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Window-crops <code class="text-slate-200 bg-slate-800/70 px-1 rounded">30m Landsat 8/9</code> GeoTIFF bands to city bounding boxes in Rasterio prior to Kelvin-to-Celsius array math.
+                                                        Wraps <code class="text-slate-200 bg-slate-800/70 px-1 rounded">getWorldPosition()</code> inside <code class="text-slate-200 bg-slate-800/70 px-1 rounded">smoothFlyToTarget</code> to resolve nested solar/galactic groups without off-center offsets.
                                                     </p>
                                                     <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>Resolution</span> <span class="text-emerald-400">30m / pixel</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Scale Factor</span> <span class="text-purple-400">0.00341802</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>cinematicDuration</span> <span class="text-purple-400">2,800 ms</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Easing</span> <span class="text-emerald-400">Sinusoidal.Out</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>autoRotateSpeed</span> <span class="text-teal-300">0.4</span></div>
                                                     </div>
                                                 </div>
 
-                                                <div class="flow-node arch-card-stagger" data-flow-idx="1">
+                                                <!-- Node 2: Nova Tour Audio & Pacing Architecture PDF (Voice & Arrival) -->
+                                                <div onclick="selectArchNode('nova', 1)" class="flow-node arch-card-stagger interactive" data-flow-idx="1" data-snippet="edge-tts -> en-GB-SoniaNeural (-5% rate) | 48 pre-synthesized MP3 tour assets">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // CRS Reprojection</h5>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // Voice &amp; Pacing</h5>
                                                     <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Transforms UTM satellite coordinate grids to <code class="text-slate-200 bg-slate-800/70 px-1 rounded">EPSG:4326 / 3857</code> so thermal rasters lock onto interactive Folium street layers.
+                                                        Generated 48 <code class="text-slate-200 bg-slate-800/70 px-1 rounded">en-GB-SoniaNeural</code> MP3s via <code class="text-slate-200 bg-slate-800/70 px-1 rounded">edge-tts</code> and delayed narration until the 2.8s flight settles.
                                                     </p>
                                                     <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>Source CRS</span> <span class="text-purple-400">UTM Zone Grid</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Target CRS</span> <span class="text-emerald-400">Web Mercator</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>ARRIVAL_DELAY_MS</span> <span class="text-purple-400">2,200 ms</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>POST_DWELL_MS</span> <span class="text-purple-400">6,500 ms</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Voice Rate</span> <span class="text-emerald-400">-5% SoniaNeural</span></div>
                                                     </div>
                                                 </div>
 
-                                                <div class="flow-node arch-card-stagger" data-flow-idx="2">
+                                                <!-- Node 3: Nova Tour Audio & Pacing Architecture PDF (Inspector Hold & Timer Sync) -->
+                                                <div onclick="selectArchNode('nova', 2)" class="flow-node arch-card-stagger interactive" data-flow-idx="2" data-snippet="if (inHudPanel) scheduleNextTourStep(TOUR_INTERACT_HOLD_MS); // 10,000ms grace hold">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Water &amp; NaN Mask</h5>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Inspector Hold</h5>
                                                     <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Filters zero-value borders and water bodies into alpha transparency so urban heat islands render cleanly along coastlines.
+                                                        Removed legacy <code class="text-slate-200 bg-slate-800/70 px-1 rounded">0ms</code> auto-advance overrides and bound <code class="text-slate-200 bg-slate-800/70 px-1 rounded">pointerdown</code> holds on HUD callouts.
                                                     </p>
                                                     <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>Scenes Calibrated</span> <span class="text-purple-400">310+</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Output Layer</span> <span class="text-emerald-400">RGBA Overlay</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>INTERACT_HOLD_MS</span> <span class="text-purple-400">10,000 ms</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Step Sync</span> <span class="text-emerald-400">window.nextTourStep</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Target Guard</span> <span class="text-teal-300">#spatial-callout</span></div>
                                                     </div>
                                                 </div>
+
+                                            </div>
+
+                                            <!-- Interactive Live Code Readout Bar (Updates when clicking any node above) -->
+                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
+                                                <span id="flow-snippet-nova" class="text-teal-300 truncate">window.smoothFlyToTarget(2800); // Evaluates getWorldPosition() across nested solar groups</span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">click node to inspect · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1328,7 +1359,7 @@
                                                 </div>
                                                 <div class="flex items-center gap-3">
                                                     <button id="arch-btn-nova" type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
-                                                        [ + Architecture ]
+                                                        [ + Arch ]
                                                     </button>
                                                     <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
                                                 </div>
@@ -2906,6 +2937,21 @@
 </script>
 
 <script>
+  window.selectArchNode = function(projectKey, nodeIdx) {
+    const viewport = document.getElementById(`viewport-${projectKey}`);
+    if (!viewport) return;
+    const nodes = viewport.querySelectorAll('.flow-node');
+    const snippetEl = document.getElementById(`flow-snippet-${projectKey}`);
+
+    nodes.forEach((node, idx) => {
+      const isSelected = (idx === nodeIdx);
+      node.classList.toggle('flow-node-active', isSelected);
+      if (isSelected && snippetEl && node.dataset.snippet) {
+        snippetEl.textContent = node.dataset.snippet;
+      }
+    });
+  };
+
   window.toggleArchDrawer = function(projectKey, btnEl, focusNodeIdx) {
     const viewport = document.getElementById(`viewport-${projectKey}`);
     const btn = btnEl || document.getElementById(`arch-btn-${projectKey}`);
@@ -2917,13 +2963,13 @@
 
     viewport.classList.toggle('arch-expanded', shouldOpen);
 
-    const nodes = viewport.querySelectorAll('.flow-node');
-    nodes.forEach((node, idx) => {
-      node.classList.toggle('flow-node-active', shouldOpen && focusNodeIdx === idx);
-    });
+    if (shouldOpen) {
+      const targetIdx = (typeof focusNodeIdx === 'number') ? focusNodeIdx : 0;
+      window.selectArchNode(projectKey, targetIdx);
+    }
 
     if (btn) {
-      btn.textContent = shouldOpen ? '[ - Code Stream ]' : '[ + Architecture ]';
+      btn.textContent = shouldOpen ? '[ × Arch ]' : '[ + Arch ]';
     }
   };
 
