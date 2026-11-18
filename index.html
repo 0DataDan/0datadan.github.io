@@ -413,47 +413,54 @@
         .flowchart-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 0.75rem;
             position: relative;
         }
         @media (min-width: 768px) {
             .flowchart-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 2rem;
+                gap: 1rem;
             }
             /* Horizontal connector line behind the nodes */
             .flowchart-grid::before {
                 content: "";
                 position: absolute;
-                top: 2.25rem;
-                left: 10%;
-                right: 10%;
+                top: 1.4rem;
+                left: 12%;
+                right: 12%;
                 height: 1px;
-                background: linear-gradient(90deg, rgba(45, 212, 191, 0.1), rgba(45, 212, 191, 0.6), rgba(45, 212, 191, 0.1));
+                background: linear-gradient(90deg, rgba(45, 212, 191, 0.15), rgba(45, 212, 191, 0.65), rgba(45, 212, 191, 0.15));
                 z-index: 0;
             }
         }
         .flow-node {
             position: relative;
             z-index: 1;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(45, 212, 191, 0.2);
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(45, 212, 191, 0.22);
             border-radius: 0.5rem;
-            padding: 1.25rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 0.75rem 0.85rem;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
-        .flow-node:hover {
-            border-color: rgba(45, 212, 191, 0.6);
-            box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
+        .flow-node:hover,
+        .flow-node.flow-node-active {
+            border-color: #2dd4bf;
+            box-shadow: 0 8px 25px -8px rgba(45, 212, 191, 0.35);
+            transform: translateY(-2px);
         }
         .flow-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #0f172a;
             border: 2px solid #2dd4bf;
             border-radius: 50%;
-            margin: 0 auto 1rem auto;
-            box-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+            margin: 0 auto 0.45rem auto;
+            box-shadow: 0 0 8px rgba(45, 212, 191, 0.45);
+            transition: background-color 0.25s ease, transform 0.25s ease;
+        }
+        .flow-node.flow-node-active .flow-dot {
+            background: #2dd4bf;
+            transform: scale(1.25);
         }
         
         /* === START: 03 // CONTACT TERMINAL STYLES === */
@@ -1237,17 +1244,17 @@
                                             </div>
 
                                             <div class="space-y-2 my-auto">
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">01 // Rendering</span>
-                                                    <span class="text-[10px] text-emerald-400">60 FPS</span>
+                                                <button type="button" onclick="toggleArchDrawer('heat', null, 0)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[10px] text-emerald-400">30m Rasters</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">02 // Pipelines</span>
-                                                    <span class="text-[10px] text-teal-400">FastAPI</span>
+                                                <button type="button" onclick="toggleArchDrawer('heat', null, 1)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[10px] text-teal-400">CRS Alignment</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">03 // Interaction</span>
-                                                    <span class="text-[10px] text-purple-400">1.5s Glide</span>
+                                                <button type="button" onclick="toggleArchDrawer('heat', null, 2)" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[10px] text-purple-400">Coast Masking</span>
                                                 </button>
                                             </div>
 
@@ -1257,65 +1264,58 @@
                                             </div>
                                         </div>
 
-                                       <!-- Sliding Curtain Architecture Drawer -->
                                         <!-- Full-Width Sliding Curtain Architecture Drawer -->
-                                        <div id="arch-drawer-nova" onclick="event.stopPropagation();" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl border-l border-teal-500/30 p-6 sm:p-10 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                        <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-6 flex flex-col justify-center z-20 font-sans shadow-2xl cursor-pointer">
                                             
-                                            <div class="mb-6 flex items-center gap-3">
-                                                <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-1 bg-teal-500/10 border border-teal-500/20 rounded">Sys.Architecture</span>
-                                                <h4 class="text-white text-sm font-semibold tracking-tight">Camera & Pacing Pipeline</h4>
+                                            <div class="mb-3 flex items-center justify-between gap-3">
+                                                <div class="flex items-center gap-2.5">
+                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Gis.Architecture</span>
+                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat Thermal Processing Pipeline</h4>
+                                                </div>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="interactive px-2.5 py-1 rounded bg-slate-900/80 border border-slate-700/80 text-[10px] font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition flex items-center gap-1.5">
+                                                    <span>&larr;</span> Back to Code
+                                                </button>
                                             </div>
 
-                                            <!-- Dedicated Drawer Close Button -->
-                                            <button type="button" onclick="toggleArchDrawer('nova')" class="interactive absolute top-6 right-6 px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 text-[10px] font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-2">
-                                                <span>×</span> Close
-                                            </button>
-
-                                            <div class="flowchart-grid text-center">
-                                                
-                                                <!-- Node 1: Coordinate Resolution -->
-                                                <div class="flow-node arch-card-stagger">
+                                            <div class="flowchart-grid text-center" onclick="event.stopPropagation();">
+                                                <div class="flow-node arch-card-stagger" data-flow-idx="0">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">SYS.DIAG_01 // Vector Matrix</h5>
-                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
-                                                        Resolves nested hierarchical groups into absolute world coordinates via <code class="text-slate-300 bg-slate-800/50 px-1 rounded">getWorldPosition()</code> to prevent off-center targeting offsets.
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // Raster Windowing</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Window-crops <code class="text-slate-200 bg-slate-800/70 px-1 rounded">30m Landsat 8/9</code> GeoTIFF bands to city bounding boxes in Rasterio prior to Kelvin-to-Celsius array math.
                                                     </p>
-                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>cinematicDuration</span> <span class="text-purple-400">2,800 ms</span></div>
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>Easing</span> <span class="text-emerald-400">Sinusoidal.Out</span></div>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>Resolution</span> <span class="text-emerald-400">30m / pixel</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Scale Factor</span> <span class="text-purple-400">0.00341802</span></div>
                                                     </div>
                                                 </div>
 
-                                                <!-- Node 2: Cinematic Pacing -->
-                                                <div class="flow-node arch-card-stagger">
+                                                <div class="flow-node arch-card-stagger" data-flow-idx="1">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">SYS.DIAG_02 // Tour Sync & Audio</h5>
-                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
-                                                        Pre-synthesized <code class="text-slate-300 bg-slate-800/50 px-1 rounded">edge-tts</code> assets sync with camera arrivals, utilizing strict dwell timers to prevent choppy audio clipping.
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // CRS Reprojection</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Transforms UTM satellite coordinate grids to <code class="text-slate-200 bg-slate-800/70 px-1 rounded">EPSG:4326 / 3857</code> so thermal rasters lock onto interactive Folium street layers.
                                                     </p>
-                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>ARRIVAL_DELAY_MS</span> <span class="text-purple-400">2,200 ms</span></div>
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>POST_DWELL_MS</span> <span class="text-purple-400">6,500 ms</span></div>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>Source CRS</span> <span class="text-purple-400">UTM Zone Grid</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Target CRS</span> <span class="text-emerald-400">Web Mercator</span></div>
                                                     </div>
                                                 </div>
 
-                                                <!-- Node 3: Edge Case Hysteresis -->
-                                                <div class="flow-node arch-card-stagger">
+                                                <div class="flow-node arch-card-stagger" data-flow-idx="2">
                                                     <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">SYS.DIAG_03 // Interaction Guards</h5>
-                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
-                                                        Pointer events on surface inspectors intercept auto-advance timers, injecting a grace period to prevent users from being yanked away mid-read.
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Water &amp; NaN Mask</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Filters zero-value borders and water bodies into alpha transparency so urban heat islands render cleanly along coastlines.
                                                     </p>
-                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>INTERACT_HOLD_MS</span> <span class="text-purple-400">10,000 ms</span></div>
-                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>autoRotateSpeed</span> <span class="text-emerald-400">0.4</span></div>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>Scenes Calibrated</span> <span class="text-purple-400">310+</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Output Layer</span> <span class="text-emerald-400">RGBA Overlay</span></div>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
-
-                                        </div>
+                                    </div>
 
                                     <!-- Bottom Body Section -->
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
@@ -2148,13 +2148,10 @@
       deckSlides.forEach((_, idx) => {
         const tab = document.getElementById(`deck-tab-${idx}`);
         if (!tab) return;
-        const numSpan = tab.querySelector('span:first-child');
         if (idx === currentSlideIdx) {
           tab.className = "deck-nav-item nav-active interactive flex items-baseline gap-2";
-          if (numSpan) numSpan.className = "text-[11px] text-teal-400";
         } else {
           tab.className = "deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2";
-          if (numSpan) numSpan.className = "text-[11px] text-slate-600";
         }
       });
 
@@ -2908,17 +2905,38 @@
 </script>
 
 <script>
-  window.toggleArchDrawer = function(projectKey, btnEl) {
+  window.toggleArchDrawer = function(projectKey, btnEl, focusNodeIdx) {
     const viewport = document.getElementById(`viewport-${projectKey}`);
     const btn = btnEl || document.getElementById(`arch-btn-${projectKey}`);
     if (!viewport) return;
-    const isExpanded = viewport.classList.toggle('arch-expanded');
+
+    const shouldOpen = (typeof focusNodeIdx === 'number')
+      ? true
+      : !viewport.classList.contains('arch-expanded');
+
+    viewport.classList.toggle('arch-expanded', shouldOpen);
+
+    const nodes = viewport.querySelectorAll('.flow-node');
+    nodes.forEach((node, idx) => {
+      node.classList.toggle('flow-node-active', shouldOpen && focusNodeIdx === idx);
+    });
+
     if (btn) {
-      btn.textContent = isExpanded ? '[ - Code Stream ]' : '[ + Architecture ]';
+      btn.textContent = shouldOpen ? '[ - Code Stream ]' : '[ + Architecture ]';
     }
   };
-</script>
 
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      ['nova', 'heat'].forEach(key => {
+        const vp = document.getElementById(`viewport-${key}`);
+        if (vp && vp.classList.contains('arch-expanded')) {
+          window.toggleArchDrawer(key);
+        }
+      });
+    }
+  });
+</script>
     
 <!-- === START: 03 // CONTACT TERMINAL CONTROLLER === -->
 <script>
