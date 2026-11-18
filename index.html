@@ -479,6 +479,27 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.68rem;
         }
+
+        .diag-tab-btn {
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            background: rgba(15, 23, 42, 0.7);
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+        .diag-tab-btn:hover {
+            color: #cbd5e1;
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+        .diag-tab-btn.diag-tab-active {
+            background: rgba(45, 212, 191, 0.14);
+            border-color: #2dd4bf;
+            color: #2dd4bf;
+            box-shadow: 0 0 12px rgba(45, 212, 191, 0.2);
+        }
         
         /* === START: 03 // CONTACT TERMINAL STYLES === */
         #contact-dedicated-section {
@@ -1282,69 +1303,31 @@
                                             </div>
                                         </div>
 
-                                        <!-- Full-Width Sliding Architecture Drawer for NOVA (Click empty backdrop or [×] to close) -->
+                                        <!-- Full-Width Sliding Architecture Drawer for NOVA -->
                                         <div id="arch-drawer-nova" onclick="event.stopPropagation(); toggleArchDrawer('nova');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             
-                                            <div class="mb-2.5 flex items-center justify-between gap-3">
-                                                <div class="flex items-center gap-2.5">
-                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Sys.Architecture</span>
-                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">3D Camera, Audio Synthesis &amp; State Pacing</h4>
+                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="arch-badge-nova" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h4 id="arch-title-nova" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Camera &amp; Coordinate Space Architecture</h4>
                                                 </div>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova');" aria-label="Close Architecture Drawer" class="interactive px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
-                                                    [ &times; ]
-                                                </button>
+                                                <div class="flex items-center gap-1.5">
+                                                    <button type="button" onclick="selectArchNode('nova', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Matrix</button>
+                                                    <button type="button" onclick="selectArchNode('nova', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 Audio</button>
+                                                    <button type="button" onclick="selectArchNode('nova', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Hold</button>
+                                                    <button type="button" onclick="toggleArchDrawer('nova');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                        [ &times; ]
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div class="flowchart-grid text-center" onclick="event.stopPropagation();">
-                                                
-                                                <!-- Node 1: Camera & Coordinate Space Architecture PDF -->
-                                                <div onclick="selectArchNode('nova', 0)" class="flow-node flow-node-active arch-card-stagger interactive" data-flow-idx="0" data-snippet="window.smoothFlyToTarget(2800); // Evaluates getWorldPosition() across nested solar groups">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // World Matrix</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Wraps <code class="text-slate-200 bg-slate-800/70 px-1 rounded">getWorldPosition()</code> inside <code class="text-slate-200 bg-slate-800/70 px-1 rounded">smoothFlyToTarget</code> to resolve nested solar/galactic groups without off-center offsets.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>cinematicDuration</span> <span class="text-purple-400">2,800 ms</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Easing</span> <span class="text-emerald-400">Sinusoidal.Out</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>autoRotateSpeed</span> <span class="text-teal-300">0.4</span></div>
-                                                    </div>
-                                                </div>
+                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
+                                            <div id="flow-grid-nova" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
 
-                                                <!-- Node 2: Nova Tour Audio & Pacing Architecture PDF (Voice & Arrival) -->
-                                                <div onclick="selectArchNode('nova', 1)" class="flow-node arch-card-stagger interactive" data-flow-idx="1" data-snippet="edge-tts -> en-GB-SoniaNeural (-5% rate) | 48 pre-synthesized MP3 tour assets">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // Voice &amp; Pacing</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Generated 48 <code class="text-slate-200 bg-slate-800/70 px-1 rounded">en-GB-SoniaNeural</code> MP3s via <code class="text-slate-200 bg-slate-800/70 px-1 rounded">edge-tts</code> and delayed narration until the 2.8s flight settles.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>ARRIVAL_DELAY_MS</span> <span class="text-purple-400">2,200 ms</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>POST_DWELL_MS</span> <span class="text-purple-400">6,500 ms</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Voice Rate</span> <span class="text-emerald-400">-5% SoniaNeural</span></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Node 3: Nova Tour Audio & Pacing Architecture PDF (Inspector Hold & Timer Sync) -->
-                                                <div onclick="selectArchNode('nova', 2)" class="flow-node arch-card-stagger interactive" data-flow-idx="2" data-snippet="if (inHudPanel) scheduleNextTourStep(TOUR_INTERACT_HOLD_MS); // 10,000ms grace hold">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Inspector Hold</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Removed legacy <code class="text-slate-200 bg-slate-800/70 px-1 rounded">0ms</code> auto-advance overrides and bound <code class="text-slate-200 bg-slate-800/70 px-1 rounded">pointerdown</code> holds on HUD callouts.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>INTERACT_HOLD_MS</span> <span class="text-purple-400">10,000 ms</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Step Sync</span> <span class="text-emerald-400">window.nextTourStep</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Target Guard</span> <span class="text-teal-300">#spatial-callout</span></div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <!-- Interactive Live Code Readout Bar (Updates when clicking any node above) -->
+                                            <!-- Live Code Snippet Bar -->
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
-                                                <span id="flow-snippet-nova" class="text-teal-300 truncate">window.smoothFlyToTarget(2800); // Evaluates getWorldPosition() across nested solar groups</span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">click node to inspect · click backdrop to close</span>
+                                                <span id="flow-snippet-nova" class="text-teal-300 truncate"></span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1489,69 +1472,31 @@
                                             </div>
                                         </div>
 
-                                        <!-- Full-Width Sliding Architecture Drawer for URBAN HEAT (Click empty backdrop or [×] to close) -->
+                                        <!-- Full-Width Sliding Architecture Drawer for URBAN HEAT -->
                                         <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             
-                                            <div class="mb-2.5 flex items-center justify-between gap-3">
-                                                <div class="flex items-center gap-2.5">
-                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Gis.Architecture</span>
-                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Thermal Calibration &amp; GIS Pipeline</h4>
+                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="arch-badge-heat" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h4 id="arch-title-heat" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Radiometric Calibration</h4>
                                                 </div>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat');" aria-label="Close Architecture Drawer" class="interactive px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
-                                                    [ &times; ]
-                                                </button>
+                                                <div class="flex items-center gap-1.5">
+                                                    <button type="button" onclick="selectArchNode('heat', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Raster</button>
+                                                    <button type="button" onclick="selectArchNode('heat', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 CRS</button>
+                                                    <button type="button" onclick="selectArchNode('heat', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Mask</button>
+                                                    <button type="button" onclick="toggleArchDrawer('heat');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                        [ &times; ]
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div class="flowchart-grid text-center" onclick="event.stopPropagation();">
-                                                
-                                                <!-- Node 1: Raster Windowing & Kelvin-to-Celsius Calibration -->
-                                                <div onclick="selectArchNode('heat', 0)" class="flow-node flow-node-active arch-card-stagger interactive" data-flow-idx="0" data-snippet="kelvin = thermal_band * 0.00341802 + 149.0; celsius = np.round(kelvin - 273.15, 2)">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // Raster Math</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Window-crops <code class="text-slate-200 bg-slate-800/70 px-1 rounded">30m GeoTIFF</code> thermal bands in <code class="text-slate-200 bg-slate-800/70 px-1 rounded">Rasterio</code> and applies USGS radiometric rescaling to derive surface Celsius.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>MULT_BAND_10</span> <span class="text-purple-400">0.00341802</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>ADD_OFFSET</span> <span class="text-emerald-400">+149.0 K</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Spatial Res</span> <span class="text-teal-300">30m / pixel</span></div>
-                                                    </div>
-                                                </div>
+                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
+                                            <div id="flow-grid-heat" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
 
-                                                <!-- Node 2: Coordinate Reference System Reprojection -->
-                                                <div onclick="selectArchNode('heat', 1)" class="flow-node arch-card-stagger interactive" data-flow-idx="1" data-snippet="rasterio.warp.reproject(src_crs='EPSG:32618', dst_crs='EPSG:4326') -> Folium bounds">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // CRS Alignment</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Reprojects native UTM satellite swaths to <code class="text-slate-200 bg-slate-800/70 px-1 rounded">EPSG:4326</code> lat/lon bounds so thermal rasters lock onto interactive <code class="text-slate-200 bg-slate-800/70 px-1 rounded">Folium</code> street tiles.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>Source Grid</span> <span class="text-purple-400">UTM Zone Swath</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Target CRS</span> <span class="text-emerald-400">EPSG:4326 / 3857</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Layer Engine</span> <span class="text-teal-300">ImageOverlay</span></div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Node 3: Water & NoData Alpha Masking -->
-                                                <div onclick="selectArchNode('heat', 2)" class="flow-node arch-card-stagger interactive" data-flow-idx="2" data-snippet="rgba_map[np.isnan(celsius) | water_mask] = [0, 0, 0, 0] # Clean coastline alpha">
-                                                    <div class="flow-dot"></div>
-                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Coast Masking</h5>
-                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
-                                                        Filters <code class="text-slate-200 bg-slate-800/70 px-1 rounded">NoData</code> swath borders and water pixels into zero-alpha channels so urban heat islands blend cleanly along coastlines.
-                                                    </p>
-                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
-                                                        <div class="flex justify-between text-slate-400"><span>Masking</span> <span class="text-purple-400">NumPy NaN + Water</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Scenes Audited</span> <span class="text-emerald-400">310+ Calibrated</span></div>
-                                                        <div class="flex justify-between text-slate-400"><span>Output Format</span> <span class="text-teal-300">RGBA Colormap</span></div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <!-- Interactive Live Code Readout Bar (Updates when clicking any node above) -->
+                                            <!-- Live Code Snippet Bar -->
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
-                                                <span id="flow-snippet-heat" class="text-teal-300 truncate">kelvin = thermal_band * 0.00341802 + 149.0; celsius = np.round(kelvin - 273.15, 2)</span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">click node to inspect · click backdrop to close</span>
+                                                <span id="flow-snippet-heat" class="text-teal-300 truncate"></span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2979,23 +2924,178 @@
 </script>
 
 <script>
-  window.selectArchNode = function(projectKey, nodeIdx) {
-    const viewport = document.getElementById(`viewport-${projectKey}`);
-    if (!viewport) return;
-    const nodes = viewport.querySelectorAll('.flow-node');
-    const snippetEl = document.getElementById(`flow-snippet-${projectKey}`);
-
-    nodes.forEach((node, idx) => {
-      // Force removal first to ensure a clean slate, then apply if matched
-      if (idx === nodeIdx) {
-        node.classList.add('flow-node-active');
-        if (snippetEl && node.dataset.snippet) {
-          snippetEl.textContent = node.dataset.snippet;
-        }
-      } else {
-        node.classList.remove('flow-node-active');
+  const ARCH_PIPELINES = {
+    nova: [
+      {
+        badge: "SYS.DIAG_01",
+        title: "Camera & Coordinate Space Architecture",
+        snippet: "if (typeof window.smoothFlyToTarget === 'function') window.smoothFlyToTarget(2800);",
+        stages: [
+          {
+            head: "1. Problem // Matrix Discrepancy",
+            body: "Direct target switching caused jarring cuts and off-center camera offsets when targeting orbiting bodies.",
+            metrics: [["Issue", "Off-Center Offset", "text-purple-400"], ["Lockout", "Auto-Rotate Jitter", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // Nested Groups",
+            body: "Reading local mesh positions failed when celestial bodies were nested inside hierarchical solar or galactic groups.",
+            metrics: [["Local Pos", "mesh.position", "text-purple-400"], ["Curve Bug", "Linear Deceleration", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // World Resolution",
+            body: "Wrapped getWorldPosition() inside smoothFlyToTarget(2800) with Sinusoidal.Out easing for smooth arrival.",
+            metrics: [["Flight Time", "2,800 ms", "text-purple-400"], ["Easing", "Sinusoidal.Out", "text-emerald-400"], ["autoRotate", "0.4 Speed", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_02",
+        title: "Tour Audio Unification & Pacing Architecture",
+        snippet: "edge-tts -> en-GB-SoniaNeural (-5% speed) | TOUR_ARRIVAL_DELAY_MS = 2200;",
+        stages: [
+          {
+            head: "1. Problem // Clipped Narration",
+            body: "Dynamic TTS caused voice variance and narration started mid-flight, clipping introductory words at each stop.",
+            metrics: [["TTS Glitch", "Voice Variance", "text-purple-400"], ["Pacing", "Clipped Intro Audio", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // Tween Race",
+            body: "new Audio().play() fired simultaneously with TWEEN camera flight transitions without arrival stabilization.",
+            metrics: [["Conflict", "Audio vs. Tween", "text-purple-400"], ["Shell Bug", "zsh ! History Error", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // Neural Asset Sync",
+            body: "Synthesized 48 MP3s via edge-tts (en-GB-SoniaNeural at -5%) and delayed playback until the 2.8s flight settles.",
+            metrics: [["ARRIVAL_DELAY", "2,200 ms", "text-purple-400"], ["POST_DWELL", "6,500 ms", "text-emerald-400"], ["Assets", "48 Neural MP3s", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_03",
+        title: "Interactive Inspector Hold & Timer Guards",
+        snippet: "if (inHudPanel) scheduleNextTourStep(TOUR_INTERACT_HOLD_MS); // 10,000ms grace hold",
+        stages: [
+          {
+            head: "1. Problem // Inspector Conflict",
+            body: "Users clicking surface inspection panels or feature pagination were yanked away mid-inspection by fixed timers.",
+            metrics: [["UX Issue", "Premature Step Jump", "text-purple-400"], ["HUD Bug", "Reverted to EXP Mode", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // Timer Hijack",
+            body: "Legacy setupAutoAdvance() overrode onended with a 0ms delay and called bare executeTourStep() without UI sync.",
+            metrics: [["Override", "0ms onended Delay", "text-purple-400"], ["Bypass", "Progress Bar Desync", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // Pointerdown Hold",
+            body: "Routed steps through window.nextTourStep() and bound pointerdown listeners on HUD panels to extend dwell time.",
+            metrics: [["INTERACT_HOLD", "10,000 ms", "text-purple-400"], ["Step Sync", "window.nextTourStep", "text-emerald-400"], ["Guard", "#spatial-callout", "text-teal-300"]]
+          }
+        ]
       }
-    });
+    ],
+    heat: [
+      {
+        badge: "SYS.DIAG_01",
+        title: "Landsat 8/9 Radiometric & Thermal Calibration",
+        snippet: "kelvin = thermal_band * 0.00341802 + 149.0; celsius = np.round(kelvin - 273.15, 2)",
+        stages: [
+          {
+            head: "1. Problem // Raw Scene Memory",
+            body: "Full-swath Landsat 8/9 GeoTIFF scenes exceed memory limits when computing pixel-level thermal arrays in browser.",
+            metrics: [["Swath Size", "185km x 180km", "text-purple-400"], ["Resolution", "30m / pixel", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // Unscaled 16-Bit DN",
+            body: "Band 10 stores quantized 16-bit digital numbers requiring USGS radiometric rescaling before Kelvin conversion.",
+            metrics: [["Raw Input", "uint16 Quantized", "text-purple-400"], ["Unit Gap", "DN to Celsius", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // Windowed Array Math",
+            body: "Window-cropped scenes to city bounds in Rasterio and vectorized USGS multiplicative/additive thermal constants.",
+            metrics: [["MULT_FACTOR", "0.00341802", "text-purple-400"], ["ADD_OFFSET", "+149.0 K", "text-emerald-400"], ["Kelvin Shift", "-273.15 °C", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_02",
+        title: "Coordinate Reference System (CRS) Alignment",
+        snippet: "rasterio.warp.reproject(src_crs='EPSG:32618', dst_crs='EPSG:4326') -> Folium ImageOverlay",
+        stages: [
+          {
+            head: "1. Problem // Street Tile Drift",
+            body: "Overlaying raw satellite rasters directly onto interactive web maps caused spatial drift across city blocks.",
+            metrics: [["Symptom", "Tile Misalignment", "text-purple-400"], ["Target", "Street-Level GIS", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // UTM vs. Mercator",
+            body: "Landsat scenes ship in local UTM zone grids while Folium/Leaflet base maps render in EPSG:3857 / EPSG:4326.",
+            metrics: [["Source CRS", "UTM Zone Grid", "text-purple-400"], ["Web Map CRS", "EPSG:4326Bounds", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // Affine CRS Warp",
+            body: "Reprojected thermal arrays and bounding boxes via rasterio.warp so heatmaps lock accurately onto street tiles.",
+            metrics: [["Reprojection", "rasterio.warp", "text-purple-400"], ["Target Grid", "EPSG:4326", "text-emerald-400"], ["Layer Type", "ImageOverlay", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_03",
+        title: "Coastline & NoData Alpha Channel Masking",
+        snippet: "rgba_map[np.isnan(celsius) | water_mask] = [0, 0, 0, 0] # Transparent coastline boundary",
+        stages: [
+          {
+            head: "1. Problem // Harsh Bounding Boxes",
+            body: "Rotated satellite swaths left black NoData triangles and water bodies that obscured coastal urban neighborhoods.",
+            metrics: [["Artifact", "Black Swath Edges", "text-purple-400"], ["Distortion", "Water Cool-Bias", "text-emerald-400"]]
+          },
+          {
+            head: "2. Root Cause // Opaque Colormaps",
+            body: "Standard RGB raster exports treat 0-value border padding and coastal water pixels as valid low-temperature data.",
+            metrics: [["Padding", "0-Value Pixels", "text-purple-400"], ["Bias", "Harbor/RiverSkew", "text-teal-300"]]
+          },
+          {
+            head: "3. Solution // RGBA NaN Filtering",
+            body: "Converted rasters to 4-channel RGBA and masked NoData/water indices to alpha=0 for seamless coastline blending.",
+            metrics: [["Mask Engine", "NumPy Boolean", "text-purple-400"], ["Alpha Channel", "0 (Transparent)", "text-emerald-400"], ["Scenes Audited", "310+ Calibrated", "text-teal-300"]]
+          }
+        ]
+      }
+    ]
+  };
+
+  window.selectArchNode = function(projectKey, nodeIdx) {
+    const projectData = ARCH_PIPELINES[projectKey];
+    if (!projectData || !projectData[nodeIdx]) return;
+
+    const data = projectData[nodeIdx];
+    const badgeEl = document.getElementById(`arch-badge-${projectKey}`);
+    const titleEl = document.getElementById(`arch-title-${projectKey}`);
+    const gridEl = document.getElementById(`flow-grid-${projectKey}`);
+    const snippetEl = document.getElementById(`flow-snippet-${projectKey}`);
+    const drawerEl = document.getElementById(`arch-drawer-${projectKey}`);
+
+    if (badgeEl) badgeEl.textContent = data.badge;
+    if (titleEl) titleEl.textContent = data.title;
+    if (snippetEl) snippetEl.textContent = data.snippet;
+
+    if (drawerEl) {
+      drawerEl.querySelectorAll('[data-diag-tab]').forEach((tab, idx) => {
+        tab.classList.toggle('diag-tab-active', idx === nodeIdx);
+      });
+    }
+
+    if (gridEl) {
+      gridEl.innerHTML = data.stages.map((st, idx) => `
+        <div class="flow-node ${idx === 2 ? 'flow-node-active' : ''}" style="opacity:1;transform:translateY(0);">
+          <div class="flow-dot"></div>
+          <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">${st.head}</h5>
+          <p class="text-slate-400 text-[10px] leading-snug mb-2">${st.body}</p>
+          <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+            ${st.metrics.map(m => `<div class="flex justify-between text-slate-400"><span>${m[0]}</span> <span class="${m[2]}">${m[1]}</span></div>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
   };
 
   window.toggleArchDrawer = function(projectKey, btnEl, focusNodeIdx) {
