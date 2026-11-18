@@ -1461,7 +1461,7 @@
                                             <div id="code-stream-heat" class="space-y-1.5 text-left w-full"></div>
                                         </div>
 
-                                        <!-- Right: Interactive Telemetry Minimap -->
+                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'heat') -->
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
                                             <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
                                                 <span>GIS.TELEMETRY</span>
@@ -1469,47 +1469,89 @@
                                             </div>
 
                                             <div class="space-y-2 my-auto">
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-emerald-400">Vector Matrix</span>
+                                                    <span class="text-[10px] text-emerald-400">Raster Math</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-teal-400">Tour Sync</span>
+                                                    <span class="text-[10px] text-teal-400">CRS Sync</span>
                                                 </button>
-                                                <button type="button" onclick="toggleArchDrawer('nova')" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
                                                     <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-purple-400">Interaction</span>
+                                                    <span class="text-[10px] text-purple-400">Coast Mask</span>
                                                 </button>
                                             </div>
 
                                             <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
-                                                <span>Click node to inspect</span>
+                                                <span>Select node</span>
                                                 <span class="text-teal-400">&larr;</span>
                                             </div>
                                         </div>
 
-                                        <!-- Sliding Curtain Architecture Drawer -->
-                                        <div id="arch-drawer-heat" onclick="event.stopPropagation();" class="arch-drawer-slide absolute inset-y-0 right-0 w-full sm:w-[88%] bg-slate-950/90 backdrop-blur-md border-l border-teal-500/30 p-5 sm:p-7 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Raster Data</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Cropped <span class="text-white font-medium">30m Landsat 8/9</span> satellite scenes to specific city bounds using Rasterio, keeping memory usage low while calculating surface temperatures.
-                                                    </p>
+                                        <!-- Full-Width Sliding Architecture Drawer for URBAN HEAT (Click empty backdrop or [×] to close) -->
+                                        <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                            
+                                            <div class="mb-2.5 flex items-center justify-between gap-3">
+                                                <div class="flex items-center gap-2.5">
+                                                    <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">Gis.Architecture</span>
+                                                    <h4 class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Thermal Calibration &amp; GIS Pipeline</h4>
                                                 </div>
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Map Alignment</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Reprojected satellite grid coordinates to match standard web map projections, ensuring thermal heatmaps align accurately over street-level base maps.
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat');" aria-label="Close Architecture Drawer" class="interactive px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                    [ &times; ]
+                                                </button>
+                                            </div>
+
+                                            <div class="flowchart-grid text-center" onclick="event.stopPropagation();">
+                                                
+                                                <!-- Node 1: Raster Windowing & Kelvin-to-Celsius Calibration -->
+                                                <div onclick="selectArchNode('heat', 0)" class="flow-node flow-node-active arch-card-stagger interactive" data-flow-idx="0" data-snippet="kelvin = thermal_band * 0.00341802 + 149.0; celsius = np.round(kelvin - 273.15, 2)">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_01 // Raster Math</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Window-crops <code class="text-slate-200 bg-slate-800/70 px-1 rounded">30m GeoTIFF</code> thermal bands in <code class="text-slate-200 bg-slate-800/70 px-1 rounded">Rasterio</code> and applies USGS radiometric rescaling to derive surface Celsius.
                                                     </p>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>MULT_BAND_10</span> <span class="text-purple-400">0.00341802</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>ADD_OFFSET</span> <span class="text-emerald-400">+149.0 K</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Spatial Res</span> <span class="text-teal-300">30m / pixel</span></div>
+                                                    </div>
                                                 </div>
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Visual Masking</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Filtered out water pixels and empty border data so thermal overlays blend cleanly into the natural coastline without harsh bounding boxes.
+
+                                                <!-- Node 2: Coordinate Reference System Reprojection -->
+                                                <div onclick="selectArchNode('heat', 1)" class="flow-node arch-card-stagger interactive" data-flow-idx="1" data-snippet="rasterio.warp.reproject(src_crs='EPSG:32618', dst_crs='EPSG:4326') -> Folium bounds">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_02 // CRS Alignment</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Reprojects native UTM satellite swaths to <code class="text-slate-200 bg-slate-800/70 px-1 rounded">EPSG:4326</code> lat/lon bounds so thermal rasters lock onto interactive <code class="text-slate-200 bg-slate-800/70 px-1 rounded">Folium</code> street tiles.
                                                     </p>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>Source Grid</span> <span class="text-purple-400">UTM Zone Swath</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Target CRS</span> <span class="text-emerald-400">EPSG:4326 / 3857</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Layer Engine</span> <span class="text-teal-300">ImageOverlay</span></div>
+                                                    </div>
                                                 </div>
+
+                                                <!-- Node 3: Water & NoData Alpha Masking -->
+                                                <div onclick="selectArchNode('heat', 2)" class="flow-node arch-card-stagger interactive" data-flow-idx="2" data-snippet="rgba_map[np.isnan(celsius) | water_mask] = [0, 0, 0, 0] # Clean coastline alpha">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">SYS.DIAG_03 // Coast Masking</h5>
+                                                    <p class="text-slate-400 text-[10px] leading-snug mb-2">
+                                                        Filters <code class="text-slate-200 bg-slate-800/70 px-1 rounded">NoData</code> swath borders and water pixels into zero-alpha channels so urban heat islands blend cleanly along coastlines.
+                                                    </p>
+                                                    <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+                                                        <div class="flex justify-between text-slate-400"><span>Masking</span> <span class="text-purple-400">NumPy NaN + Water</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Scenes Audited</span> <span class="text-emerald-400">310+ Calibrated</span></div>
+                                                        <div class="flex justify-between text-slate-400"><span>Output Format</span> <span class="text-teal-300">RGBA Colormap</span></div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Interactive Live Code Readout Bar (Updates when clicking any node above) -->
+                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
+                                                <span id="flow-snippet-heat" class="text-teal-300 truncate">kelvin = thermal_band * 0.00341802 + 149.0; celsius = np.round(kelvin - 273.15, 2)</span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">click node to inspect · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1524,7 +1566,7 @@
                                                 </div>
                                                 <div class="flex items-center gap-3">
                                                     <button id="arch-btn-heat" type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
-                                                        [ + Architecture ]
+                                                        [ + Arch ]
                                                     </button>
                                                     <span class="text-xs font-mono text-purple-400">30m GeoTIFF</span>
                                                 </div>
