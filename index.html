@@ -2986,10 +2986,14 @@
     const snippetEl = document.getElementById(`flow-snippet-${projectKey}`);
 
     nodes.forEach((node, idx) => {
-      const isSelected = (idx === nodeIdx);
-      node.classList.toggle('flow-node-active', isSelected);
-      if (isSelected && snippetEl && node.dataset.snippet) {
-        snippetEl.textContent = node.dataset.snippet;
+      // Force removal first to ensure a clean slate, then apply if matched
+      if (idx === nodeIdx) {
+        node.classList.add('flow-node-active');
+        if (snippetEl && node.dataset.snippet) {
+          snippetEl.textContent = node.dataset.snippet;
+        }
+      } else {
+        node.classList.remove('flow-node-active');
       }
     });
   };
