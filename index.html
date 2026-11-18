@@ -408,7 +408,54 @@
         .arch-expanded .arch-card-stagger:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
         .arch-expanded .arch-card-stagger:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.22s; }
         .arch-expanded .arch-card-stagger:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.32s; }
-    
+
+        /* CSS Flowchart Pipeline Connectors */
+        .flowchart-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .flowchart-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+            /* Horizontal connector line behind the nodes */
+            .flowchart-grid::before {
+                content: "";
+                position: absolute;
+                top: 2.25rem;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                background: linear-gradient(90deg, rgba(45, 212, 191, 0.1), rgba(45, 212, 191, 0.6), rgba(45, 212, 191, 0.1));
+                z-index: 0;
+            }
+        }
+        .flow-node {
+            position: relative;
+            z-index: 1;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flow-node:hover {
+            border-color: rgba(45, 212, 191, 0.6);
+            box-shadow: 0 10px 30px -10px rgba(45, 212, 191, 0.2);
+        }
+        .flow-dot {
+            width: 10px;
+            height: 10px;
+            background: #0f172a;
+            border: 2px solid #2dd4bf;
+            border-radius: 50%;
+            margin: 0 auto 1rem auto;
+            box-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+        }
+        
         /* === START: 03 // CONTACT TERMINAL STYLES === */
         #contact-dedicated-section {
             margin-top: 5.5rem;
@@ -1214,29 +1261,57 @@
                                         </div>
 
                                        <!-- Sliding Curtain Architecture Drawer -->
-                                        <div id="arch-drawer-nova" onclick="event.stopPropagation();" class="arch-drawer-slide absolute inset-y-0 right-0 w-full sm:w-[88%] bg-slate-950/90 backdrop-blur-md border-l border-teal-500/30 p-5 sm:p-7 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Rendering</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Maintained a stable <span class="text-white font-medium">60 FPS</span> across massive scale disparities using logarithmic depth calculations and adaptive camera clipping bounds.
+                                        <!-- Full-Width Sliding Curtain Architecture Drawer -->
+                                        <div id="arch-drawer-nova" onclick="event.stopPropagation();" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl border-l border-teal-500/30 p-6 sm:p-10 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                            
+                                            <div class="mb-6 flex items-center gap-3">
+                                                <span class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-1 bg-teal-500/10 border border-teal-500/20 rounded">Sys.Architecture</span>
+                                                <h4 class="text-white text-sm font-semibold tracking-tight">Camera & Pacing Pipeline</h4>
+                                            </div>
+
+                                            <div class="flowchart-grid text-center">
+                                                
+                                                <!-- Node 1: Coordinate Resolution -->
+                                                <div class="flow-node arch-card-stagger">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">1. Vector Matrix</h5>
+                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
+                                                        Resolves nested hierarchical groups into absolute world coordinates via <code class="text-slate-300 bg-slate-800/50 px-1 rounded">getWorldPosition()</code> to prevent off-center targeting offsets[cite: 13].
                                                     </p>
+                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>cinematicDuration</span> <span class="text-purple-400">2,800 ms</span></div>
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>Easing</span> <span class="text-emerald-400">Sinusoidal.Out</span></div>
+                                                    </div>
                                                 </div>
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Pipelines</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Engineered centralized state guards and cleanup handlers to abort active audio streams and prevent desynchronization during rapid tour inputs.
+
+                                                <!-- Node 2: Cinematic Pacing -->
+                                                <div class="flow-node arch-card-stagger">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">2. Tour Sync & Audio</h5>
+                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
+                                                        Pre-synthesized <code class="text-slate-300 bg-slate-800/50 px-1 rounded">edge-tts</code> assets sync with camera arrivals, utilizing strict dwell timers to prevent choppy audio clipping[cite: 14].
                                                     </p>
+                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>ARRIVAL_DELAY_MS</span> <span class="text-purple-400">2,200 ms</span></div>
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>POST_DWELL_MS</span> <span class="text-purple-400">6,500 ms</span></div>
+                                                    </div>
                                                 </div>
-                                                <div class="arch-card-stagger border-l-2 border-teal-500/40 pl-3 hover:border-teal-400">
-                                                    <h4 class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-1">Sys.Diag // Interaction</h4>
-                                                    <p class="text-slate-300 text-xs leading-relaxed">
-                                                        Eliminated UI jitter near screen boundaries by implementing spatial hysteresis zones paired with weighted physics transitions and grace timers.
+
+                                                <!-- Node 3: Edge Case Hysteresis -->
+                                                <div class="flow-node arch-card-stagger">
+                                                    <div class="flow-dot"></div>
+                                                    <h5 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-2">3. Interaction Guards</h5>
+                                                    <p class="text-slate-400 text-[11px] leading-relaxed mb-3">
+                                                        Pointer events on surface inspectors intercept auto-advance timers, injecting a grace period to prevent users from being yanked away mid-read[cite: 14].
                                                     </p>
+                                                    <div class="bg-slate-900/80 border border-slate-700/50 rounded p-2 text-left">
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400 mb-1"><span>INTERACT_HOLD_MS</span> <span class="text-purple-400">10,000 ms</span></div>
+                                                        <div class="flex justify-between text-[9px] font-mono text-slate-400"><span>autoRotateSpeed</span> <span class="text-emerald-400">0.4</span></div>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
-                                    </div>
 
                                     <!-- Bottom Body Section -->
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
