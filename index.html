@@ -441,6 +441,7 @@
             border-radius: 0.5rem;
             padding: 0.75rem 0.85rem;
             transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+            cursor: pointer;
         }
         .flow-node:hover,
         .flow-node.flow-node-active {
@@ -463,9 +464,6 @@
             transform: scale(1.25);
         }
 
-        .flow-node {
-            cursor: pointer;
-        }
         .flow-inspector-bar {
             margin-top: 0.65rem;
             padding: 0.45rem 0.75rem;
@@ -509,7 +507,6 @@
             z-index: 20;
             padding: 1rem 0;
         }
-        /* Minimal floating header with glowing laser divider */
         .contact-sec-header {
             display: flex;
             align-items: center;
@@ -570,7 +567,6 @@
             50% { opacity: 0.35; transform: scale(0.85); }
         }
 
-        /* Borderless Holographic Stage */
         .holo-projection-stage {
             position: relative;
             padding: 1.5rem 0.5rem;
@@ -579,7 +575,6 @@
             border: none;
             box-shadow: none;
         }
-        /* Local Constellation Perimeter Canvas behind the floating text */
         #holo-particle-canvas {
             position: absolute;
             inset: -35px -25px;
@@ -588,7 +583,6 @@
             pointer-events: none;
             z-index: 0;
         }
-        /* Subtle radial atmospheric field that brightens when active */
         .holo-projection-stage::before {
             content: "";
             position: absolute;
@@ -608,7 +602,6 @@
             z-index: 2;
         }
 
-        /* Idle Standby Trigger Line */
         .holo-standby-bar {
             display: flex;
             flex-wrap: wrap;
@@ -649,7 +642,6 @@
             box-shadow: 0 0 18px rgba(45, 212, 191, 0.3);
         }
 
-        /* Active Materialized Hologram Container */
         .holo-active-workspace {
             opacity: 0;
             transform: translateY(8px);
@@ -666,7 +658,6 @@
             overflow: visible;
         }
 
-        /* Staggered Holographic Scan-In Lines (Triggered sequentially by JS) */
         .holo-line-reveal {
             opacity: 0;
             transform: translateY(6px);
@@ -683,7 +674,6 @@
             pointer-events: auto;
         }
 
-        /* Inline arguments after send-message wait until typing finishes */
         .cmd-args-reveal {
             opacity: 0;
             transform: translateX(-6px);
@@ -698,7 +688,6 @@
             transform: translateX(0);
         }
 
-        /* Persistent Micro-Boot Session Log */
         #pre-boot-sequence {
             transition: opacity 0.6s ease;
             border-left: 1px solid rgba(45, 212, 191, 0.22);
@@ -719,7 +708,6 @@
             transform: translateX(0);
         }
 
-        /* Floating Quick-Arg Chips (Borderless Ghost Pills) */
         .terminal-presets-bar {
             display: flex;
             flex-wrap: wrap;
@@ -753,7 +741,6 @@
             transform: translateY(-1px);
         }
 
-        /* Holographic Command Typography */
         .cmd-line {
             display: flex;
             flex-wrap: wrap;
@@ -796,7 +783,6 @@
             opacity: 0.75;
         }
 
-        /* Pure Floating Inputs — Zero Box Background, Glowing Laser Underline */
         .terminal-inline-input {
             background: transparent;
             border: none;
@@ -832,7 +818,6 @@
             to { visibility: hidden; }
         }
 
-        /* Floating Action Row */
         .terminal-actions {
             display: flex;
             justify-content: space-between;
@@ -852,24 +837,21 @@
             color: #94a3b8;
             font-size: 0.7rem;
         }
-        /* Matches [ + Architecture ] button styling */
         .terminal-exec-btn {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 4px 2px;
-    color: #64748b; /* Subtle slate gray when idle */
-    font-family: monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.terminal-exec-btn:hover {
-    color: #2dd4bf; /* Lights up in your primary teal on hover */
-    background: transparent !important;
-    
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 4px 2px;
+            color: #64748b;
+            font-family: monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: lowercase;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .terminal-exec-btn:hover {
+            color: #2dd4bf;
+            background: transparent !important;
         }
         .terminal-exec-btn:disabled {
             opacity: 0.5;
@@ -908,7 +890,6 @@
             opacity: 1;
             pointer-events: auto;
         }
-        /* Hide custom magnetic dot while typing in keyboard-first CLI mode */
         body.cmd-cursor-hidden #mag-cursor-core {
             opacity: 0 !important;
             transform: translate(-50%, -50%) scale(0.2) !important;
@@ -1089,51 +1070,48 @@
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
 
-          <!-- Always-Visible Bio with Smooth Syntax Illumination -->
-<div id="bio-container">
-    <!-- Changed pb-6 to mb-6 -->
-    <div class="mb-6 border-l-2 border-slate-800/60 pl-5 ml-1 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
-        <p class="text-lg font-medium max-w-2xl leading-relaxed text-slate-500 transition-colors duration-700 ease-out group-hover:text-slate-100">
-            Background in AI data evaluation and spatial web development. I specialize in building interactive 3D web applications that translate complex spatial datasets and satellite remote sensing workflows into responsive, hardware-accelerated tools.
-        </p>
-    </div>
-</div>
+            <!-- Always-Visible Bio with Smooth Syntax Illumination -->
+            <div id="bio-container">
+                <div class="mb-6 border-l-2 border-slate-800/60 pl-5 ml-1 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
+                    <p class="text-lg font-medium max-w-2xl leading-relaxed text-slate-500 transition-colors duration-700 ease-out group-hover:text-slate-100">
+                        Background in AI data evaluation and spatial web development. I specialize in building interactive 3D web applications that translate complex spatial datasets and satellite remote sensing workflows into responsive, hardware-accelerated tools.
+                    </p>
+                </div>
+            </div>
 
             <div class="flex justify-start w-full my-16">
-    <div class="flex flex-row gap-x-12 items-center">
-        
-        <!-- Interactive 3D Rendering Metric -->
-        <div class="flex flex-col text-left">
-            <div class="text-[11px] font-mono text-slate-500">Interactive 3D Rendering</div>
-            <div class="text-xl font-bold font-mono text-white mt-0.5">
-                <span class="kpi-counter" data-target="60">0</span> <span class="text-xs font-normal text-purple-400">fps</span>
+                <div class="flex flex-row gap-x-12 items-center">
+                    
+                    <!-- Interactive 3D Rendering Metric -->
+                    <div class="flex flex-col text-left">
+                        <div class="text-[11px] font-mono text-slate-500">Interactive 3D Rendering</div>
+                        <div class="text-xl font-bold font-mono text-white mt-0.5">
+                            <span class="kpi-counter" data-target="60">0</span> <span class="text-xs font-normal text-purple-400">fps</span>
+                        </div>
+                    </div>
+
+                    <div class="w-px h-10 bg-slate-800"></div>
+
+                    <!-- Architecture Scale Metric -->
+                    <div class="flex flex-col text-left">
+                        <div class="text-[11px] font-mono text-slate-500">Codebase Size</div>
+                        <div class="text-xl font-bold font-mono text-white mt-0.5">
+                            <span class="kpi-counter" data-target="12">0</span>K+ <span class="text-xs font-normal text-purple-400">loc</span>
+                        </div>
+                    </div>
+
+                    <div class="w-px h-10 bg-slate-800"></div>
+
+                    <!-- AI Validation Metric -->
+                    <div class="flex flex-col text-left">
+                        <div class="text-[11px] font-mono text-slate-500">Engineering Sprints</div>
+                        <div class="text-xl font-bold font-mono text-white mt-0.5">
+                            <span class="kpi-counter" data-target="35">0</span>+ <span class="text-xs font-normal text-purple-400">commits</span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
-
-        <!-- Divider Line (Optional, if you want to keep the visual separation) -->
-        <div class="w-px h-10 bg-slate-800"></div>
-
-        <!-- Architecture Scale Metric -->
-        <div class="flex flex-col text-left">
-            <div class="text-[11px] font-mono text-slate-500">Codebase Size</div>
-            <div class="text-xl font-bold font-mono text-white mt-0.5">
-                <span class="kpi-counter" data-target="12">0</span>K+ <span class="text-xs font-normal text-purple-400">loc</span>
-            </div>
-        </div>
-
-        <!-- Divider Line (Optional) -->
-        <div class="w-px h-10 bg-slate-800"></div>
-
-        <!-- AI Validation Metric -->
-        <div class="flex flex-col text-left">
-            <div class="text-[11px] font-mono text-slate-500">Engineering Sprints</div>
-            <div class="text-xl font-bold font-mono text-white mt-0.5">
-                <span class="kpi-counter" data-target="35">0</span>+ <span class="text-xs font-normal text-purple-400">commits</span>
-            </div>
-        </div>
-
-    </div>
-</div>
 
             <!-- Restored Wave-Reactive Floating Skill & Credential Pills -->
             <div class="flex flex-wrap gap-2 text-xs font-mono pt-1 max-w-2xl relative z-10">
@@ -1174,7 +1152,8 @@
             <section aria-label="Featured Projects">
                 
                 <!-- Clean Typographic Deck Header -->
-                <div class="flex items-baseline gap-6 font-mono text-xs sm:text-sm">
+                <div class="flex flex-wrap items-baseline justify-between gap-4 mb-4 border-b border-slate-800/70">
+                    <div class="flex items-baseline gap-6 font-mono text-xs sm:text-sm">
                         <button onclick="switchProjectSlide(0)" id="deck-tab-0" class="deck-nav-item nav-active interactive flex items-baseline gap-2">
                             <span class="font-semibold tracking-tight">NOVA Observatory</span>
                         </button>
@@ -1270,15 +1249,12 @@
                                     <div class="hud-corner hud-bl"></div>
                                     <div class="hud-corner hud-br"></div>
 
-                                    <!-- Top Full-Bleed Code Viewport + Split Telemetry & Sliding Architecture Drawer -->
                                     <div id="viewport-nova" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
                                         
-                                        <!-- Left: Live Typing Code Stream -->
                                         <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
                                             <div id="code-stream-nova" class="space-y-1.5 text-left w-full"></div>
                                         </div>
 
-                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'nova') -->
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
                                             <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
                                                 <span>SYS.TELEMETRY</span>
@@ -1306,9 +1282,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Full-Width Sliding Architecture Drawer for NOVA -->
                                         <div id="arch-drawer-nova" onclick="event.stopPropagation(); toggleArchDrawer('nova');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            
                                             <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
                                                 <div class="flex items-center gap-2">
                                                     <span id="arch-badge-nova" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
@@ -1324,10 +1298,8 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
                                             <div id="flow-grid-nova" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
 
-                                            <!-- Live Code Snippet Bar -->
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
                                                 <span id="flow-snippet-nova" class="text-teal-300 truncate"></span>
                                                 <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
@@ -1335,7 +1307,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Bottom Body Section -->
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
                                         <div>
                                             <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
@@ -1378,177 +1349,8 @@
                         </div>
                     </article>
 
-                    <!-- SLIDE 02: Urban Heat Explorer Card (Flippable) -->
-                    <article data-slide-index="1" data-tilt="0.75" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
-                        <div class="glass-content">
-                            <div class="card-flipper">
-
-                                <!-- FRONT OF URBAN HEAT CARD -->
-                                <div class="card-front">
-                                    <div class="hud-corner hud-tl"></div>
-                                    <div class="hud-corner hud-tr"></div>
-                                    <div class="hud-corner hud-bl"></div>
-                                    <div class="hud-corner hud-br"></div>
-
-                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] overflow-hidden flex items-center justify-center">
-                                        <div class="hud-scanline"></div>
-
-                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
-                                            <span class="flex items-center gap-1.5">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
-                                                LANDSAT 8/9 SATELLITE
-                                            </span>
-                                            <span class="text-slate-400">SURFACE TEMP · 30m RESOLUTION</span>
-                                        </div>
-
-                                        <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
-                                    </div>
-
-                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
-                                        <div class="flex items-baseline justify-between gap-4 mb-3">
-                                            <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                                        </div>
-
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                            Uses Landsat 8/9 satellite imagery to map surface temperatures, vegetation cover, and heat islands across major cities.
-                                        </p>
-
-                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                            <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
-                                                <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space", "Click panel to view code"]'></span>
-                                                <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
-                                            </div>
-
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
-                                                    Live Demo <span>↗</span>
-                                                </a>
-                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- BACK OF URBAN HEAT CARD -->
-                                <div class="card-back">
-                                    <div class="hud-corner hud-tl"></div>
-                                    <div class="hud-corner hud-tr"></div>
-                                    <div class="hud-corner hud-bl"></div>
-                                    <div class="hud-corner hud-br"></div>
-
-                                    <!-- Top Full-Bleed Code Viewport + Split Telemetry & Sliding Architecture Drawer -->
-                                    <div id="viewport-heat" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
-                                        
-                                        <!-- Left: Live Typing Code Stream -->
-                                        <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
-                                            <div id="code-stream-heat" class="space-y-1.5 text-left w-full"></div>
-                                        </div>
-
-                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'heat') -->
-                                        <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
-                                                <span>GIS.TELEMETRY</span>
-                                                <span class="text-teal-400">● LIVE</span>
-                                            </div>
-
-                                            <div class="space-y-2 my-auto">
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-emerald-400">Raster Math</span>
-                                                </button>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-teal-400">CRS Sync</span>
-                                                </button>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-purple-400">Coast Mask</span>
-                                                </button>
-                                            </div>
-
-                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
-                                                <span>Select node</span>
-                                                <span class="text-teal-400">&larr;</span>
-                                            </div>
-                                        </div>
-
-                                        <!-- Full-Width Sliding Architecture Drawer for URBAN HEAT -->
-                                        <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            
-                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
-                                                <div class="flex items-center gap-2">
-                                                    <span id="arch-badge-heat" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
-                                                    <h4 id="arch-title-heat" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Radiometric Calibration</h4>
-                                                </div>
-                                                <div class="flex items-center gap-1.5">
-                                                    <button type="button" onclick="selectArchNode('heat', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Raster</button>
-                                                    <button type="button" onclick="selectArchNode('heat', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 CRS</button>
-                                                    <button type="button" onclick="selectArchNode('heat', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Mask</button>
-                                                    <button type="button" onclick="toggleArchDrawer('heat');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
-                                                        [ &times; ]
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
-                                            <div id="flow-grid-heat" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
-
-                                            <!-- Live Code Snippet Bar -->
-                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
-                                                <span id="flow-snippet-heat" class="text-teal-300 truncate"></span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Bottom Body Section -->
-                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
-                                        <div>
-                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                                <div class="flex items-baseline gap-3">
-                                                    <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
-                                                    <span class="text-xs font-mono text-teal-400/80">/ under the hood</span>
-                                                </div>
-                                                <div class="flex items-center gap-3">
-                                                    <button id="arch-btn-heat" type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
-                                                        [ + Arch ]
-                                                    </button>
-                                                    <span class="text-xs font-mono text-purple-400">30m GeoTIFF</span>
-                                                </div>
-                                            </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                                Processes multispectral satellite rasters in Python with Rasterio to calculate land surface temperatures and render interactive microclimate heat overlays.
-                                            </p>
-                                        </div>
-
-                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                                                <span><strong class="text-purple-400">Landsat 8/9</strong> Thermal Bands</span>
-                                                <span class="text-slate-700">·</span>
-                                                <span><strong class="text-emerald-400">Folium</strong> GIS Layers</span>
-                                            </div>
-
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-purple-400">
-                                                    Live Demo <span>↗</span>
-                                                </a>
-                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-purple-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- SLIDE 03: MORPH Spatial Mesh Card (Flippable) -->
-                    <article data-slide-index="2" data-tilt="0.75" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+                    <!-- SLIDE 02: MORPH Spatial Mesh Card (Flippable) -->
+                    <article data-slide-index="1" data-tilt="0.75" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
 
@@ -1610,15 +1412,12 @@
                                     <div class="hud-corner hud-bl"></div>
                                     <div class="hud-corner hud-br"></div>
 
-                                    <!-- Top Full-Bleed Code Viewport + Split Telemetry & Sliding Architecture Drawer -->
                                     <div id="viewport-morph" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
                                         
-                                        <!-- Left: Live Typing Code Stream -->
                                         <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
                                             <div id="code-stream-morph" class="space-y-1.5 text-left w-full"></div>
                                         </div>
 
-                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'morph') -->
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
                                             <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
                                                 <span>MESH.TELEMETRY</span>
@@ -1646,9 +1445,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Full-Width Sliding Architecture Drawer for MORPH -->
                                         <div id="arch-drawer-morph" onclick="event.stopPropagation(); toggleArchDrawer('morph');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            
                                             <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
                                                 <div class="flex items-center gap-2">
                                                     <span id="arch-badge-morph" class="text-amber-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded">SYS.DIAG_01</span>
@@ -1664,10 +1461,8 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
                                             <div id="flow-grid-morph" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
 
-                                            <!-- Live Code Snippet Bar -->
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
                                                 <span id="flow-snippet-morph" class="text-amber-300 truncate"></span>
                                                 <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
@@ -1675,7 +1470,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Bottom Body Section -->
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
                                         <div>
                                             <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
@@ -1707,6 +1501,167 @@
                                                     Live App <span>↗</span>
                                                 </a>
                                                 <a href="https://github.com/0DataDan/morph" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-amber-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- SLIDE 03: Urban Heat Explorer Card (Flippable) -->
+                    <article data-slide-index="2" data-tilt="0.75" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+                        <div class="glass-content">
+                            <div class="card-flipper">
+
+                                <!-- FRONT OF URBAN HEAT CARD -->
+                                <div class="card-front">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] overflow-hidden flex items-center justify-center">
+                                        <div class="hud-scanline"></div>
+
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                                                LANDSAT 8/9 SATELLITE
+                                            </span>
+                                            <span class="text-slate-400">SURFACE TEMP · 30m RESOLUTION</span>
+                                        </div>
+
+                                        <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                        <div class="flex items-baseline justify-between gap-4 mb-3">
+                                            <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                        </div>
+
+                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                            Uses Landsat 8/9 satellite imagery to map surface temperatures, vegetation cover, and heat islands across major cities.
+                                        </p>
+
+                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                                            <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
+                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space", "Click panel to view code"]'></span>
+                                                <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live Demo <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK OF URBAN HEAT CARD -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div id="viewport-heat" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
+                                        
+                                        <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
+                                            <div id="code-stream-heat" class="space-y-1.5 text-left w-full"></div>
+                                        </div>
+
+                                        <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
+                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                                <span>GIS.TELEMETRY</span>
+                                                <span class="text-teal-400">● LIVE</span>
+                                            </div>
+
+                                            <div class="space-y-2 my-auto">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[10px] text-emerald-400">Raster Math</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[10px] text-teal-400">CRS Sync</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[10px] text-purple-400">Coast Mask</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                                <span>Select node</span>
+                                                <span class="text-teal-400">&larr;</span>
+                                            </div>
+                                        </div>
+
+                                        <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="arch-badge-heat" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h4 id="arch-title-heat" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Radiometric Calibration</h4>
+                                                </div>
+                                                <div class="flex items-center gap-1.5">
+                                                    <button type="button" onclick="selectArchNode('heat', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Raster</button>
+                                                    <button type="button" onclick="selectArchNode('heat', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 CRS</button>
+                                                    <button type="button" onclick="selectArchNode('heat', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Mask</button>
+                                                    <button type="button" onclick="toggleArchDrawer('heat');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                        [ &times; ]
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div id="flow-grid-heat" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
+
+                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
+                                                <span id="flow-snippet-heat" class="text-teal-300 truncate"></span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-baseline gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
+                                                    <span class="text-xs font-mono text-teal-400/80">/ under the hood</span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    <button id="arch-btn-heat" type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
+                                                        [ + Arch ]
+                                                    </button>
+                                                    <span class="text-xs font-mono text-purple-400">30m GeoTIFF</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                                Processes multispectral satellite rasters in Python with Rasterio to calculate land surface temperatures and render interactive microclimate heat overlays.
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-purple-400">Landsat 8/9</strong> Thermal Bands</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-emerald-400">Folium</strong> GIS Layers</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-purple-400">
+                                                    Live Demo <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-purple-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
                                             </div>
@@ -1816,7 +1771,6 @@
                                 <div class="lg:col-span-6 flex flex-col justify-between bg-slate-950/60 border border-slate-800/80 rounded-xl overflow-hidden">
                                     <canvas id="constellation-canvas" class="interactive w-full h-64 sm:h-72 block"></canvas>
 
-                                    <!-- Fixed-Height Inspector Readout (Never jumps when switching nodes) -->
                                     <div class="border-t border-slate-800/80 px-5 py-4 flex items-center justify-between gap-4 bg-slate-950/90 min-h-[84px]">
                                         <div class="min-w-0 flex-1">
                                             <div class="flex items-baseline gap-2.5 font-mono">
@@ -1842,7 +1796,6 @@
 
         </main>
 
-        <!-- Footer -->
         <!-- === START: 03 // CONTACT TERMINAL SECTION === -->
         <section id="contact-dedicated-section" aria-label="Contact Terminal">
             <div class="contact-sec-header">
@@ -1863,7 +1816,6 @@
                 <canvas id="holo-particle-canvas"></canvas>
 
                 <div class="holo-content-layer">
-                    <!-- Idle Holographic Prompt (Materializes full shell on hover/click) -->
                     <div class="holo-standby-bar interactive" id="holo-standby-trigger">
                         <div class="holo-standby-prompt">
                             <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
@@ -1877,10 +1829,7 @@
                         </button>
                     </div>
 
-                    <!-- Active Holographic Shell Workspace -->
                     <div class="holo-active-workspace" id="holo-workspace">
-
-                        <!-- Persistent Micro-Boot Session Log -->
                         <div id="pre-boot-sequence" class="text-[0.7rem] text-slate-400 font-mono hidden">
                             <div id="boot-line-1" class="boot-line-item"></div>
                             <div id="boot-line-2" class="boot-line-item"></div>
@@ -1998,7 +1947,6 @@
     transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), height 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease, backdrop-filter 0.2s ease;
   }
 
-  /* Larger Optical Magnifier Lens on Hover */
   .mag-cursor-hover #mag-cursor-core {
     width: 38px;
     height: 38px;
@@ -2052,7 +2000,6 @@
     terrain.position.z = -5;
     scene.add(terrain);
 
-    // Floating Data Nodes with Targeted Spring Physics
     const particleCount = 420;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -2103,7 +2050,6 @@
     const dataNodes = new THREE.Points(particleGeo, particleMat);
     scene.add(dataNodes);
 
-      // Decryption Wake 2D HUD Overlay (Mounted inside the Three.js container)
     const decryptCanvas = document.createElement('canvas');
     decryptCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
     container.appendChild(decryptCanvas);
@@ -2225,6 +2171,17 @@
         { num: "08", tokens: [{ t: "  renderer.render", c: "text-teal-300" }, { t: "(scene, camera);", c: "text-white" }] },
         { num: "09", tokens: [{ t: "} ", c: "text-white" }, { t: "// [OK] 3D scene running at 60 FPS", c: "text-emerald-400" }] }
       ],
+      morph: [
+        { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "{ MinHeap } ", c: "text-white" }, { t: "from ", c: "text-purple-400 font-semibold" }, { t: "'./src/minHeap.js'", c: "text-amber-300" }, { t: ";", c: "text-slate-400" }] },
+        { num: "02", tokens: [{ t: "// Zero-GC typed arrays for O(log N) DEM pathfinding", c: "text-slate-400" }] },
+        { num: "03", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "gScore = ", c: "text-white" }, { t: "new ", c: "text-purple-400" }, { t: "Float32Array", c: "text-amber-300" }, { t: "(TOTAL_CELLS);", c: "text-white" }] },
+        { num: "04", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "slopeDelta = ", c: "text-white" }, { t: "Math.abs", c: "text-teal-300" }, { t: "(nextElev - currElev);", c: "text-white" }] },
+        { num: "05", tokens: [{ t: "let ", c: "text-purple-400 font-semibold" }, { t: "cost = ", c: "text-white" }, { t: "1.0 ", c: "text-amber-300" }, { t: "+ (slopeDelta * ", c: "text-white" }, { t: "14.0", c: "text-amber-300" }, { t: ") + altPenalty;", c: "text-white" }] },
+        { num: "06", tokens: [{ t: "if ", c: "text-purple-400 font-semibold" }, { t: "(tentativeG < gScore[nIdx]) {", c: "text-white" }] },
+        { num: "07", tokens: [{ t: "  gScore[nIdx] = tentativeG; parent[nIdx] = curr.idx;", c: "text-white" }] },
+        { num: "08", tokens: [{ t: "  heap.push", c: "text-amber-300" }, { t: "({ x: nx, y: ny, g: tentativeG, f: tentativeG + h });", c: "text-white" }] },
+        { num: "09", tokens: [{ t: "} ", c: "text-white" }, { t: "// [OK] 10,000 instanced voxels · <1ms global failover", c: "text-amber-400" }] }
+      ],
       heat: [
         { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "rasterio, folium, numpy ", c: "text-white" }, { t: "as ", c: "text-purple-400 font-semibold" }, { t: "np", c: "text-teal-300" }] },
         { num: "02", tokens: [{ t: "# Load Landsat thermal band and convert to Celsius", c: "text-slate-400" }] },
@@ -2247,6 +2204,7 @@
 
       container.innerHTML = '';
       const lines = rollingCodeLines[cardId];
+      if (!lines) return;
       let lineIdx = 0;
       let cycleCount = 1;
 
@@ -2476,7 +2434,6 @@
         const targetRank = targetIds.indexOf(i);
         const isTarget = targetRank !== -1;
 
-        // Smoothly charge decryption energy when captured; linger & decay when released
         if (isTarget) {
           decryptEnergy[i] = Math.min(1.0, decryptEnergy[i] + 0.12);
         } else {
@@ -2487,19 +2444,16 @@
         let ty = baseY[i];
         let tz = baseZ[i];
 
-        // Smooth viscous return spring when returning to background drift
         let stiffness = 0.0045;
         let damping = 0.89;
 
         if (isTarget) {
-          // Pull into a tight, heavy orbital cluster around the cursor instead of a single point
           const slotAngle = targetRank * (Math.PI * 0.5) + t * 0.45;
           const orbitRadius = 1.85;
           tx = cursorWX + Math.cos(slotAngle) * orbitRadius;
           ty = cursorWY + Math.sin(slotAngle) * orbitRadius;
           tz = baseZ[i] + 3.2;
 
-          // Heavy, unmistakable gravitational pull toward the cursor
           stiffness = 0.011;
           damping = 0.86;
         }
@@ -2520,12 +2474,10 @@
 
       renderer.render(scene, camera);
 
-      // Render Decryption Wake glyphs on any particle with remaining decryptEnergy
       decryptCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       decryptCtx.textAlign = 'center';
       decryptCtx.textBaseline = 'middle';
 
-      // Deliberate 3.2 Hz character cadence so glyphs are readable
       const tick = Math.floor(t * 3.2);
 
       for (let i = 0; i < particleCount; i++) {
@@ -2543,16 +2495,12 @@
           const glyph = decryptGlyphs[(i * 3 + tick) % decryptGlyphs.length];
 
           decryptCtx.save();
-          // Cap maximum opacity at 65% for a muted, deep-background feel
           decryptCtx.globalAlpha = Math.min(0.65, energy * 0.9);
-
-          // Soften the dark halo mask so it blends better with the environment
           decryptCtx.fillStyle = 'rgba(11, 15, 25, 0.45)';
           decryptCtx.beginPath();
           decryptCtx.arc(sx, sy, 10 * (0.7 + energy * 0.3), 0, Math.PI * 2);
           decryptCtx.fill();
 
-          // Crisp, readable terminal typography that scales with gravitational energy
           const fontSize = Math.round(12 + energy * 3);
           decryptCtx.font = `700 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
           decryptCtx.fillStyle = isPrimary ? '#c084fc' : '#2dd4bf';
@@ -2574,7 +2522,6 @@
         ch.style.transform = `translate3d(0, ${-lift.toFixed(2)}px, 0) rotateZ(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       });
 
-      // Wave-Reactive Floating Skill Pills at top of page
       floatingPills.forEach((pill, idx) => {
         const rect = pill.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -2842,16 +2789,15 @@
     const canvas = document.getElementById('constellation-canvas');
     let activeGraphFilter = 'all';
 
-    // Symmetrical radial layout with inward label alignment so labels never clip or collide
     const nodes = [
       { id: 'core', label: 'Daniel Perez', group: 'core', angle: 0, dist: 0, radius: 6.5, align: 'center', labelPos: 'top', metric: 'Core Stack', desc: 'AI evaluation, satellite remote sensing, and 3D web development.', projectSlide: null },
       { id: 'qa_acc', label: 'LLM QA (4+ Yrs)', group: 'ai', angle: -Math.PI * 0.50, dist: 0.72, radius: 5, align: 'center', labelPos: 'top', metric: '99% QA · 1,500+/mo', desc: 'Over 4 years of multimodal dataset auditing and model output validation.', projectSlide: null },
-      { id: 'nasa', label: 'NASA ARSET', group: 'geo', angle: -Math.PI * 0.80, dist: 0.78, radius: 5, align: 'left', labelPos: 'top', metric: 'Certification', desc: 'Satellite remote sensing fundamentals, thermal bands, and Earth observation.', projectSlide: 1 },
+      { id: 'nasa', label: 'NASA ARSET', group: 'geo', angle: -Math.PI * 0.80, dist: 0.78, radius: 5, align: 'left', labelPos: 'top', metric: 'Certification', desc: 'Satellite remote sensing fundamentals, thermal bands, and Earth observation.', projectSlide: 2 },
       { id: 'google_ai', label: 'Google AI', group: 'ai', angle: -Math.PI * 0.20, dist: 0.78, radius: 5, align: 'right', labelPos: 'top', metric: 'Certification', desc: 'Prompt engineering, model evaluation, and AI Studio workflows.', projectSlide: null },
-      { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', angle: Math.PI * 0.12, dist: 0.82, radius: 5, align: 'right', labelPos: 'bottom', metric: '3D Graphics', desc: 'Interactive 3D starfields, custom lighting, and smooth camera tours.', projectSlide: 0 },
+      { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', angle: Math.PI * 0.12, dist: 0.82, radius: 5, align: 'right', labelPos: 'bottom', metric: '3D Graphics', desc: 'Interactive 3D starfields, instanced voxel terrains, and smooth camera tours.', projectSlide: 1 },
       { id: 'fastapi', label: 'FastAPI', group: 'webgl', angle: Math.PI * 0.36, dist: 0.75, radius: 4.8, align: 'center', labelPos: 'bottom', metric: 'Backend API', desc: 'Python REST endpoints serving planet and tour data to NOVA Observatory.', projectSlide: 0 },
       { id: 'chromadb', label: 'ChromaDB', group: 'ai', angle: Math.PI * 0.64, dist: 0.75, radius: 4.8, align: 'center', labelPos: 'bottom', metric: 'Vector Data', desc: 'Document embeddings, semantic search, and interactive Streamlit dashboards.', projectSlide: null },
-      { id: 'rasterio', label: 'Rasterio · Folium', group: 'geo', angle: Math.PI * 0.88, dist: 0.82, radius: 5, align: 'left', labelPos: 'bottom', metric: 'Geospatial', desc: 'Processing Landsat thermal imagery into interactive city heat maps.', projectSlide: 1 }
+      { id: 'rasterio', label: 'Rasterio · Folium', group: 'geo', angle: Math.PI * 0.88, dist: 0.82, radius: 5, align: 'left', labelPos: 'bottom', metric: 'Geospatial', desc: 'Processing Landsat thermal imagery into interactive city heat maps.', projectSlide: 2 }
     ];
 
     const edges = [
@@ -2885,7 +2831,8 @@
       if (projBtn) {
         if (node.projectSlide !== null && node.projectSlide !== undefined) {
           projBtn.classList.remove('hidden');
-          projBtn.textContent = node.projectSlide === 0 ? 'View NOVA ↑' : 'View Urban Heat ↑';
+          const labels = ['View NOVA ↑', 'View MORPH ↑', 'View Urban Heat ↑'];
+          projBtn.textContent = labels[node.projectSlide] || 'View Project ↑';
           projBtn.dataset.targetSlide = node.projectSlide;
         } else {
           projBtn.classList.add('hidden');
@@ -2938,7 +2885,6 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
-      // Use e.offsetX / e.offsetY so 3D card perspective & tilt never skew pointer coordinates
       canvas.addEventListener('mousemove', (e) => {
         pointerX = e.offsetX;
         pointerY = e.offsetY;
@@ -2988,7 +2934,6 @@
         const ry = Math.min(h * 0.34, 92);
         const t = performance.now() * 0.0014;
 
-        // Subtle radar reference rings
         ctx.beginPath();
         ctx.ellipse(cx, cy, rx * 0.55, ry * 0.55, 0, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(30, 41, 59, 0.45)';
@@ -3018,7 +2963,6 @@
           };
         });
 
-        // Accurate hit-testing in local canvas space (checks both dot and label area)
         if (pointerX >= 0) {
           let nextHover = null, minDist = 34;
           Object.values(projected).forEach(p => {
@@ -3036,7 +2980,6 @@
 
         const activeNode = hoveredNode || lockedNode;
 
-        // Draw connecting lines
         edges.forEach(pair => {
           const p1 = projected[pair[0]], p2 = projected[pair[1]];
           const isConnected = activeNode && (pair[0] === activeNode.id || pair[1] === activeNode.id);
@@ -3055,7 +2998,6 @@
           ctx.stroke();
         });
 
-        // Draw nodes & unclipped labels
         Object.values(projected).forEach(p => {
           const n = p.node;
           const isFocus = activeNode && activeNode.id === n.id;
@@ -3167,6 +3109,74 @@
         ]
       }
     ],
+    morph: [
+      {
+        badge: "SYS.DIAG_01",
+        title: "Single-Draw-Call GPU Voxel Instancing",
+        snippet: "const mesh = new THREE.InstancedMesh(geometry, material, 10000); // 1 GPU draw call",
+        stages: [
+          {
+            head: "1. Problem // Draw-Call Bottleneck",
+            body: "Rendering 10,000 individual 3D terrain blocks as separate meshes stalls the CPU-to-GPU pipeline under 15 FPS.",
+            metrics: [["Grid Size", "100 x 100 Voxels", "text-amber-400"], ["Target", "60 FPS + Bloom", "text-purple-400"]]
+          },
+          {
+            head: "2. Root Cause // Per-Mesh Overhead",
+            body: "Individual Three.js Mesh objects trigger separate uniform uploads, frustum checks, and draw calls every frame.",
+            metrics: [["Naive Cost", "10,000 Draw Calls", "text-rose-400"], ["Memory", "High GC Pressure", "text-amber-300"]]
+          },
+          {
+            head: "3. Solution // InstancedMesh + TypedArrays",
+            body: "Packed all 10,000 pillars into one InstancedMesh driven by flat Float32Array elevation and spring-physics buffers.",
+            metrics: [["Draw Calls", "1 (Instanced)", "text-amber-400"], ["Terrain Swap", "Live Z-Morph", "text-purple-400"], ["Pipeline", "r170 + OutputPass", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_02",
+        title: "O(log N) Binary Min-Heap DEM Pathfinder",
+        snippet: "cost = 1.0 + Math.abs(nextElev - currElev) * 14.0 + Math.max(0, nextElev - 0.5) * 1.8;",
+        stages: [
+          {
+            head: "1. Problem // Solver Stutter",
+            body: "Sorting an open-set array inside the A* loop scales at O(N log N) per step and allocates Map/Set objects per strike.",
+            metrics: [["Bottleneck", "openSet.sort()", "text-rose-400"], ["Impact", "Frame Drops", "text-amber-400"]]
+          },
+          {
+            head: "2. Root Cause // Naive Priority Queue",
+            body: "Full-grid reroutes across 10,000 cells need sub-millisecond node pops without triggering garbage collection pauses.",
+            metrics: [["Complexity", "O(N^2 log N)", "text-rose-400"], ["Allocations", "Per-Run Maps", "text-purple-400"]]
+          },
+          {
+            head: "3. Solution // MinHeap + Pre-Allocated Buffers",
+            body: "Built a dedicated Binary Min-Heap paired with reusable Float32Array/Int32Array buffers for <1ms valley routing.",
+            metrics: [["Queue Ops", "O(log N) Push/Pop", "text-amber-400"], ["Solve Time", "< 0.8 ms Global", "text-purple-400"], ["GC Spikes", "Zero", "text-teal-300"]]
+          }
+        ]
+      },
+      {
+        badge: "SYS.DIAG_03",
+        title: "Compound-Damage Global TX→RX Failover",
+        snippet: "runAStar(cellState, terrainHeight, tx.x, tx.y, rx.x, rx.y, { reuseDiscount: 0.35 });",
+        stages: [
+          {
+            head: "1. Problem // Permanent Network Death",
+            body: "Overlapping attenuation strikes broke local crater-perimeter bridges, stranding the mesh at 0% link integrity.",
+            metrics: [["Failure", "Compound Strikes", "text-rose-400"], ["Recovery", "Manual Reset Only", "text-amber-400"]]
+          },
+          {
+            head: "2. Root Cause // Local-Only Scan",
+            body: "Scanning radius+1 around a single crater cannot see when upstream trunks or parallel relays are also severed.",
+            metrics: [["Scope", "Local Perimeter", "text-purple-400"], ["Blindspot", "End-to-End Link", "text-rose-400"]]
+          },
+          {
+            head: "3. Solution // Global Valley Synthesis",
+            body: "Monitors RX pulse arrival; if integrity hits 0%, fires a global TX→RX A* pass that discounts intact traces (0.35x).",
+            metrics: [["Reuse Cost", "0.35x Intact Wire", "text-amber-400"], ["Terrain", "4 Real DEM Presets", "text-purple-400"], ["Recovery", "Autonomous", "text-teal-300"]]
+          }
+        ]
+      }
+    ],
     heat: [
       {
         badge: "SYS.DIAG_01",
@@ -3203,7 +3213,7 @@
           {
             head: "2. Root Cause // UTM vs. Mercator",
             body: "Landsat scenes ship in local UTM zone grids while Folium/Leaflet base maps render in EPSG:3857 / EPSG:4326.",
-            metrics: [["Source CRS", "UTM Zone Grid", "text-purple-400"], ["Web Map CRS", "EPSG:4326Bounds", "text-teal-300"]]
+            metrics: [["Source CRS", "UTM Zone Grid", "text-purple-400"], ["Web Map CRS", "EPSG:4326 Bounds", "text-teal-300"]]
           },
           {
             head: "3. Solution // Affine CRS Warp",
@@ -3225,7 +3235,7 @@
           {
             head: "2. Root Cause // Opaque Colormaps",
             body: "Standard RGB raster exports treat 0-value border padding and coastal water pixels as valid low-temperature data.",
-            metrics: [["Padding", "0-Value Pixels", "text-purple-400"], ["Bias", "Harbor/RiverSkew", "text-teal-300"]]
+            metrics: [["Padding", "0-Value Pixels", "text-purple-400"], ["Bias", "Harbor/River Skew", "text-teal-300"]]
           },
           {
             head: "3. Solution // RGBA NaN Filtering",
@@ -3295,7 +3305,7 @@
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      ['nova', 'heat'].forEach(key => {
+      ['nova', 'morph', 'heat'].forEach(key => {
         const vp = document.getElementById(`viewport-${key}`);
         if (vp && vp.classList.contains('arch-expanded')) {
           window.toggleArchDrawer(key);
@@ -3329,7 +3339,6 @@
     const submitBtn = document.getElementById("terminal-submit-btn");
     const byteCountEl = document.getElementById("term-byte-count");
     const statusTextEl = document.getElementById("term-status-text");
-    const canvas = document.getElementById("holo-particle-canvas");
 
     if (!stage || !form || !senderInput || !msgInput || !output || !submitBtn) return;
 
@@ -3337,7 +3346,6 @@
     let isAwake = false;
     let keystrokePulse = 0;
 
-    // --- 1. HOLOGRAPHIC MATERIALIZATION & TYPEWRITER SEQUENCE ---
     const awakenHologram = (focusInput = true) => {
       if (isAwake) {
         if (focusInput) (senderInput.value ? msgInput : senderInput).focus({ preventScroll: true });
@@ -3380,13 +3388,11 @@
           }, step.delay);
         });
 
-        // Dim boot log in-place (zero jump) and slide in the command prompt line
         setTimeout(() => {
           bootContainer.classList.add("boot-dimmed");
           if (statusTextEl) statusTextEl.textContent = "ONLINE";
           if (linePrompt) linePrompt.classList.add("line-visible");
 
-          // Begin typing 'send-message' once prompt line settles
           const targetText = "send-message";
           typedCmdEl.textContent = "";
           let idx = 0;
@@ -3398,7 +3404,6 @@
               if (idx >= targetText.length) {
                 clearInterval(typeTimer);
 
-                // Cascade the inline arguments, message row, and send button
                 if (cmdArgs) cmdArgs.classList.add("args-visible");
                 setTimeout(() => {
                   if (lineMsg) lineMsg.classList.add("line-visible");
@@ -3419,7 +3424,6 @@
       standbyTrigger.addEventListener("mouseenter", () => awakenHologram(true));
     }
 
-    // Trigger Cold Boot when 35% of the terminal scrolls into view
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -3432,7 +3436,6 @@
       observer.observe(stage);
     }
       
-    // --- 3. TELEMETRY, PRESETS & FORM SUBMISSION ---
     const updateTelemetry = () => {
       const payload = `${senderInput.value}${msgInput.value}`;
       const bytes = new Blob([payload]).size;
@@ -3551,7 +3554,8 @@
   })();
 </script>
 <!-- === STOP: 03 // CONTACT TERMINAL CONTROLLER === -->
-    <!-- === START: 04 // GLOBAL COMMAND PALETTE CONTROLLER === -->
+
+<!-- === START: 04 // GLOBAL COMMAND PALETTE CONTROLLER === -->
 <script>
   (function initCommandPalette() {
     const overlay = document.getElementById('cmd-palette-overlay');
@@ -3594,8 +3598,12 @@
           if (window.switchProjectSlide) window.switchProjectSlide(0);
           window.open('https://universe-explorer-static.vercel.app/', '_blank');
       }},
-      { id: 'heat', cmd: 'open heat', desc: 'Launch Urban Heat Explorer Live Demo ↗', action: () => {
+      { id: 'morph', cmd: 'open morph', desc: 'Launch MORPH Spatial Mesh Live App ↗', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(1);
+          window.open('https://0datadan.github.io/morph/', '_blank');
+      }},
+      { id: 'heat', cmd: 'open heat', desc: 'Launch Urban Heat Explorer Live Demo ↗', action: () => {
+          if (window.switchProjectSlide) window.switchProjectSlide(2);
           window.open('https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/', '_blank');
       }},
       { id: 'skills', cmd: 'cat skills.md', desc: 'Inspect Skills & Credentials Matrix', action: () => {
@@ -3612,7 +3620,6 @@
       const raw = input.value;
       const query = raw.trim().toLowerCase();
 
-      // Only reveal list when user types, runs 'help'/'ls', or explicitly presses Down Arrow
       if (!query && !forceShowAll) {
         filteredCommands = [];
         ghost.textContent = '';
@@ -3631,7 +3638,6 @@
 
       if (selectedIndex >= filteredCommands.length) selectedIndex = 0;
 
-      // Compute inline ghost autocomplete if the active command starts with the typed query
       const activeCmd = filteredCommands[selectedIndex];
       if (query && activeCmd && activeCmd.cmd.toLowerCase().startsWith(query)) {
         ghost.textContent = raw + activeCmd.cmd.slice(raw.length);
@@ -3674,7 +3680,7 @@
       setTimeout(() => input.focus(), 40);
     };
 
-      window.openCommandPalette = openPalette;
+    window.openCommandPalette = openPalette;
       
     const closePalette = () => {
       isOpen = false;
@@ -3684,7 +3690,6 @@
       input.blur();
     };
 
-    // Wake cursor back up only if the user deliberately moves the mouse while open
     let lastMouseX = 0, lastMouseY = 0;
     window.addEventListener('mousemove', (e) => {
       if (!isOpen) {
@@ -3698,7 +3703,6 @@
       }
     });
 
-    // Clickable syntax tokens in the hint bar
     document.querySelectorAll('.cmd-token-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -3733,7 +3737,6 @@
     input.addEventListener('keydown', (e) => {
       if (!isOpen) return;
 
-      // Tab or Right-Arrow at end of input accepts the ghost autocomplete
       if ((e.key === 'Tab' || (e.key === 'ArrowRight' && input.selectionStart === input.value.length)) && filteredCommands[selectedIndex]) {
         e.preventDefault();
         input.value = filteredCommands[selectedIndex].cmd;
