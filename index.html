@@ -1174,19 +1174,22 @@
             <section aria-label="Featured Projects">
                 
                 <!-- Clean Typographic Deck Header -->
-                <div class="flex flex-wrap items-baseline justify-between gap-4 mb-4 border-b border-slate-800/70">
-                    <div class="flex items-baseline gap-6 font-mono text-xs sm:text-sm">
+                <div class="flex items-baseline gap-6 font-mono text-xs sm:text-sm">
                         <button onclick="switchProjectSlide(0)" id="deck-tab-0" class="deck-nav-item nav-active interactive flex items-baseline gap-2">
                             <span class="font-semibold tracking-tight">NOVA Observatory</span>
                         </button>
                         <span class="text-slate-800 select-none">/</span>
                         <button onclick="switchProjectSlide(1)" id="deck-tab-1" class="deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2">
+                            <span class="font-semibold tracking-tight">MORPH Spatial Mesh</span>
+                        </button>
+                        <span class="text-slate-800 select-none">/</span>
+                        <button onclick="switchProjectSlide(2)" id="deck-tab-2" class="deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2">
                             <span class="font-semibold tracking-tight">Urban Heat Explorer</span>
                         </button>
                     </div>
 
                     <div class="flex items-center gap-4 font-mono text-xs pb-2">
-                        <span id="deck-counter" class="text-slate-500 text-[11px]">01 / 02</span>
+                        <span id="deck-counter" class="text-slate-500 text-[11px]">01 / 03</span>
                         <div class="flex items-center gap-2">
                             <button onclick="stepProjectSlide(-1)" aria-label="Previous Project" class="interactive mag-link text-slate-400 hover:text-teal-400 px-1.5 py-0.5">
                                 &larr;
@@ -1544,6 +1547,177 @@
                         </div>
                     </article>
 
+                    <!-- SLIDE 03: MORPH Spatial Mesh Card (Flippable) -->
+                    <article data-slide-index="2" data-tilt="0.75" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+                        <div class="glass-content">
+                            <div class="card-flipper">
+
+                                <!-- FRONT OF MORPH CARD -->
+                                <div class="card-front">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] overflow-hidden flex items-center justify-center">
+                                        <div class="hud-scanline"></div>
+
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-amber-300 bg-slate-950/85 border border-amber-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-sm bg-amber-400 animate-pulse"></span>
+                                                THREE.JS r170 · MIN-HEAP A*
+                                            </span>
+                                            <span class="text-slate-400 hidden sm:inline">10,000 INSTANCED DEM VOXELS</span>
+                                        </div>
+
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
+                                            <source src="morph-demo.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                        <div class="flex items-baseline justify-between gap-4 mb-3">
+                                            <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
+                                        </div>
+
+                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                            Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable topographic DEM terrains.
+                                        </p>
+
+                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                                            <div class="flex items-center gap-1.5 font-mono text-[11px] text-amber-400">
+                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="typewriter-fx text-amber-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain", "Click panel to view code"]'></span>
+                                                <span class="w-1 h-3 bg-amber-400 animate-pulse inline-block"></span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://0datadan.github.io/morph/" target="_blank" class="interactive mag-link text-slate-300 hover:text-amber-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph" target="_blank" class="interactive mag-link text-slate-400 hover:text-amber-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK OF MORPH CARD -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <!-- Top Full-Bleed Code Viewport + Split Telemetry & Sliding Architecture Drawer -->
+                                    <div id="viewport-morph" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
+                                        
+                                        <!-- Left: Live Typing Code Stream -->
+                                        <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
+                                            <div id="code-stream-morph" class="space-y-1.5 text-left w-full"></div>
+                                        </div>
+
+                                        <!-- Right: Interactive Telemetry Minimap (Strictly wired to 'morph') -->
+                                        <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
+                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                                <span>MESH.TELEMETRY</span>
+                                                <span class="text-amber-400">● LIVE</span>
+                                            </div>
+
+                                            <div class="space-y-2 my-auto">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_01</span>
+                                                    <span class="text-[10px] text-amber-400">Instancing</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_02</span>
+                                                    <span class="text-[10px] text-purple-400">Min-Heap A*</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_03</span>
+                                                    <span class="text-[10px] text-rose-400">Failover</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                                <span>Select node</span>
+                                                <span class="text-amber-400">&larr;</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Full-Width Sliding Architecture Drawer for MORPH -->
+                                        <div id="arch-drawer-morph" onclick="event.stopPropagation(); toggleArchDrawer('morph');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                            
+                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="arch-badge-morph" class="text-amber-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h4 id="arch-title-morph" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Single-Draw-Call GPU Voxel Instancing</h4>
+                                                </div>
+                                                <div class="flex items-center gap-1.5">
+                                                    <button type="button" onclick="selectArchNode('morph', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 GPU</button>
+                                                    <button type="button" onclick="selectArchNode('morph', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 Heap</button>
+                                                    <button type="button" onclick="selectArchNode('morph', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Failover</button>
+                                                    <button type="button" onclick="toggleArchDrawer('morph');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-amber-300 hover:border-amber-500/40 transition">
+                                                        [ &times; ]
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Dynamic 3-Stage Flowchart (Populated per node by selectArchNode) -->
+                                            <div id="flow-grid-morph" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
+
+                                            <!-- Live Code Snippet Bar -->
+                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
+                                                <span id="flow-snippet-morph" class="text-amber-300 truncate"></span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Body Section -->
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-baseline gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
+                                                    <span class="text-xs font-mono text-amber-400/80">/ under the hood</span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    <button id="arch-btn-morph" type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', this)" class="interactive px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-300 hover:bg-amber-500/20 hover:border-amber-400 transition-all">
+                                                        [ + Arch ]
+                                                    </button>
+                                                    <span class="text-xs font-mono text-purple-400">1 Draw Call</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                                Modular ES6 Three.js engine pairing a zero-GC typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and live DEM terrain morphing.
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-amber-400">10,000</strong> Instanced Voxels</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-purple-400">&lt;1ms</strong> Global A*</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://0datadan.github.io/morph/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-amber-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-amber-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+                    
                 </div>
             </section>
 
