@@ -3904,6 +3904,11 @@
     let BASE_TOP = 72;
     let TAB_STEP = 44;
     let stickyTops = [];
+    let activeIdx = 0;
+    let selectedStackIdx = null;
+    let ticking = false;
+    let detentArmed = true;
+    let absorbUntil = 0;
 
     function syncResponsiveStackMetrics() {
       const isMobile = window.innerWidth <= 640;
@@ -3921,18 +3926,13 @@
     }
     syncResponsiveStackMetrics();
 
-    let activeIdx = 0;
-    let selectedStackIdx = null; // Non-null when user selects a card in-place within the docked stack
-    let ticking = false;
-    let detentArmed = true;
-    let absorbUntil = 0;
-
     function getSlideDockY(idx) {
       const stageTop = stage.getBoundingClientRect().top + window.scrollY;
       const gap = parseFloat(getComputedStyle(stage).rowGap) || 48;
       let offset = 0;
       for (let i = 0; i < idx; i++) {
-        offset += slides[i].offsetHeight + gap;
+        const mb = parseFloat(getComputedStyle(slides[i]).marginBottom) || 0;
+        offset += slides[i].offsetHeight + mb + gap;
       }
       return Math.max(0, stageTop + offset - stickyTops[idx]);
     }
@@ -3947,7 +3947,6 @@
       selectedStackIdx = ((targetIdx % slides.length) + slides.length) % slides.length;
       activeIdx = selectedStackIdx;
 
-      // Order all non-selected cards neatly behind the front card
       const behind = [];
       for (let i = 0; i < slides.length; i++) {
         if (i !== selectedStackIdx) behind.push(i);
@@ -3958,7 +3957,6 @@
         if (!inner) return;
 
         if (i === selectedStackIdx) {
-          // Promote selected card to the front slot visually without scrolling
           const deltaY = (lastIdx - i) * TAB_STEP;
           slide.style.setProperty("--stack-z", String(10 + slides.length * 10 + 10));
           slide.classList.remove("is-stacked-behind");
@@ -3978,8 +3976,7 @@
             inner.style.transform = `translateY(${deltaY}px) scale(1)`;
           }
         } else {
-          // Tuck non-selected cards into peeking background slots
-          const slot = behind.indexOf(i); // 0 = backmost, lastIdx - 1 = just behind front
+          const slot = behind.indexOf(i);
           const deltaY = (slot - i) * TAB_STEP;
           const depthFromFront = lastIdx - slot;
           const scale = 1 - depthFromFront * 0.032;
@@ -3997,7 +3994,6 @@
     function updateStackDepth() {
       ticking = false;
 
-      // If the user scrolls back up above the docked stack, clear any in-place override
       const lastRect = slides[lastIdx].getBoundingClientRect();
       if (lastRect.top > stickyTops[lastIdx] + 45) {
         detentArmed = true;
@@ -4010,7 +4006,6 @@
         }
       }
 
-      // While an in-place stack selection is active and docked, preserve it
       if (selectedStackIdx !== null) return;
 
       let currentTopIdx = 0;
@@ -4051,7 +4046,6 @@
       activeIdx = currentTopIdx;
     }
 
-    // One-shot landing detent on whichever project is last in the stack
     window.addEventListener("wheel", (e) => {
       const now = performance.now();
       if (now < absorbUntil) {
@@ -4073,7 +4067,6 @@
       }
     }, { passive: false });
 
-    // Clicking a peeking stacked tab flips/swings it to the front in-place (no scroll jump)
     slides.forEach((slide, i) => {
       slide.addEventListener("click", (e) => {
         if (slide.classList.contains("is-stacked-behind")) {
@@ -4087,7 +4080,6 @@
             applyInPlaceSelection(i, true);
           }
         } else if (e.target.closest(".project-folder-tab")) {
-          // Clicking the front card's own top tab shouldn't trigger a code flip
           e.stopPropagation();
         }
       }, true);
@@ -4102,7 +4094,6 @@
       applyInPlaceSelection(base + dir, true);
     };
 
-    // Seamless Up/Down arrow navigation through the stack
     window.addEventListener("keydown", (e) => {
       if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
       if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
@@ -4126,7 +4117,15 @@
       }
     }, { passive: true });
 
-    window.addEventListener("resize", () => { syncResponsiveStackMetrics(); requestAnimationFrame(updateStackDepth); }, { passive: true });
+    window.addEventListener("resize", () => {
+      syncResponsiveStackMetrics();
+      if (selectedStackIdx !== null) {
+        applyInPlaceSelection(selectedStackIdx, false);
+      } else {
+        requestAnimationFrame(updateStackDepth);
+      }
+    }, { passive: true });
+
     requestAnimationFrame(updateStackDepth);
   })();
 </script>
