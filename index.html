@@ -98,13 +98,13 @@
             grid-column-start: 1;
             transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s ease;
         }
-        .deck-slide.slide-active {
+        .deck-slide.{
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
             z-index: 20;
         }
-        .deck-slide.slide-inactive {
+        .deck-slide.{
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -1105,6 +1105,7 @@
     .project-deck-stage .deck-slide {
       position: sticky !important;
       top: var(--sticky-top, 72px) !important;
+      z-index: var(--stack-z, 10) !important;
       right: auto !important;
       bottom: auto !important;
       left: auto !important;
@@ -1284,7 +1285,7 @@
                 <!-- Single-View Deck Stage -->
                 <div class="project-deck-stage">
 
-<article data-slide-index="0" data-tilt="0.22" data-card-id="nova" class="deck-slide slide-active hud-card flippable-card group rounded-2xl">
+<article data-slide-index="0" data-tilt="0.22" data-card-id="nova" class="deck-slide hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
                                 
@@ -1459,7 +1460,7 @@
                         </div>
                     </article>
 
-<article data-slide-index="1" data-tilt="0.22" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+<article data-slide-index="1" data-tilt="0.22" data-card-id="heat" class="deck-slide hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
 
@@ -1629,7 +1630,7 @@
                         </div>
                     </article>
 
-<article data-slide-index="2" data-tilt="0.22" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+<article data-slide-index="2" data-tilt="0.22" data-card-id="morph" class="deck-slide hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
 
@@ -2421,11 +2422,11 @@
       deckSlides.forEach((slide, idx) => {
         const cardId = slide.getAttribute('data-card-id');
         if (idx === nextIdx) {
-          slide.classList.remove('slide-inactive');
-          slide.classList.add('slide-active');
+          slide.classList.remove('');
+          slide.classList.add('');
         } else {
-          slide.classList.remove('slide-active', 'is-flipped');
-          slide.classList.add('slide-inactive');
+          slide.classList.remove('', 'is-flipped');
+          slide.classList.add('');
           if (cardId && activeCodeStreams[cardId]) {
             clearTimeout(activeCodeStreams[cardId]);
           }
@@ -2691,7 +2692,7 @@
 
       const vh = window.innerHeight;
       hudCards.forEach(card => {
-        if (card.classList.contains('slide-inactive')) return;
+        if (card.classList.contains('')) return;
         const rect = card.getBoundingClientRect();
         if (rect.bottom < -80 || rect.top > vh + 80) return;
 
@@ -3913,7 +3914,7 @@
       slides.forEach((slide, i) => {
         slide.style.setProperty("--sticky-top", `${stickyTops[i]}px`);
         if (selectedStackIdx === null) {
-          slide.style.zIndex = String(10 + i * 10);
+          slide.style.setProperty("--stack-z", String(10 + i * 10));
         }
         slide.style.marginBottom = `${(lastIdx - i) * TAB_STEP}px`;
       });
@@ -3959,7 +3960,7 @@
         if (i === selectedStackIdx) {
           // Promote selected card to the front slot visually without scrolling
           const deltaY = (lastIdx - i) * TAB_STEP;
-          slide.style.zIndex = String(10 + slides.length * 10 + 10);
+          slide.style.setProperty("--stack-z", String(10 + slides.length * 10 + 10));
           slide.classList.remove("is-stacked-behind");
           inner.style.filter = "brightness(1)";
 
@@ -3986,7 +3987,7 @@
 
           slide.classList.remove("is-flipped", "stack-turn-over");
           slide.classList.add("is-stacked-behind");
-          slide.style.zIndex = String(10 + slot * 10);
+          slide.style.setProperty("--stack-z", String(10 + slot * 10));
           inner.style.transform = `translateY(${deltaY}px) scale(${scale.toFixed(4)})`;
           inner.style.filter = `brightness(${brightness.toFixed(3)})`;
         }
@@ -4004,7 +4005,7 @@
           selectedStackIdx = null;
           slides.forEach((slide, i) => {
             slide.classList.remove("stack-turn-over");
-            slide.style.zIndex = String(10 + i * 10);
+            slide.style.setProperty("--stack-z", String(10 + i * 10));
           });
         }
       }
