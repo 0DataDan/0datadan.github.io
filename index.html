@@ -1038,6 +1038,55 @@
         /* === STOP: 04 // GLOBAL COMMAND PALETTE === */
 
     </style>
+
+  <style id="contact-terminal-ux-upgrade">
+    .terminal-inline-input {
+      background: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid rgba(148, 163, 184, 0.28) !important;
+      border-radius: 6px !important;
+      padding: 4px 10px !important;
+      color: #f8fafc !important;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    .terminal-inline-input::placeholder {
+      color: rgba(148, 163, 184, 0.65) !important;
+    }
+    .terminal-inline-input:focus {
+      outline: none !important;
+      border-color: #2dd4bf !important;
+      background: rgba(15, 23, 42, 0.98) !important;
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.22) !important;
+    }
+    .terminal-exec-btn {
+      background: #2dd4bf !important;
+      color: #020617 !important;
+      font-weight: 600 !important;
+      border: 1px solid #2dd4bf !important;
+      border-radius: 6px !important;
+      padding: 7px 16px !important;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+    }
+    .terminal-exec-btn:hover {
+      background: #5eead4 !important;
+      box-shadow: 0 0 16px rgba(45, 212, 191, 0.4) !important;
+    }
+    .terminal-copy-btn {
+      background: rgba(15, 23, 42, 0.85);
+      color: #cbd5e1;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 6px;
+      padding: 7px 14px;
+      transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+    }
+    .terminal-copy-btn:hover,
+    .terminal-copy-btn.copied {
+      border-color: #2dd4bf;
+      color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.08);
+    }
+  </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
@@ -1076,40 +1125,6 @@
                     <p class="text-lg font-medium max-w-2xl leading-relaxed text-slate-500 transition-colors duration-700 ease-out group-hover:text-slate-100">
                         Background in AI data evaluation and spatial web development. I specialize in building interactive 3D web applications that translate complex spatial datasets and satellite remote sensing workflows into responsive, hardware-accelerated tools.
                     </p>
-                </div>
-            </div>
-
-            <div class="flex justify-start w-full my-16">
-                <div class="flex flex-row gap-x-12 items-center">
-                    
-                    <!-- Interactive 3D Rendering Metric -->
-                    <div class="flex flex-col text-left">
-                        <div class="text-[11px] font-mono text-slate-500">Interactive 3D Rendering</div>
-                        <div class="text-xl font-bold font-mono text-white mt-0.5">
-                            <span class="kpi-counter" data-target="60">0</span> <span class="text-xs font-normal text-purple-400">fps</span>
-                        </div>
-                    </div>
-
-                    <div class="w-px h-10 bg-slate-800"></div>
-
-                    <!-- Architecture Scale Metric -->
-                    <div class="flex flex-col text-left">
-                        <div class="text-[11px] font-mono text-slate-500">Codebase Size</div>
-                        <div class="text-xl font-bold font-mono text-white mt-0.5">
-                            <span class="kpi-counter" data-target="12">0</span>K+ <span class="text-xs font-normal text-purple-400">loc</span>
-                        </div>
-                    </div>
-
-                    <div class="w-px h-10 bg-slate-800"></div>
-
-                    <!-- AI Validation Metric -->
-                    <div class="flex flex-col text-left">
-                        <div class="text-[11px] font-mono text-slate-500">Engineering Sprints</div>
-                        <div class="text-xl font-bold font-mono text-white mt-0.5">
-                            <span class="kpi-counter" data-target="35">0</span>+ <span class="text-xs font-normal text-purple-400">commits</span>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -1226,11 +1241,14 @@
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-teal-300" data-phrases='["Full-Stack 3D Web Application", "3D Scene Animation & REST APIs", "Click panel to view code"]'></span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Full-Stack 3D Web Application", "3D Scene Animation & REST APIs"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
-                                            <div class="flex items-center gap-6 ml-auto">
+                                            <div class="flex flex-wrap items-center gap-4 sm:gap-6 ml-auto">
+                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link px-2.5 py-1 rounded border border-teal-500/40 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-colors">
+                                                    &lt;/&gt; Inspect Code
+                                                </button>
                                                 <a href="https://nova-observatory.vercel.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live App <span>↗</span>
                                                 </a>
@@ -1392,7 +1410,7 @@
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-amber-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-amber-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain", "Click panel to view code"]'></span>
+                                                <span class="typewriter-fx text-amber-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain"]'></span>
                                                 <span class="w-1 h-3 bg-amber-400 animate-pulse inline-block"></span>
                                             </div>
 
@@ -1553,11 +1571,14 @@
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space", "Click panel to view code"]'></span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
-                                            <div class="flex items-center gap-6 ml-auto">
+                                            <div class="flex flex-wrap items-center gap-4 sm:gap-6 ml-auto">
+                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link px-2.5 py-1 rounded border border-teal-500/40 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-colors">
+                                                    &lt;/&gt; Inspect Code
+                                                </button>
                                                 <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     Live Demo <span>↗</span>
                                                 </a>
@@ -1872,9 +1893,17 @@
                                 /><span class="cmd-quote">"</span>
                             </div>
 
-                            <div class="terminal-actions holo-line-reveal reveal-4">
+                            <div class="terminal-actions holo-line-reveal reveal-4 flex flex-wrap items-center gap-3 mt-4">
                                 <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">
-                                    &crarr; send
+                                    &crarr; Send Message
+                                </button>
+                                <button
+                                    type="button"
+                                    id="terminal-copy-email"
+                                    class="terminal-copy-btn interactive mag-link"
+                                    onclick="navigator.clipboard.writeText('dataperez@proton.me').then(() => { const b = this; const orig = b.textContent; b.textContent = '✓ Copied dataperez@proton.me'; b.classList.add('copied'); setTimeout(() => { b.textContent = orig; b.classList.remove('copied'); }, 2000); })"
+                                >
+                                    Copy Email
                                 </button>
                             </div>
                         </form>
@@ -2762,27 +2791,6 @@
       } catch (e) {
         console.error("Typewriter parsing error for element:", tw, e);
       }
-    });
-
-    const counters = document.querySelectorAll('.kpi-counter');
-    counters.forEach(counter => {
-      const target = +counter.getAttribute('data-target');
-      const duration = 1400;
-      const startTime = performance.now();
-
-      function updateCounter(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        counter.textContent = Math.floor(easeOut * target).toLocaleString();
-
-        if (progress < 1) {
-          requestAnimationFrame(updateCounter);
-        } else {
-          counter.textContent = target.toLocaleString();
-        }
-      }
-      requestAnimationFrame(updateCounter);
     });
   })();
 </script>
