@@ -1087,6 +1087,121 @@
       background: rgba(45, 212, 191, 0.08);
     }
   </style>
+
+  <style id="sticky-stack-upgrade">
+    html, body, main {
+      overflow-x: clip !important;
+    }
+    .project-deck-stage {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 3rem !important;
+      min-height: auto !important;
+      position: relative !important;
+      overflow: visible !important;
+      padding-top: 0 !important;
+      padding-bottom: 3rem !important;
+    }
+    .project-deck-stage .deck-slide {
+      position: sticky !important;
+      top: var(--sticky-top, 72px) !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: none !important;
+      width: 100% !important;
+    }
+    .project-deck-stage .deck-slide .glass-content {
+      pointer-events: auto !important;
+    }
+    /* Frosted glass readability on bottom text while preserving card transparency */
+    .project-deck-stage .card-front > .relative.z-10.flex.flex-col {
+      background: rgba(7, 13, 25, 0.80);
+      -webkit-backdrop-filter: blur(20px) saturate(135%);
+      backdrop-filter: blur(20px) saturate(135%);
+    }
+    .project-deck-stage .card-back {
+      background: rgba(7, 13, 25, 0.92);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .project-deck-stage .deck-slide .glass-content {
+      transform-origin: center top;
+      will-change: transform, filter;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                  filter 0.28s ease,
+                  box-shadow 0.22s ease;
+    }
+    .project-deck-stage .deck-slide.is-stacked-behind {
+      cursor: pointer !important;
+    }
+    .project-deck-stage .deck-slide.is-stacked-behind:hover .glass-content {
+      filter: brightness(0.95) !important;
+      box-shadow: 0 -4px 20px rgba(45, 212, 191, 0.25);
+    }
+    /* Vertical swing-over when a stacked card is selected to the front */
+    @keyframes stackTurnOver {
+      0%   { transform: perspective(1200px) translateY(var(--from-y, -44px)) rotateX(8deg) scale(0.96); }
+      55%  { transform: perspective(1200px) translateY(calc(var(--to-y, 0px) + 10px)) rotateX(-2.5deg) scale(1.005); }
+      100% { transform: perspective(1200px) translateY(var(--to-y, 0px)) rotateX(0deg) scale(1); }
+    }
+    .project-deck-stage .deck-slide.stack-turn-over .glass-content {
+      animation: stackTurnOver 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+  </style>
+
+  <style id="mobile-sanity-upgrade">
+    /* Hide custom magnetic cursor on touch devices */
+    @media (hover: none), (pointer: coarse) {
+      #mag-cursor-core {
+        display: none !important;
+      }
+      *, *::before, *::after, html, body, canvas, div, span, a, button {
+        cursor: auto !important;
+      }
+    }
+
+    /* Small-screen layout & tap-target polish */
+    @media (max-width: 640px) {
+      .project-deck-stage {
+        gap: 2rem !important;
+      }
+      .project-folder-tab {
+        height: 36px !important;
+        padding-left: 0.875rem !important;
+        padding-right: 0.875rem !important;
+        font-size: 10px !important;
+      }
+      /* Contact Terminal: wrap CLI flags cleanly and prevent iOS Safari focus zoom */
+      .terminal-form .cmd-line {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+      }
+      .terminal-inline-input,
+      #cmd-input {
+        font-size: 16px !important;
+        max-width: 100% !important;
+      }
+      .terminal-inline-input.sender-input,
+      .terminal-inline-input.msg-input {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-top: 2px;
+      }
+      .terminal-actions {
+        width: 100%;
+      }
+      .terminal-exec-btn,
+      .terminal-copy-btn {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
@@ -1165,46 +1280,23 @@
 
             <!-- SECTION 1: STACKED PROJECT DECK -->
             <section aria-label="Featured Projects">
-                
-                <!-- Clean Typographic Deck Header -->
-                <div class="flex flex-wrap items-baseline justify-between gap-4 mb-4 border-b border-slate-800/70">
-                    <div class="flex items-baseline gap-6 font-mono text-xs sm:text-sm">
-                        <button onclick="switchProjectSlide(0)" id="deck-tab-0" class="deck-nav-item nav-active interactive flex items-baseline gap-2">
-                            <span class="font-semibold tracking-tight">NOVA Observatory</span>
-                        </button>
-                        <span class="text-slate-800 select-none">/</span>
-                        <button onclick="switchProjectSlide(1)" id="deck-tab-1" class="deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2">
-                            <span class="font-semibold tracking-tight">MORPH Spatial Mesh</span>
-                        </button>
-                        <span class="text-slate-800 select-none">/</span>
-                        <button onclick="switchProjectSlide(2)" id="deck-tab-2" class="deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2">
-                            <span class="font-semibold tracking-tight">Urban Heat Explorer</span>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center gap-4 font-mono text-xs pb-2">
-                        <span id="deck-counter" class="text-slate-500 text-[11px]">01 / 03</span>
-                        <div class="flex items-center gap-2">
-                            <button onclick="stepProjectSlide(-1)" aria-label="Previous Project" class="interactive mag-link text-slate-400 hover:text-teal-400 px-1.5 py-0.5">
-                                &larr;
-                            </button>
-                            <button onclick="stepProjectSlide(1)" aria-label="Next Project" class="interactive mag-link text-slate-400 hover:text-teal-400 px-1.5 py-0.5">
-                                &rarr;
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Single-View Deck Stage -->
                 <div class="project-deck-stage">
 
-                    <!-- SLIDE 01: NOVA Observatory Card (Flippable) -->
-                    <article data-slide-index="0" data-tilt="0.75" data-card-id="nova" class="deck-slide slide-active hud-card flippable-card group rounded-2xl">
+<article data-slide-index="0" data-tilt="0.22" data-card-id="nova" class="deck-slide slide-active hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
                                 
                                 <!-- FRONT OF NOVA CARD -->
                                 <div class="card-front">
+                                    <div data-folder-tab="nova" class="project-folder-tab flex items-center justify-between px-5 h-[44px] border-b border-slate-800/90 bg-slate-950/95 font-mono text-[11px] tracking-wider select-none">
+                                        <span class="flex items-center gap-2.5">
+                                            <span class="text-teal-400 font-bold">01 //</span>
+                                            <span class="text-slate-100 font-semibold">NOVA OBSERVATORY</span>
+                                        </span>
+                                        <span class="text-slate-500 text-[10px] hidden sm:inline">3D WEBGL · FASTAPI</span>
+                                    </div>
                                     <div class="hud-corner hud-tl"></div>
                                     <div class="hud-corner hud-tr"></div>
                                     <div class="hud-corner hud-bl"></div>
@@ -1367,179 +1459,19 @@
                         </div>
                     </article>
 
-                    <!-- SLIDE 02: MORPH Spatial Mesh Card (Flippable) -->
-                    <article data-slide-index="1" data-tilt="0.75" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
-                        <div class="glass-content">
-                            <div class="card-flipper">
-
-                                <!-- FRONT OF MORPH CARD -->
-                                <div class="card-front">
-                                    <div class="hud-corner hud-tl"></div>
-                                    <div class="hud-corner hud-tr"></div>
-                                    <div class="hud-corner hud-bl"></div>
-                                    <div class="hud-corner hud-br"></div>
-
-                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
-                                        <div class="hud-scanline"></div>
-
-                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-amber-300 bg-slate-950/85 border border-amber-500/30 px-3 py-1 rounded backdrop-blur-md">
-                                            <span class="flex items-center gap-1.5">
-                                                <span class="w-1.5 h-1.5 rounded-sm bg-amber-400 animate-pulse"></span>
-                                                THREE.JS r170 · MIN-HEAP A*
-                                            </span>
-                                            <span class="text-slate-400 hidden sm:inline">10,000 INSTANCED DEM VOXELS</span>
-                                        </div>
-
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
-                                            <source src="morph-demo.mp4" type="video/mp4">
-                                        </video>
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
-                                            <source src="morph-demo2.mp4" type="video/mp4">
-                                        </video>
-                                    </div>
-
-                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
-                                        <div class="flex items-baseline justify-between gap-4 mb-3">
-                                            <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
-                                        </div>
-
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                            Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable topographic DEM terrains.
-                                        </p>
-
-                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-                                            <div class="flex items-center gap-1.5 font-mono text-[11px] text-amber-400">
-                                                <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-amber-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain"]'></span>
-                                                <span class="w-1 h-3 bg-amber-400 animate-pulse inline-block"></span>
-                                            </div>
-
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://0datadan.github.io/morph/" target="_blank" class="interactive mag-link text-slate-300 hover:text-amber-400">
-                                                    Live App <span>↗</span>
-                                                </a>
-                                                <a href="https://github.com/0DataDan/morph" target="_blank" class="interactive mag-link text-slate-400 hover:text-amber-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- BACK OF MORPH CARD -->
-                                <div class="card-back">
-                                    <div class="hud-corner hud-tl"></div>
-                                    <div class="hud-corner hud-tr"></div>
-                                    <div class="hud-corner hud-bl"></div>
-                                    <div class="hud-corner hud-br"></div>
-
-                                    <div id="viewport-morph" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
-                                        
-                                        <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
-                                            <div id="code-stream-morph" class="space-y-1.5 text-left w-full"></div>
-                                        </div>
-
-                                        <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
-                                                <span>MESH.TELEMETRY</span>
-                                                <span class="text-amber-400">● LIVE</span>
-                                            </div>
-
-                                            <div class="space-y-2 my-auto">
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-amber-400">Instancing</span>
-                                                </button>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-purple-400">Min-Heap A*</span>
-                                                </button>
-                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-amber-500/50 transition flex items-center justify-between group">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-amber-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-rose-400">Failover</span>
-                                                </button>
-                                            </div>
-
-                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
-                                                <span>Select node</span>
-                                                <span class="text-amber-400">&larr;</span>
-                                            </div>
-                                        </div>
-
-                                        <div id="arch-drawer-morph" onclick="event.stopPropagation(); toggleArchDrawer('morph');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
-                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
-                                                <div class="flex items-center gap-2">
-                                                    <span id="arch-badge-morph" class="text-amber-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded">SYS.DIAG_01</span>
-                                                    <h4 id="arch-title-morph" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Single-Draw-Call GPU Voxel Instancing</h4>
-                                                </div>
-                                                <div class="flex items-center gap-1.5">
-                                                    <button type="button" onclick="selectArchNode('morph', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 GPU</button>
-                                                    <button type="button" onclick="selectArchNode('morph', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 Heap</button>
-                                                    <button type="button" onclick="selectArchNode('morph', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Failover</button>
-                                                    <button type="button" onclick="toggleArchDrawer('morph');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-amber-300 hover:border-amber-500/40 transition">
-                                                        [ &times; ]
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div id="flow-grid-morph" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
-
-                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
-                                                <span id="flow-snippet-morph" class="text-amber-300 truncate"></span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
-                                        <div>
-                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                                <div class="flex items-baseline gap-3">
-                                                    <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
-                                                    <span class="text-xs font-mono text-amber-400/80">/ under the hood</span>
-                                                </div>
-                                                <div class="flex items-center gap-3">
-                                                    <button id="arch-btn-morph" type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', this)" class="interactive px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-300 hover:bg-amber-500/20 hover:border-amber-400 transition-all">
-                                                        [ + Arch ]
-                                                    </button>
-                                                    <span class="text-xs font-mono text-purple-400">1 Draw Call</span>
-                                                </div>
-                                            </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                                Modular ES6 Three.js engine pairing a zero-GC typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and live DEM terrain morphing.
-                                            </p>
-                                        </div>
-
-                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                                                <span><strong class="text-amber-400">10,000</strong> Instanced Voxels</span>
-                                                <span class="text-slate-700">·</span>
-                                                <span><strong class="text-purple-400">&lt;1ms</strong> Global A*</span>
-                                            </div>
-
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://0datadan.github.io/morph/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-amber-400">
-                                                    Live App <span>↗</span>
-                                                </a>
-                                                <a href="https://github.com/0DataDan/morph" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-amber-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- SLIDE 03: Urban Heat Explorer Card (Flippable) -->
-                    <article data-slide-index="2" data-tilt="0.75" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+<article data-slide-index="1" data-tilt="0.22" data-card-id="heat" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
                         <div class="glass-content">
                             <div class="card-flipper">
 
                                 <!-- FRONT OF URBAN HEAT CARD -->
                                 <div class="card-front">
+                                    <div data-folder-tab="heat" class="project-folder-tab flex items-center justify-between px-5 h-[44px] border-b border-slate-800/90 bg-slate-950/95 font-mono text-[11px] tracking-wider select-none">
+                                        <span class="flex items-center gap-2.5">
+                                            <span class="text-teal-400 font-bold">02 //</span>
+                                            <span class="text-slate-100 font-semibold">URBAN HEAT EXPLORER</span>
+                                        </span>
+                                        <span class="text-slate-500 text-[10px] hidden sm:inline">LANDSAT · RASTERIO · FOLIUM</span>
+                                    </div>
                                     <div class="hud-corner hud-tl"></div>
                                     <div class="hud-corner hud-tr"></div>
                                     <div class="hud-corner hud-bl"></div>
@@ -1696,8 +1628,181 @@
                             </div>
                         </div>
                     </article>
-                    
+
+<article data-slide-index="2" data-tilt="0.22" data-card-id="morph" class="deck-slide slide-inactive hud-card flippable-card group rounded-2xl">
+                        <div class="glass-content">
+                            <div class="card-flipper">
+
+                                <!-- FRONT OF MORPH CARD -->
+                                <div class="card-front">
+                                    <div data-folder-tab="morph" class="project-folder-tab flex items-center justify-between px-5 h-[44px] border-b border-slate-800/90 bg-slate-950/95 font-mono text-[11px] tracking-wider select-none">
+                                        <span class="flex items-center gap-2.5">
+                                            <span class="text-teal-400 font-bold">03 //</span>
+                                            <span class="text-slate-100 font-semibold">MORPH SPATIAL MESH</span>
+                                        </span>
+                                        <span class="text-slate-500 text-[10px] hidden sm:inline">A* MESH ROUTER · DEM</span>
+                                    </div>
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
+                                        <div class="hud-scanline"></div>
+
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/85 border border-teal-500/30 px-3 py-1 rounded backdrop-blur-md">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-sm bg-teal-400 animate-pulse"></span>
+                                                THREE.JS r170 · MIN-HEAP A*
+                                            </span>
+                                            <span class="text-slate-400 hidden sm:inline">10,000 INSTANCED DEM VOXELS</span>
+                                        </div>
+
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                            <source src="morph-demo.mp4" type="video/mp4">
+                                        </video>
+                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                            <source src="morph-demo2.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
+                                        <div class="flex items-baseline justify-between gap-4 mb-3">
+                                            <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
+                                        </div>
+
+                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                            Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable topographic DEM terrains.
+                                        </p>
+
+                                        <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                                            <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
+                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain"]'></span>
+                                                <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://0datadan.github.io/morph/" target="_blank" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph" target="_blank" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK OF MORPH CARD -->
+                                <div class="card-back">
+                                    <div class="hud-corner hud-tl"></div>
+                                    <div class="hud-corner hud-tr"></div>
+                                    <div class="hud-corner hud-bl"></div>
+                                    <div class="hud-corner hud-br"></div>
+
+                                    <div id="viewport-morph" class="code-viewport-split relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] font-mono text-[11px] sm:text-xs leading-relaxed overflow-hidden">
+                                        
+                                        <div class="code-stream-pane p-5 sm:p-7 flex flex-col justify-start transition-all duration-500">
+                                            <div id="code-stream-morph" class="space-y-1.5 text-left w-full"></div>
+                                        </div>
+
+                                        <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
+                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                                <span>MESH.TELEMETRY</span>
+                                                <span class="text-teal-400">● LIVE</span>
+                                            </div>
+
+                                            <div class="space-y-2 my-auto">
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 0);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[10px] text-teal-400">Instancing</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 1);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[10px] text-purple-400">Min-Heap A*</span>
+                                                </button>
+                                                <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 2);" class="interactive w-full text-left px-2.5 py-1.5 rounded bg-slate-900/60 border border-slate-800/80 hover:border-teal-500/50 transition flex items-center justify-between group">
+                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[10px] text-rose-400">Failover</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                                <span>Select node</span>
+                                                <span class="text-teal-400">&larr;</span>
+                                            </div>
+                                        </div>
+
+                                        <div id="arch-drawer-morph" onclick="event.stopPropagation(); toggleArchDrawer('morph');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/95 backdrop-blur-xl p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
+                                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="arch-badge-morph" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h4 id="arch-title-morph" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Single-Draw-Call GPU Voxel Instancing</h4>
+                                                </div>
+                                                <div class="flex items-center gap-1.5">
+                                                    <button type="button" onclick="selectArchNode('morph', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 GPU</button>
+                                                    <button type="button" onclick="selectArchNode('morph', 1)" data-diag-tab="1" class="diag-tab-btn interactive">02 Heap</button>
+                                                    <button type="button" onclick="selectArchNode('morph', 2)" data-diag-tab="2" class="diag-tab-btn interactive">03 Failover</button>
+                                                    <button type="button" onclick="toggleArchDrawer('morph');" aria-label="Close Architecture Drawer" class="interactive ml-1 px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400 hover:text-teal-300 hover:border-teal-500/40 transition">
+                                                        [ &times; ]
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div id="flow-grid-morph" class="flowchart-grid text-center" onclick="event.stopPropagation();"></div>
+
+                                            <div class="flow-inspector-bar" onclick="event.stopPropagation();">
+                                                <span id="flow-snippet-morph" class="text-teal-300 truncate"></span>
+                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                                <div class="flex items-baseline gap-3">
+                                                    <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
+                                                    <span class="text-xs font-mono text-teal-400/80">/ under the hood</span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    <button id="arch-btn-morph" type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', this)" class="interactive px-2.5 py-1 rounded bg-teal-500/10 border border-teal-500/30 text-[11px] font-mono text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-all">
+                                                        [ + Arch ]
+                                                    </button>
+                                                    <span class="text-xs font-mono text-purple-400">1 Draw Call</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                                Modular ES6 Three.js engine pairing a zero-GC typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and live DEM terrain morphing.
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                                <span><strong class="text-teal-400">10,000</strong> Instanced Voxels</span>
+                                                <span class="text-slate-700">·</span>
+                                                <span><strong class="text-purple-400">&lt;1ms</strong> Global A*</span>
+                                            </div>
+
+                                            <div class="flex items-center gap-6 ml-auto">
+                                                <a href="https://0datadan.github.io/morph/" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
+                                                    Live App <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph" target="_blank" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    GitHub Repo <span>&rarr;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </article>
+
                 </div>
+                            
             </section>
 
             <!-- SECTION 2: SKILLS & CREDENTIALS -->
@@ -2387,6 +2492,12 @@
         card.style.setProperty('--mouse-y', `${y}px`);
 
         const state = cardState.get(card);
+        if (e.target.closest("a, button, .interactive")) {
+          state.isHovered = false;
+          state.hoverRx = 0;
+          state.hoverRy = 0;
+          return;
+        }
         state.isHovered = true;
         
         state.hoverRx = ((y - rect.height / 2) / (rect.height / 2)) * -5.5 * intensity;
@@ -3781,5 +3892,242 @@
   })();
 </script>
 <!-- === STOP: 04 // GLOBAL COMMAND PALETTE CONTROLLER === -->
+
+<script id="sticky-stack-controller">
+  (function () {
+    const stage = document.querySelector(".project-deck-stage");
+    const slides = Array.from(document.querySelectorAll(".project-deck-stage .deck-slide"));
+    if (!stage || !slides.length) return;
+
+    const lastIdx = slides.length - 1;
+    let BASE_TOP = 72;
+    let TAB_STEP = 44;
+    let stickyTops = [];
+
+    function syncResponsiveStackMetrics() {
+      const isMobile = window.innerWidth <= 640;
+      BASE_TOP = isMobile ? 44 : 72;
+      TAB_STEP = isMobile ? 36 : 44;
+      stickyTops = slides.map((_, i) => BASE_TOP + i * TAB_STEP);
+
+      slides.forEach((slide, i) => {
+        slide.style.setProperty("--sticky-top", `${stickyTops[i]}px`);
+        if (selectedStackIdx === null) {
+          slide.style.zIndex = String(10 + i * 10);
+        }
+        slide.style.marginBottom = `${(lastIdx - i) * TAB_STEP}px`;
+      });
+    }
+    syncResponsiveStackMetrics();
+
+    let activeIdx = 0;
+    let selectedStackIdx = null; // Non-null when user selects a card in-place within the docked stack
+    let ticking = false;
+    let detentArmed = true;
+    let absorbUntil = 0;
+
+    function getSlideDockY(idx) {
+      const stageTop = stage.getBoundingClientRect().top + window.scrollY;
+      const gap = parseFloat(getComputedStyle(stage).rowGap) || 48;
+      let offset = 0;
+      for (let i = 0; i < idx; i++) {
+        offset += slides[i].offsetHeight + gap;
+      }
+      return Math.max(0, stageTop + offset - stickyTops[idx]);
+    }
+
+    function isDeckDocked() {
+      const lastRect = slides[lastIdx].getBoundingClientRect();
+      return lastRect.top <= stickyTops[lastIdx] + 24;
+    }
+
+    function applyInPlaceSelection(targetIdx, animate = true) {
+      const prevIdx = selectedStackIdx !== null ? selectedStackIdx : lastIdx;
+      selectedStackIdx = ((targetIdx % slides.length) + slides.length) % slides.length;
+      activeIdx = selectedStackIdx;
+
+      // Order all non-selected cards neatly behind the front card
+      const behind = [];
+      for (let i = 0; i < slides.length; i++) {
+        if (i !== selectedStackIdx) behind.push(i);
+      }
+
+      slides.forEach((slide, i) => {
+        const inner = slide.querySelector(".glass-content");
+        if (!inner) return;
+
+        if (i === selectedStackIdx) {
+          // Promote selected card to the front slot visually without scrolling
+          const deltaY = (lastIdx - i) * TAB_STEP;
+          slide.style.zIndex = String(10 + slides.length * 10 + 10);
+          slide.classList.remove("is-stacked-behind");
+          inner.style.filter = "brightness(1)";
+
+          if (animate && prevIdx !== selectedStackIdx) {
+            inner.style.setProperty("--from-y", `${deltaY - 48}px`);
+            inner.style.setProperty("--to-y", `${deltaY}px`);
+            slide.classList.remove("stack-turn-over");
+            void slide.offsetWidth;
+            slide.classList.add("stack-turn-over");
+            setTimeout(() => {
+              slide.classList.remove("stack-turn-over");
+              inner.style.transform = `translateY(${deltaY}px) scale(1)`;
+            }, 490);
+          } else {
+            inner.style.transform = `translateY(${deltaY}px) scale(1)`;
+          }
+        } else {
+          // Tuck non-selected cards into peeking background slots
+          const slot = behind.indexOf(i); // 0 = backmost, lastIdx - 1 = just behind front
+          const deltaY = (slot - i) * TAB_STEP;
+          const depthFromFront = lastIdx - slot;
+          const scale = 1 - depthFromFront * 0.032;
+          const brightness = 1 - depthFromFront * 0.22;
+
+          slide.classList.remove("is-flipped", "stack-turn-over");
+          slide.classList.add("is-stacked-behind");
+          slide.style.zIndex = String(10 + slot * 10);
+          inner.style.transform = `translateY(${deltaY}px) scale(${scale.toFixed(4)})`;
+          inner.style.filter = `brightness(${brightness.toFixed(3)})`;
+        }
+      });
+    }
+
+    function updateStackDepth() {
+      ticking = false;
+
+      // If the user scrolls back up above the docked stack, clear any in-place override
+      const lastRect = slides[lastIdx].getBoundingClientRect();
+      if (lastRect.top > stickyTops[lastIdx] + 45) {
+        detentArmed = true;
+        if (selectedStackIdx !== null) {
+          selectedStackIdx = null;
+          slides.forEach((slide, i) => {
+            slide.classList.remove("stack-turn-over");
+            slide.style.zIndex = String(10 + i * 10);
+          });
+        }
+      }
+
+      // While an in-place stack selection is active and docked, preserve it
+      if (selectedStackIdx !== null) return;
+
+      let currentTopIdx = 0;
+
+      slides.forEach((slide, i) => {
+        const inner = slide.querySelector(".glass-content");
+        const rect = slide.getBoundingClientRect();
+
+        if (rect.top <= stickyTops[i] + 48) {
+          currentTopIdx = i;
+        }
+
+        const nextSlide = slides[i + 1];
+        if (!nextSlide) {
+          slide.classList.remove("is-stacked-behind");
+          if (inner) {
+            inner.style.transform = "translateY(0px) scale(1)";
+            inner.style.filter = "brightness(1)";
+          }
+          return;
+        }
+
+        const nextRect = nextSlide.getBoundingClientRect();
+        const cardHeight = Math.max(rect.height, 1);
+        const distance = nextRect.top - stickyTops[i + 1];
+        const progress = Math.min(Math.max(1 - distance / (cardHeight * 0.85), 0), 1);
+
+        slide.classList.toggle("is-stacked-behind", progress > 0.22);
+
+        if (inner) {
+          const scale = 1 - progress * 0.045;
+          const brightness = 1 - progress * 0.32;
+          inner.style.transform = `translateY(0px) scale(${scale.toFixed(4)})`;
+          inner.style.filter = `brightness(${brightness.toFixed(3)})`;
+        }
+      });
+
+      activeIdx = currentTopIdx;
+    }
+
+    // One-shot landing detent on whichever project is last in the stack
+    window.addEventListener("wheel", (e) => {
+      const now = performance.now();
+      if (now < absorbUntil) {
+        if (e.deltaY > 0) e.preventDefault();
+        return;
+      }
+
+      if (!detentArmed || e.deltaY <= 0) return;
+
+      const dockY = getSlideDockY(lastIdx);
+      const currentY = window.scrollY;
+      const nextY = currentY + e.deltaY;
+
+      if (currentY < dockY && nextY >= dockY - 12) {
+        e.preventDefault();
+        detentArmed = false;
+        absorbUntil = now + 550;
+        window.scrollTo({ top: dockY, behavior: "smooth" });
+      }
+    }, { passive: false });
+
+    // Clicking a peeking stacked tab flips/swings it to the front in-place (no scroll jump)
+    slides.forEach((slide, i) => {
+      slide.addEventListener("click", (e) => {
+        if (slide.classList.contains("is-stacked-behind")) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (isDeckDocked()) {
+            applyInPlaceSelection(i, true);
+          } else {
+            detentArmed = false;
+            window.scrollTo({ top: getSlideDockY(lastIdx), behavior: "smooth" });
+            applyInPlaceSelection(i, true);
+          }
+        } else if (e.target.closest(".project-folder-tab")) {
+          // Clicking the front card's own top tab shouldn't trigger a code flip
+          e.stopPropagation();
+        }
+      }, true);
+    });
+
+    window.switchProjectSlide = function (idx) {
+      applyInPlaceSelection(idx, true);
+    };
+
+    window.stepProjectSlide = function (dir) {
+      const base = selectedStackIdx !== null ? selectedStackIdx : activeIdx;
+      applyInPlaceSelection(base + dir, true);
+    };
+
+    // Seamless Up/Down arrow navigation through the stack
+    window.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const inView = stageRect.top < window.innerHeight * 0.7 && stageRect.bottom > window.innerHeight * 0.25;
+      if (!inView) return;
+
+      e.preventDefault();
+      if (!isDeckDocked()) {
+        detentArmed = false;
+        window.scrollTo({ top: getSlideDockY(lastIdx), behavior: "smooth" });
+      }
+      window.stepProjectSlide(e.key === "ArrowDown" ? 1 : -1);
+    });
+
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateStackDepth);
+      }
+    }, { passive: true });
+
+    window.addEventListener("resize", () => { syncResponsiveStackMetrics(); requestAnimationFrame(updateStackDepth); }, { passive: true });
+    requestAnimationFrame(updateStackDepth);
+  })();
+</script>
 </body>
 </html>
