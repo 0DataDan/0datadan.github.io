@@ -16,3 +16,4 @@ data/processed/
 
 # macOS system artifacts
 .DS_Store
+*.mov
