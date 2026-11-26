@@ -4245,7 +4245,7 @@
         let node;
         while ((node = walker.nextNode())) {
           if (node.nodeValue && node.nodeValue.includes(needle) && !rail.contains(node.parentElement)) {
-            return node.parentElement.closest("section, article, .project-card, [class*="sticky"]") || node.parentElement;
+            return node.parentElement.closest("section, article, .project-card, [class*='sticky']") || node.parentElement;
           }
         }
         return null;
