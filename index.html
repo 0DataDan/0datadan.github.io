@@ -2281,7 +2281,7 @@
     window.__portfolioClickWaves = clickWaves;
 
     window.addEventListener('mousemove', (e) => {
-      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      if (e.target && e.target.closest && e.target.closest('.hud-card')) return;
       
       pointerScreenX = e.clientX;
       pointerScreenY = e.clientY;
@@ -2292,7 +2292,7 @@
     });
 
     window.addEventListener('mousedown', (e) => {
-      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      if (e.target && e.target.closest && e.target.closest('.hud-card')) return;
       
       const mVec = new THREE.Vector2(
         (e.clientX / window.innerWidth - 0.5) * 2,
@@ -2552,7 +2552,7 @@
       const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.65;
 
       card.addEventListener('mousemove', (e) => {
-      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      if (e.target && e.target.closest && e.target.closest('.hud-card')) return;
       
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -4342,6 +4342,45 @@
       }, { passive: true });
 
       updateActive();
+    })();
+  </script>
+
+  <!-- === HOVER-LOCK FOR PROJECT & SKILLS CARDS === -->
+  <style id="hud-hover-lock-styles">
+    .hud-card,
+    .hud-card .static-card-surface {
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    }
+    .hud-card.is-hover-locked,
+    .hud-card:hover {
+      transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) !important;
+      animation-play-state: paused !important;
+    }
+    .hud-card.is-hover-locked .static-card-surface,
+    .hud-card:hover .static-card-surface {
+      transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) !important;
+      animation-play-state: paused !important;
+    }
+    /* Lock active front project card flat on hover without disturbing stacked-behind cards */
+    .project-deck-stage .deck-slide:not(.is-stacked-behind):hover .glass-content,
+    .project-deck-stage .deck-slide:not(.is-stacked-behind) .hud-card.is-hover-locked .glass-content {
+      transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1) !important;
+      animation-play-state: paused !important;
+    }
+  </style>
+
+  <script id="hud-hover-lock-script">
+    (function () {
+      document.querySelectorAll('.hud-card').forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          card.classList.add('is-hover-locked');
+          card.style.transform = 'translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg)';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.classList.remove('is-hover-locked');
+          card.style.transform = '';
+        });
+      });
     })();
   </script>
 </body>
