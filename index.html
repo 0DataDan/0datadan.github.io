@@ -1207,11 +1207,21 @@
       }
     }
   </style>
-
   <style id="cta-and-edge-upgrade">
     .project-deck-stage .deck-slide .glass-content {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+    .project-deck-stage .card-front,
+    .project-deck-stage .card-back {
       border-top: 1px solid rgba(45, 212, 191, 0.22) !important;
       box-shadow: 0 -18px 42px rgba(2, 6, 23, 0.88), inset 0 1px 0 rgba(94, 234, 212, 0.14) !important;
+    }
+    .hud-card:hover .glass-content,
+    .project-deck-stage .deck-slide:hover .glass-content,
+    .project-deck-stage .deck-slide.is-stacked-behind:hover .glass-content {
+      transform: none !important;
     }
     .cta-live-pill {
       display: inline-flex;
@@ -1230,19 +1240,6 @@
       border-color: rgba(94, 234, 212, 0.75);
       color: #ccfbf1 !important;
       box-shadow: 0 0 14px rgba(45, 212, 191, 0.22);
-    }
-    .cta-secondary-link {
-      background: transparent !important;
-      border: 0 !important;
-      padding: 0 !important;
-      box-shadow: none !important;
-      color: #94a3b8 !important;
-      font-weight: 400 !important;
-    }
-    .cta-secondary-link:hover {
-      background: transparent !important;
-      border: 0 !important;
-      color: #2dd4bf !important;
     }
   </style>
 </head>
@@ -1401,7 +1398,7 @@
                                             </div>
 
                                             <div class="flex flex-wrap items-center gap-4 sm:gap-6 ml-auto">
-                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link px-2.5 py-1 rounded border border-teal-500/40 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-colors">
+                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link text-slate-400 hover:text-teal-400 transition-colors">
                                                     &lt;/&gt; Inspect Code
                                                 </button>
                                                 <a href="https://nova-observatory.vercel.app/" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
@@ -1571,7 +1568,7 @@
                                             </div>
 
                                             <div class="flex flex-wrap items-center gap-4 sm:gap-6 ml-auto">
-                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link px-2.5 py-1 rounded border border-teal-500/40 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400 transition-colors">
+                                                <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link text-slate-400 hover:text-teal-400 transition-colors">
                                                     &lt;/&gt; Inspect Code
                                                 </button>
                                                 <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
@@ -2281,6 +2278,8 @@
     window.__portfolioClickWaves = clickWaves;
 
     window.addEventListener('mousemove', (e) => {
+      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      
       pointerScreenX = e.clientX;
       pointerScreenY = e.clientY;
       pointerNormX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -2290,6 +2289,8 @@
     });
 
     window.addEventListener('mousedown', (e) => {
+      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      
       const mVec = new THREE.Vector2(
         (e.clientX / window.innerWidth - 0.5) * 2,
         -(e.clientY / window.innerHeight - 0.5) * 2
@@ -2548,6 +2549,8 @@
       const intensity = parseFloat(card.getAttribute('data-tilt')) || 0.65;
 
       card.addEventListener('mousemove', (e) => {
+      if (e.target && e.target.closest && e.target.closest('.project-deck-stage .glass-content')) return;
+      
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
