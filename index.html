@@ -1215,13 +1215,16 @@
     }
     .project-deck-stage .card-front,
     .project-deck-stage .card-back {
+      background: #070d19 !important;
       border-top: 1px solid rgba(45, 212, 191, 0.22) !important;
       box-shadow: 0 -18px 42px rgba(2, 6, 23, 0.88), inset 0 1px 0 rgba(94, 234, 212, 0.14) !important;
     }
-    .hud-card:hover .glass-content,
-    .project-deck-stage .deck-slide:hover .glass-content,
-    .project-deck-stage .deck-slide.is-stacked-behind:hover .glass-content {
-      transform: none !important;
+    .project-deck-stage .card-front > .relative.z-10.flex.flex-col {
+      background: #070d19 !important;
+    }
+    /* Neutralize base hover lift without !important so sticky-stack inline transforms never snap */
+    .project-deck-stage .hud-card:hover .glass-content {
+      transform: translateY(0);
     }
     .cta-live-pill {
       display: inline-flex;
