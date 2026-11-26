@@ -1384,10 +1384,10 @@
                                     <div class="hud-corner hud-bl"></div>
                                     <div class="hud-corner hud-br"></div>
 
-                                    <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
+                                    <div class="relative z-10 w-full bg-black border-b border-slate-800/80 aspect-[32/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
                                         <div class="hud-scanline"></div>
 
-                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
+                                        <div class="hud-telemetry-bar absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
                                             <span class="flex items-center gap-1.5">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
                                                 THREE.JS + FASTAPI · SPATIAL HAND-TRACKING
@@ -1395,10 +1395,10 @@
                                             <span class="text-slate-400 hidden sm:inline">2-HAND ZOOM · PINCH ORBIT · POINT TARGET</span>
                                         </div>
 
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                        <video autoplay muted loop playsinline class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
                                             <source src="assets/nova-spatial-zoom.mp4" type="video/mp4">
                                         </video>
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                        <video autoplay muted loop playsinline class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
                                             <source src="assets/nova-spatial-orbit.mp4" type="video/mp4">
                                         </video>
                                     </div>
