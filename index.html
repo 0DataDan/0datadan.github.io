@@ -2184,11 +2184,44 @@
     const width = 64, height = 64, segments = 48;
     const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
 
-    const wireMaterial = new THREE.MeshBasicMaterial({
-      color: 0x2dd4bf,
+    const wireMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uCursor: { value: new THREE.Vector3(0, 0, 0) },
+        uColor: { value: new THREE.Color(0x2dd4bf) },
+        uHighlight: { value: new THREE.Color(0x99f6e4) },
+        uBaseOpacity: { value: 0.022 },
+        uPeakOpacity: { value: 0.28 },
+        uRadius: { value: 15.0 }
+      },
+      vertexShader: `
+        varying vec3 vWorldPos;
+        void main() {
+          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+          vWorldPos = worldPosition.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uCursor;
+        uniform vec3 uColor;
+        uniform vec3 uHighlight;
+        uniform float uBaseOpacity;
+        uniform float uPeakOpacity;
+        uniform float uRadius;
+        varying vec3 vWorldPos;
+        void main() {
+          float dist = length(vWorldPos.xy - uCursor.xy);
+          float reveal = smoothstep(uRadius, 0.0, dist);
+          float core = smoothstep(uRadius * 0.42, 0.0, dist);
+          float crest = clamp((vWorldPos.z + 5.0) * 0.25 + 0.5, 0.0, 1.0);
+          float alpha = uBaseOpacity + reveal * uPeakOpacity * (0.65 + 0.35 * crest);
+          vec3 col = mix(uColor, uHighlight, core * 0.55);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `,
       wireframe: true,
       transparent: true,
-      opacity: 0.0
+      depthWrite: false
     });
     const terrain = new THREE.Mesh(geometry, wireMaterial);
     terrain.position.z = -5;
@@ -2234,10 +2267,10 @@
 
     const particleMat = new THREE.PointsMaterial({
       color: 0x2dd4bf,
-      size: 0.65,
+      size: 0.34,
       map: spriteTex,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.42,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
@@ -2265,6 +2298,7 @@
     const raycaster = new THREE.Raycaster();
     const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     const cursorWorld = new THREE.Vector3();
+    wireMaterial.uniforms.uCursor.value = cursorWorld;
 
     let pointerNormX = 0, pointerNormY = 0;
     let pointerScreenX = window.innerWidth / 2;
@@ -4396,7 +4430,7 @@
       const PROOF_MAP = {
         threejs: {
           project: "NOVA Observatory",
-          detail: "60fps WebGL solar system, J2000 orbits & 44-stop camera tour",
+          detail: "60fps WebGL solar system & J2000 orbits",
           url: "https://nova-observatory.vercel.app/",
           cta: "Launch ↗"
         },
