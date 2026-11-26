@@ -4175,21 +4175,24 @@
   <!-- === MINIMAL RIGHT-EDGE SCROLL-SPY RAIL === -->
   <style id="nova-scroll-rail-styles">
     #scroll-spy-rail {
-      position: fixed;
-      right: 1.25rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 60;
-      display: none;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.75rem;
-      font-family: "JetBrains Mono", monospace;
+      position: fixed !important;
+      right: 1.25rem !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      z-index: 9990 !important;
+      display: none !important;
+      flex-direction: column !important;
+      align-items: flex-end !important;
+      gap: 0.75rem !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      font-family: "JetBrains Mono", monospace !important;
     }
-    @media (min-width: 1024px) {
-      #scroll-spy-rail { display: flex; }
+    @media (min-width: 768px) {
+      #scroll-spy-rail { display: flex !important; }
     }
-    .rail-item {
+    #scroll-spy-rail .rail-item {
       display: flex;
       align-items: center;
       gap: 0.55rem;
@@ -4197,40 +4200,40 @@
       border: 0;
       padding: 2px 0;
       cursor: pointer;
-      color: #475569;
+      color: #64748b;
       font-size: 10px;
       letter-spacing: 0.08em;
       transition: color 0.2s ease;
     }
-    .rail-item:hover { color: #cbd5e1; }
-    .rail-item.active { color: #2dd4bf; }
-    .rail-label {
-      opacity: 0.55;
+    #scroll-spy-rail .rail-item:hover { color: #e2e8f0; }
+    #scroll-spy-rail .rail-item.active { color: #2dd4bf; }
+    #scroll-spy-rail .rail-label {
+      opacity: 0.65;
       transition: opacity 0.2s ease, transform 0.2s ease;
     }
-    .rail-item:hover .rail-label,
-    .rail-item.active .rail-label {
+    #scroll-spy-rail .rail-item:hover .rail-label,
+    #scroll-spy-rail .rail-item.active .rail-label {
       opacity: 1;
       transform: translateX(-2px);
     }
-    .rail-tick {
-      width: 10px;
+    #scroll-spy-rail .rail-tick {
+      width: 12px;
       height: 1.5px;
       background: #475569;
       border-radius: 999px;
       transition: width 0.2s ease, background-color 0.2s ease;
     }
-    .rail-item:hover .rail-tick {
-      width: 16px;
+    #scroll-spy-rail .rail-item:hover .rail-tick {
+      width: 18px;
       background: #94a3b8;
     }
-    .rail-item.active .rail-tick {
-      width: 22px;
+    #scroll-spy-rail .rail-item.active .rail-tick {
+      width: 24px;
       background: #2dd4bf;
     }
   </style>
 
-  <nav id="scroll-spy-rail" aria-label="Section Quick Jump"></nav>
+  <div id="scroll-spy-rail" role="navigation" aria-label="Section Quick Jump"></div>
 
   <script id="nova-scroll-rail-script">
     (function () {
@@ -4278,17 +4281,13 @@
         ticking = false;
         const threshold = window.innerHeight * 0.42;
         let activeIdx = 0;
-
         if (window.scrollY > 80) {
           for (let i = 1; i < buttons.length; i++) {
             const rect = buttons[i].el.getBoundingClientRect();
             if (rect.top <= threshold) activeIdx = i;
           }
         }
-
-        buttons.forEach((b, i) => {
-          b.btn.classList.toggle("active", i === activeIdx);
-        });
+        buttons.forEach((b, i) => b.btn.classList.toggle("active", i === activeIdx));
       }
 
       window.addEventListener("scroll", () => {
