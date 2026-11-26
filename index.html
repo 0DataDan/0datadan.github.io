@@ -1245,6 +1245,32 @@
       box-shadow: 0 0 14px rgba(45, 212, 191, 0.22);
     }
   </style>
+
+  <style id="contact-terminal-polish">
+    .terminal-exec-btn {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.42rem 0.95rem !important;
+      border-radius: 6px !important;
+      background: rgba(20, 184, 166, 0.12) !important;
+      border: 1px solid rgba(45, 212, 191, 0.42) !important;
+      color: #5eead4 !important;
+      font-family: "JetBrains Mono", monospace !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.02em;
+      box-shadow: none !important;
+      text-transform: none !important;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .terminal-exec-btn:hover {
+      background: rgba(20, 184, 166, 0.22) !important;
+      border-color: rgba(94, 234, 212, 0.75) !important;
+      color: #ccfbf1 !important;
+      box-shadow: 0 0 14px rgba(45, 212, 191, 0.22) !important;
+    }
+  </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
@@ -1985,7 +2011,7 @@
         <section id="contact-dedicated-section" aria-label="Contact Terminal">
             <div class="contact-sec-header">
                 <div class="contact-sec-left">
-                    <span class="contact-sec-index">03 //</span>
+                    <span class="contact-sec-index">05 //</span>
                     <h2 class="contact-sec-title">Contact</h2>
                     <span class="contact-sec-sub">Terminal</span>
                 </div>
@@ -2025,10 +2051,9 @@
                         <form id="terminal-form" class="terminal-form" autocomplete="off">
                             <input type="checkbox" name="botcheck" class="hidden" style="display: none;" tabindex="-1" autocomplete="off">
                             <div class="cmd-line holo-line-reveal reveal-2">
-                                <span class="prompt-user">guest@0datadan-portfolio</span><span class="prompt-sep">:</span><span class="prompt-dir">~</span><span class="prompt-char">$</span>
+                                <span class="prompt-dir">~</span><span class="prompt-char">$</span>
                                 <span class="cmd-binary" id="holo-typed-cmd"></span>
                                 <span id="holo-cmd-args" class="cmd-args-reveal">
-                                    <span class="cmd-flag">--to</span> <span class="cmd-arg">daniel</span>
                                     <span class="cmd-flag">--from</span>
                                     <span class="cmd-quote">"</span><input
                                         type="email"
@@ -2049,23 +2074,13 @@
                                     id="terminal-msg"
                                     name="message"
                                     class="terminal-inline-input msg-input interactive"
-                                    placeholder="Type message or click a quick arg above..."
+                                    placeholder="Write a message..."
                                     required
                                 /><span class="cmd-quote">"</span>
                             </div>
 
                             <div class="terminal-actions holo-line-reveal reveal-4 flex flex-wrap items-center gap-3 mt-4">
-                                <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">
-                                    &crarr; Send Message
-                                </button>
-                                <button
-                                    type="button"
-                                    id="terminal-copy-email"
-                                    class="terminal-copy-btn interactive mag-link"
-                                    onclick="navigator.clipboard.writeText('dataperez@proton.me').then(() => { const b = this; const orig = b.textContent; b.textContent = '✓ Copied dataperez@proton.me'; b.classList.add('copied'); setTimeout(() => { b.textContent = orig; b.classList.remove('copied'); }, 2000); })"
-                                >
-                                    Copy Email
-                                </button>
+                                <button type="submit" id="terminal-submit-btn" class="terminal-exec-btn interactive mag-link">Send &crarr;</button>
                             </div>
                         </form>
 
@@ -3612,7 +3627,7 @@
           if (statusTextEl) statusTextEl.textContent = "ONLINE";
           if (linePrompt) linePrompt.classList.add("line-visible");
 
-          const targetText = "send-message";
+          const targetText = "msg";
           typedCmdEl.textContent = "";
           let idx = 0;
 
