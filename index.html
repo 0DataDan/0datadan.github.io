@@ -4038,7 +4038,9 @@
             slide.classList.add("stack-turn-over");
             setTimeout(() => {
               slide.classList.remove("stack-turn-over");
-              inner.style.transform = `translateY(${deltaY}px) scale(1)`;
+              if (selectedStackIdx === i) {
+                inner.style.transform = `translateY(${deltaY}px) scale(1)`;
+              }
             }, 490);
           } else {
             inner.style.transform = `translateY(${deltaY}px) scale(1)`;
@@ -4059,11 +4061,13 @@
       });
     }
 
+    let programmaticDockUntil = 0;
+
     function updateStackDepth() {
       ticking = false;
 
       const lastRect = slides[lastIdx].getBoundingClientRect();
-      if (lastRect.top > stickyTops[lastIdx] + 45) {
+      if (performance.now() >= programmaticDockUntil && lastRect.top > stickyTops[lastIdx] + 45) {
         detentArmed = true;
         if (selectedStackIdx !== null) {
           selectedStackIdx = null;
@@ -4144,6 +4148,7 @@
             applyInPlaceSelection(i, true);
           } else {
             detentArmed = false;
+            programmaticDockUntil = performance.now() + 750;
             window.scrollTo({ top: getSlideDockY(lastIdx), behavior: "smooth" });
             applyInPlaceSelection(i, true);
           }
@@ -4359,12 +4364,6 @@
     .hud-card.is-hover-locked .static-card-surface,
     .hud-card:hover .static-card-surface {
       transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) !important;
-      animation-play-state: paused !important;
-    }
-    /* Lock active front project card flat on hover without disturbing stacked-behind cards */
-    .project-deck-stage .deck-slide:not(.is-stacked-behind):hover .glass-content,
-    .project-deck-stage .deck-slide:not(.is-stacked-behind) .hud-card.is-hover-locked .glass-content {
-      transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1) !important;
       animation-play-state: paused !important;
     }
   </style>
