@@ -1231,6 +1231,19 @@
       color: #ccfbf1 !important;
       box-shadow: 0 0 14px rgba(45, 212, 191, 0.22);
     }
+    .cta-secondary-link {
+      background: transparent !important;
+      border: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      color: #94a3b8 !important;
+      font-weight: 400 !important;
+    }
+    .cta-secondary-link:hover {
+      background: transparent !important;
+      border: 0 !important;
+      color: #2dd4bf !important;
+    }
   </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
@@ -1251,7 +1264,7 @@
                     <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span>
                 </h1>
 
-                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link font-mono text-[11px] text-slate-500 hover:text-teal-400 transition flex items-center gap-1.5 shrink-0" title="Open Command Palette (⌘K / Ctrl+K)">
+                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link font-mono text-[11px] text-slate-500 hover:text-teal-400 transition flex items-center gap-1.5 shrink-0 cta-secondary-link" title="Open Command Palette (⌘K / Ctrl+K)">
                     <span class="px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-800 text-slate-400 text-[10px]">⌘K</span>
                     <span class="hidden sm:inline">terminal</span>
                 </button>
