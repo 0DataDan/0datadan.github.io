@@ -1271,6 +1271,68 @@
       box-shadow: 0 0 14px rgba(45, 212, 191, 0.22) !important;
     }
   </style>
+
+  <style id="cursor-reticle-style">
+    #cursor-reticle {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      will-change: transform, width, height, opacity;
+      transition: opacity 0.12s ease;
+    }
+    #cursor-reticle.locked {
+      opacity: 1;
+    }
+    #cursor-reticle .rc {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-color: #2dd4bf;
+      border-style: solid;
+      border-width: 0;
+      filter: drop-shadow(0 0 4px rgba(45, 212, 191, 0.4));
+    }
+    #cursor-reticle .tl { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+    #cursor-reticle .tr { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+    #cursor-reticle .bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+    #cursor-reticle .br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+    /* Borderless + tight padding on Live App, Live Demo, and Send so the reticle hugs the button flush */
+    .reticle-borderless,
+    .reticle-borderless:hover,
+    .reticle-borderless:focus-visible {
+      border-color: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+      padding: 3px 6px !important;
+    }
+
+    /* Generous gap and tight hit-boxes for project panel action rows */
+    .project-action-row {
+      gap: 1.75rem !important;
+      align-items: center !important;
+    }
+    .project-action-row > a,
+    .project-action-row > button {
+      padding: 3px 6px !important;
+    }
+
+    body.reticle-active #mag-cursor-core,
+    body.reticle-active.mag-cursor-hover #mag-cursor-core {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transition: none !important;
+    }
+    body.cmd-cursor-hidden #cursor-reticle {
+      opacity: 0 !important;
+    }
+    @media (pointer: coarse) {
+      #cursor-reticle { display: none !important; }
+    }
+  </style>
 </head>
 <body class="min-h-screen antialiased selection:bg-teal-500 selection:text-white">
 
@@ -1427,9 +1489,6 @@
                                                                                                 <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link text-slate-400 hover:text-teal-400 transition-colors">
                                                     &lt;/&gt; Inspect Code
                                                 </button>
-                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -1527,9 +1586,6 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://nova-observatory.vercel.app/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
-                                                    Live App <span>↗</span>
-                                                </a>
                                                 <a href="https://github.com/0DataDan/universe-explorer" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
@@ -1597,9 +1653,6 @@
                                                                                                 <button type="button" onclick="event.stopPropagation(); this.closest('.flippable-card').dispatchEvent(new MouseEvent('click', { bubbles: false }));" class="interactive mag-link text-slate-400 hover:text-teal-400 transition-colors">
                                                     &lt;/&gt; Inspect Code
                                                 </button>
-                                                <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-400 hover:text-teal-400">
-                                                    GitHub Repo <span>&rarr;</span>
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -1697,9 +1750,6 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://urban-heat-explorer-wup4fayw6cabmthbvsfawx.streamlit.app/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-purple-400 cta-live-pill">
-                                                    Live Demo <span>↗</span>
-                                                </a>
                                                 <a href="https://github.com/0DataDan/urban-heat-explorer" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-purple-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
@@ -1869,9 +1919,6 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://0datadan.github.io/morph/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
-                                                    Live App <span>↗</span>
-                                                </a>
                                                 <a href="https://github.com/0DataDan/morph" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
@@ -2179,6 +2226,12 @@
 </style>
 
 <div id="mag-cursor-core"></div>
+<div id="cursor-reticle" aria-hidden="true">
+  <span class="rc tl"></span>
+  <span class="rc tr"></span>
+  <span class="rc bl"></span>
+  <span class="rc br"></span>
+</div>
 <canvas id="nova-trail-canvas"></canvas>
 
 <!-- UNIFIED WAVE-UI COUPLING + 3D TARGETED SPRING PARTICLE ATTRACTION + STACKED DECK CONTROLLER -->
@@ -2902,7 +2955,8 @@
     const interactiveSelectors = 'a, button, [role="button"], input, select, .interactive';
     document.addEventListener('mouseover', (e) => {
       if (e.target.closest(interactiveSelectors)) {
-        document.body.classList.add('mag-cursor-hover');
+        // Disabled: 4-corner reticle handles button hover states
+        // document.body.classList.add('mag-cursor-hover');
       }
     });
     document.addEventListener('mouseout', (e) => {
@@ -4531,6 +4585,200 @@
         renderProof(pinnedKey);
         syncActiveStyles(pinnedKey);
       });
+    })();
+  </script>
+
+  <script id="cursor-reticle-script">
+    (() => {
+      const TARGET_SELECTOR = 'a, button, [role="button"]';
+
+      function applyButtonLayoutTweaks() {
+        document.querySelectorAll(TARGET_SELECTOR).forEach((el) => {
+          const txt = (el.textContent || '').trim();
+          if (/^(Live App|Live Demo|Send)\b/i.test(txt)) {
+            el.classList.add('reticle-borderless');
+          }
+          if (/^(Live App|Live Demo)\b/i.test(txt) || /Inspect Code/i.test(txt)) {
+            const row = el.parentElement;
+            if (row && row.querySelectorAll(':scope > a, :scope > button').length >= 2) {
+              row.classList.add('project-action-row');
+            }
+          }
+        });
+      }
+      applyButtonLayoutTweaks();
+
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+
+      const reticle = document.getElementById('cursor-reticle');
+      let activeEl = null;
+      let isPressed = false;
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      const cur = { x: mouseX, y: mouseY, w: 12, h: 12 };
+      const EASE = 0.36;
+
+      function isSideRailTarget(el, rect) {
+        if (el.closest('aside, [data-no-reticle]')) return true;
+        const txt = (el.textContent || '').trim();
+        if (/^0\d\s+[A-Z]/.test(txt)) return true;
+        let curNode = el;
+        while (curNode && curNode !== document.body) {
+          if (getComputedStyle(curNode).position === 'fixed') {
+            if (rect.left > window.innerWidth - 200 && rect.top > 80 && rect.bottom < window.innerHeight - 80) {
+              return true;
+            }
+            break;
+          }
+          curNode = curNode.parentElement;
+        }
+        return false;
+      }
+
+      function findValidTarget(node) {
+        const el = node && node.closest ? node.closest(TARGET_SELECTOR) : null;
+        if (!el) return null;
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0 || rect.width > 380 || rect.height > 110) return null;
+        if (isSideRailTarget(el, rect)) return null;
+        return el;
+      }
+
+      // Measure the tight visual content box (actual text + icons) instead of the padded outer box
+      function getTightContentRect(el) {
+        let minL = Infinity, minT = Infinity, maxR = -Infinity, maxB = -Infinity;
+        const range = document.createRange();
+
+        for (const child of el.childNodes) {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            const cr = child.getBoundingClientRect();
+            if (cr.width > 0 && cr.height > 0) {
+              if (cr.left < minL) minL = cr.left;
+              if (cr.top < minT) minT = cr.top;
+              if (cr.right > maxR) maxR = cr.right;
+              if (cr.bottom > maxB) maxB = cr.bottom;
+            }
+          } else if (child.nodeType === Node.TEXT_NODE) {
+            const raw = child.textContent || '';
+            const start = raw.search(/\S/);
+            if (start !== -1) {
+              const end = raw.trimEnd().length;
+              range.setStart(child, start);
+              range.setEnd(child, end);
+              const tr = range.getBoundingClientRect();
+              if (tr.width > 0 && tr.height > 0) {
+                if (tr.left < minL) minL = tr.left;
+                if (tr.top < minT) minT = tr.top;
+                if (tr.right > maxR) maxR = tr.right;
+                if (tr.bottom > maxB) maxB = tr.bottom;
+              }
+            }
+          }
+        }
+
+        if (minL < maxR && minT < maxB) {
+          return { left: minL, top: minT, right: maxR, bottom: maxB, width: maxR - minL, height: maxB - minT };
+        }
+        return el.getBoundingClientRect();
+      }
+
+      function computeTightBox(el, padXBase, padYBase) {
+        const r = getTightContentRect(el);
+        let padL = padXBase, padR = padXBase;
+
+        const scope = el.closest('article, section, footer, header') || el.parentElement || document;
+        const peers = scope.querySelectorAll(TARGET_SELECTOR);
+
+        for (const peer of peers) {
+          if (peer === el || peer.contains(el) || el.contains(peer)) continue;
+          const sr = getTightContentRect(peer);
+          if (sr.width === 0 || sr.height === 0) continue;
+
+          const sameRow = sr.bottom > r.top - 4 && sr.top < r.bottom + 4;
+          if (!sameRow) continue;
+
+          if (sr.right <= r.left + 2) {
+            const gap = Math.max(0, r.left - sr.right);
+            padL = Math.min(padL, Math.max(1, gap * 0.5 - 2));
+          } else if (sr.left >= r.right - 2) {
+            const gap = Math.max(0, sr.left - r.right);
+            padR = Math.min(padR, Math.max(1, gap * 0.5 - 2));
+          }
+        }
+
+        const padX = Math.min(padL, padR);
+        return {
+          x: r.left - padX,
+          y: r.top - padYBase,
+          w: Math.max(8, r.width + padX * 2),
+          h: Math.max(8, r.height + padYBase * 2)
+        };
+      }
+
+      function unlock() {
+        activeEl = null;
+        reticle.classList.remove('locked');
+        document.body.classList.remove('reticle-active');
+      }
+
+      window.addEventListener('pointermove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      }, { passive: true });
+
+      document.addEventListener('pointerover', (e) => {
+        const target = findValidTarget(e.target);
+        if (!target) return;
+        if (!activeEl) {
+          cur.x = mouseX - 6;
+          cur.y = mouseY - 6;
+          cur.w = 12;
+          cur.h = 12;
+        }
+        activeEl = target;
+        reticle.classList.add('locked');
+        document.body.classList.add('reticle-active');
+        document.body.classList.remove('mag-cursor-hover');
+      }, true);
+
+      document.addEventListener('pointerout', (e) => {
+        if (!activeEl) return;
+        const next = findValidTarget(e.relatedTarget);
+        if (next === activeEl) return;
+        if (next) activeEl = next;
+        else unlock();
+      });
+
+      document.documentElement.addEventListener('mouseleave', unlock);
+      window.addEventListener('pointerdown', () => { isPressed = true; });
+      window.addEventListener('pointerup', () => { isPressed = false; });
+
+      function tick() {
+        let tx, ty, tw, th;
+        if (activeEl && activeEl.isConnected && !document.body.classList.contains('cmd-cursor-hidden')) {
+          const box = computeTightBox(activeEl, isPressed ? 2 : 5, isPressed ? 1 : 3);
+          tx = box.x; ty = box.y; tw = box.w; th = box.h;
+        } else {
+          if (activeEl && !activeEl.isConnected) unlock();
+          tx = mouseX - 6;
+          ty = mouseY - 6;
+          tw = 12;
+          th = 12;
+        }
+
+        cur.x += (tx - cur.x) * EASE;
+        cur.y += (ty - cur.y) * EASE;
+        cur.w += (tw - cur.w) * EASE;
+        cur.h += (th - cur.h) * EASE;
+
+        reticle.style.transform = `translate3d(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px, 0)`;
+        reticle.style.width = `${cur.w.toFixed(2)}px`;
+        reticle.style.height = `${cur.h.toFixed(2)}px`;
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
     })();
   </script>
 </body>
