@@ -1532,8 +1532,11 @@
                                             <span class="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/10 border border-teal-400/35 text-teal-300 whitespace-nowrap">v2 · Hand-Tracking</span>
                                         </div>
 
-                                        <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                        <p class="text-sm text-slate-300 leading-relaxed mb-3 max-w-3xl">
                                             Interactive 3D solar system and star map built with Three.js. Started with a FastAPI backend, then migrated to static <code class="text-teal-300/90">catalog.json</code> on Vercel for zero-cost hosting—upgraded in v2 with webcam hand-tracking for two-hand zoom, pinch-to-orbit, and point-to-target selection.
+                                        </p>
+                                        <p class="text-[11px] font-mono text-slate-400 leading-relaxed mb-6 max-w-3xl">
+                                            Profiled (M1, DPR 2, 300 frames): 16.70 ms median (p95 16.80 ms) &middot; 44 draw calls &middot; 176k tris &middot; 31.5k pts.
                                         </p>
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
@@ -1641,13 +1644,19 @@
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-3 text-[11px] text-slate-300">
-                                                <span><strong class="text-teal-400">World-Space</strong> Matrix Targeting</span>
+                                                <span><strong class="text-teal-400">44</strong> Draw Calls &middot; 176k Tris</span>
                                                 <span class="text-slate-400">·</span>
-                                                <span><strong class="text-emerald-400">Static JSON</strong> Zero-Cost Deploy</span>
+                                                <span><strong class="text-emerald-400">16.70 ms</strong> Median (p95 16.80 ms)</span>
                                             </div>
 
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                            <div class="flex flex-wrap items-center gap-4 ml-auto">
+                                                <a href="https://github.com/0DataDan/universe-explorer/blob/main/static/js/app.js" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    app.js <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/universe-explorer#performance--asset-profile" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    Profile <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/universe-explorer" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
                                             </div>
