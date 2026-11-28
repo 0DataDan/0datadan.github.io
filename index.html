@@ -509,12 +509,12 @@
             font-size: 0.62rem;
             border: 1px solid rgba(51, 65, 85, 0.7);
             background: rgba(15, 23, 42, 0.7);
-            color: #64748b;
+            color: #94a3b8;
             transition: all 0.2s ease;
         }
         .diag-tab-btn:hover {
             color: #cbd5e1;
-            border-color: rgba(45, 212, 191, 0.4);
+            border-color: rgba(45, 212, 191, 0.8);
         }
         .diag-tab-btn.diag-tab-active {
             background: rgba(45, 212, 191, 0.14);
@@ -562,7 +562,7 @@
             text-shadow: 0 0 18px rgba(248, 250, 252, 0.25);
         }
         .contact-sec-sub {
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.74rem;
             letter-spacing: 0.04em;
         }
@@ -570,7 +570,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.72rem;
         }
         .telemetry-readout strong {
@@ -740,7 +740,7 @@
             margin-bottom: 1.35rem;
         }
         .preset-label {
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.72rem;
             letter-spacing: 0.06em;
             margin-right: 0.25rem;
@@ -780,7 +780,7 @@
             font-weight: 600;
             text-shadow: 0 0 12px rgba(45, 212, 191, 0.45);
         }
-        .prompt-sep  { color: #64748b; }
+        .prompt-sep  { color: #94a3b8; }
         .prompt-dir  {
             color: #38bdf8;
             font-weight: 600;
@@ -821,7 +821,7 @@
             transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
         }
         .terminal-inline-input::placeholder {
-            color: rgba(148, 163, 184, 0.42);
+            color: rgba(148, 163, 184, 0.8);
             text-shadow: none;
         }
         .terminal-inline-input:focus {
@@ -850,7 +850,7 @@
             padding-top: 0.65rem;
         }
         .shortcut-hint {
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.74rem;
         }
         .shortcut-hint kbd {
@@ -866,7 +866,7 @@
             border: none !important;
             box-shadow: none !important;
             padding: 4px 2px;
-            color: #64748b;
+            color: #94a3b8;
             font-family: monospace;
             font-size: 0.75rem;
             letter-spacing: 0.08em;
@@ -944,7 +944,7 @@
             box-shadow: 0 8px 24px -12px rgba(45, 212, 191, 0.25);
         }
         #cmd-prompt-prefix {
-            color: #64748b;
+            color: #94a3b8;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             margin-right: 0.6rem;
@@ -968,7 +968,7 @@
             align-items: center;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.98rem;
-            color: rgba(100, 116, 139, 0.45);
+            color: #94a3b8;
             pointer-events: none;
             white-space: pre;
             overflow: hidden;
@@ -986,7 +986,7 @@
             caret-color: #2dd4bf;
         }
         #cmd-input::placeholder {
-            color: rgba(100, 116, 139, 0.5);
+            color: #94a3b8;
         }
         #cmd-zero-hints {
             display: flex;
@@ -997,7 +997,7 @@
             padding: 0.65rem 0.25rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.72rem;
-            color: #64748b;
+            color: #94a3b8;
             transition: opacity 0.2s ease;
         }
         .cmd-token-btn {
@@ -1022,7 +1022,7 @@
             justify-content: space-between;
             padding: 0.55rem 0.75rem;
             cursor: pointer;
-            color: #64748b;
+            color: #94a3b8;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
             transition: color 0.15s ease, transform 0.15s ease;
@@ -1054,7 +1054,7 @@
         }
         .cmd-item-desc {
             font-size: 0.73rem;
-            color: #64748b;
+            color: #94a3b8;
         }
         .cmd-result-item[aria-selected="true"] .cmd-item-desc {
             color: #94a3b8;
@@ -1174,7 +1174,11 @@
       overflow: hidden;
     }
     @media (prefers-reduced-motion: reduce) {
-      .animate-ping, .animate-pulse, .blinking-cursor {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+      }
+      .animate-ping, .animate-pulse, .blinking-cursor,
+      .project-deck-stage .deck-slide.stack-turn-over .glass-content {
         animation: none !important;
       }
       .hud-scanline {
@@ -1341,12 +1345,21 @@
 
     /* Borderless + tight padding on Live App, Live Demo, and Send so the reticle hugs the button flush */
     .reticle-borderless,
-    .reticle-borderless:hover,
-    .reticle-borderless:focus-visible {
+    .reticle-borderless:hover {
       border-color: transparent !important;
       box-shadow: none !important;
       outline: none !important;
       padding: 3px 6px !important;
+    }
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible,
+    .reticle-borderless:focus-visible {
+      outline: 2px solid #2dd4bf !important;
+      outline-offset: 3px !important;
+      border-radius: 4px;
     }
 
     /* Generous gap and tight hit-boxes for project panel action rows */
@@ -1356,7 +1369,14 @@
     }
     .project-action-row > a,
     .project-action-row > button {
-      padding: 3px 6px !important;
+      padding: 6px 8px !important;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+    }
+    button.interactive,
+    a.interactive {
+      min-height: 28px;
     }
 
     body.reticle-active #mag-cursor-core,
@@ -1391,15 +1411,15 @@
                     <span class="wave-char">d</span><span class="wave-char">a</span><span class="wave-char">n</span><span class="wave-char">i</span><span class="wave-char">e</span><span class="wave-char">l</span><span class="wave-char">p</span><span class="wave-char">e</span><span class="wave-char">r</span><span class="wave-char">e</span><span class="wave-char">z</span>
                 </h1>
 
-                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link font-mono text-[11px] text-slate-500 hover:text-teal-400 transition flex items-center gap-1.5 shrink-0 cta-secondary-link" title="Open Command Palette (⌘K / Ctrl+K)">
-                    <span class="px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-800 text-slate-400 text-[10px]">⌘K</span>
+                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link font-mono text-[11px] text-slate-400 hover:text-teal-400 transition flex items-center gap-1.5 shrink-0 cta-secondary-link" title="Open Command Palette (⌘K / Ctrl+K)">
+                    <span class="px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-800 text-slate-400 text-[11px]">⌘K</span>
                     <span class="hidden sm:inline">terminal</span>
                 </button>
             </div>
             
             <!-- Unboxed, Pure Terminal Typewriter Line -->
             <div class="mt-1 mb-6 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400">
-                <span class="text-slate-500 select-none">&gt;</span>
+                <span class="text-slate-400 select-none">&gt;</span>
                 <span class="typewriter-fx text-teal-300" data-phrases='["AI Output Evaluation & QA", "Three.js · WebGL · Spatial UI", "Python · Rasterio · Folium · Streamlit", "Satellite Remote Sensing Workflows"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
@@ -1417,32 +1437,32 @@
             <div id="hero-proof-bar" class="mb-6 max-w-2xl grid grid-cols-2 sm:grid-cols-4 gap-y-3 sm:gap-y-0 sm:divide-x sm:divide-slate-800/80 font-mono relative z-10 border-y border-slate-800/60 py-3">
                 <div class="sm:pr-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">4+ YRS</div>
-                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">AI &amp; Multimodal Eval</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-0.5">AI &amp; Multimodal Eval</div>
                 </div>
                 <div class="sm:px-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">1,500+</div>
-                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">Monthly Rating Tasks</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-0.5">Monthly Rating Tasks</div>
                 </div>
                 <div class="sm:px-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">3 LIVE</div>
-                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">Deployed Web Apps</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-0.5">Deployed Web Apps</div>
                 </div>
                 <div class="sm:pl-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">2 CERTS</div>
-                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">NASA &middot; Google AI</div>
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-0.5">NASA &middot; Google AI</div>
                 </div>
             </div>
 
             <!-- Interactive Tech-to-Proof Pills & Micro-Terminal -->
             <div id="hero-tech-strip" class="max-w-2xl relative z-10">
                 <div class="flex flex-wrap gap-2 text-xs font-mono pt-1">
-                    <button type="button" data-tech="threejs" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Three.js</button>
-                    <button type="button" data-tech="fastapi" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">FastAPI</button>
-                    <button type="button" data-tech="python" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Python</button>
-                    <button type="button" data-tech="rasterio" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Rasterio</button>
-                    <button type="button" data-tech="folium" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Folium</button>
-                    <button type="button" data-tech="streamlit" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Streamlit</button>
-                    <button type="button" data-tech="webgl" class="tech-proof-pill interactive px-2.5 py-1 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">WebGL</button>
+                    <button type="button" data-tech="threejs" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Three.js</button>
+                    <button type="button" data-tech="fastapi" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">FastAPI</button>
+                    <button type="button" data-tech="python" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Python</button>
+                    <button type="button" data-tech="rasterio" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Rasterio</button>
+                    <button type="button" data-tech="folium" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Folium</button>
+                    <button type="button" data-tech="streamlit" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">Streamlit</button>
+                    <button type="button" data-tech="webgl" class="tech-proof-pill interactive px-3 py-1.5 rounded-md bg-slate-900/60 border border-slate-800/90 text-slate-300 hover:border-teal-400/60 hover:text-teal-300 transition-colors">WebGL</button>
                 </div>
 
                 <!-- 1-Line Tech-to-Proof Micro-Terminal -->
@@ -1478,7 +1498,7 @@
                                             <span class="text-teal-400 font-bold">01 //</span>
                                             <span class="text-slate-100 font-semibold">NOVA OBSERVATORY</span>
                                         </span>
-                                        <span class="text-slate-500 text-[10px] hidden sm:inline">3D WEBGL · HAND-TRACKING · FASTAPI</span>
+                                        <span class="text-slate-400 text-[11px] hidden sm:inline">3D WEBGL · HAND-TRACKING · FASTAPI</span>
                                     </div>
                                     <div class="hud-corner hud-tl"></div>
                                     <div class="hud-corner hud-tr"></div>
@@ -1488,7 +1508,7 @@
                                     <div class="relative z-10 w-full bg-black border-b border-slate-800/80 aspect-[32/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
                                         <div class="hud-scanline"></div>
 
-                                        <div class="hud-telemetry-bar absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
+                                        <div class="hud-telemetry-bar absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[11px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
                                             <span class="flex items-center gap-1.5">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
                                                 THREE.JS + FASTAPI · SPATIAL HAND-TRACKING
@@ -1496,10 +1516,12 @@
                                             <span class="text-slate-400 hidden sm:inline">2-HAND ZOOM · PINCH ORBIT · POINT TARGET</span>
                                         </div>
 
-                                        <video autoplay muted loop playsinline class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
+                                        <video muted loop playsinline preload="metadata" class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
+                                                <track kind="captions" srclang="en" label="No audio (visual demo)" src="data:text/vtt;charset=utf-8,WEBVTT%0A">
                                             <source src="assets/nova-spatial-zoom.mp4" type="video/mp4">
                                         </video>
-                                        <video autoplay muted loop playsinline class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
+                                        <video muted loop playsinline preload="metadata" class="w-full h-full object-contain bg-black rounded-lg pointer-events-none">
+                                                <track kind="captions" srclang="en" label="No audio (visual demo)" src="data:text/vtt;charset=utf-8,WEBVTT%0A">
                                             <source src="assets/nova-spatial-orbit.mp4" type="video/mp4">
                                         </video>
                                     </div>
@@ -1507,7 +1529,7 @@
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
                                         <div class="flex items-baseline justify-between gap-4 mb-3">
                                             <h2 class="text-2xl font-bold text-white tracking-tight">NOVA Observatory</h2>
-                                            <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/10 border border-teal-400/35 text-teal-300 whitespace-nowrap">v2 · Hand-Tracking</span>
+                                            <span class="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/10 border border-teal-400/35 text-teal-300 whitespace-nowrap">v2 · Hand-Tracking</span>
                                         </div>
 
                                         <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
@@ -1516,7 +1538,7 @@
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
-                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="text-slate-400 select-none">&gt;</span>
                                                 <span class="typewriter-fx text-teal-300" data-phrases='["Spatial Hand-Tracking & Gesture Controls", "2-Hand Zoom · Pinch Orbit · Point Target", "Three.js WebGL · Static JSON on Vercel"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
@@ -1547,27 +1569,27 @@
                                         </div>
 
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                            <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800/60 pb-2">
                                                 <span>SYS.TELEMETRY</span>
                                                 <span class="text-teal-400">● LIVE</span>
                                             </div>
 
                                             <div class="space-y-2 my-auto">
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 0);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-emerald-400">World Matrix</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[11px] text-emerald-400">World Matrix</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 1);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-teal-400">Tour Audio</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[11px] text-teal-400">Tour Audio</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', null, 2);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-purple-400">HUD Hold</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[11px] text-purple-400">HUD Hold</span>
                                                 </button>
                                             </div>
 
-                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                            <div class="text-[11px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-800/60">
                                                 <span>Select node</span>
                                                 <span class="text-teal-400">&larr;</span>
                                             </div>
@@ -1576,8 +1598,8 @@
                                         <div id="arch-drawer-nova" onclick="event.stopPropagation(); toggleArchDrawer('nova');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/98 p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
                                                 <div class="flex items-center gap-2">
-                                                    <span id="arch-badge-nova" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
-                                                    <h4 id="arch-title-nova" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Camera &amp; Coordinate Space Architecture</h4>
+                                                    <span id="arch-badge-nova" class="text-teal-400 font-mono text-[11px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h3 id="arch-title-nova" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Camera &amp; Coordinate Space Architecture</h3>
                                                 </div>
                                                 <div class="flex items-center gap-1.5">
                                                     <button type="button" onclick="selectArchNode('nova', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Matrix</button>
@@ -1593,7 +1615,7 @@
 
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
                                                 <span id="flow-snippet-nova" class="text-teal-300 truncate"></span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                                <span class="text-slate-400 text-[11px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1620,7 +1642,7 @@
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-3 text-[11px] text-slate-300">
                                                 <span><strong class="text-teal-400">World-Space</strong> Matrix Targeting</span>
-                                                <span class="text-slate-700">·</span>
+                                                <span class="text-slate-400">·</span>
                                                 <span><strong class="text-emerald-400">Static JSON</strong> Zero-Cost Deploy</span>
                                             </div>
 
@@ -1648,7 +1670,7 @@
                                             <span class="text-teal-400 font-bold">02 //</span>
                                             <span class="text-slate-100 font-semibold">URBAN HEAT EXPLORER</span>
                                         </span>
-                                        <span class="text-slate-500 text-[10px] hidden sm:inline">LANDSAT · RASTERIO · FOLIUM</span>
+                                        <span class="text-slate-400 text-[11px] hidden sm:inline">LANDSAT · RASTERIO · FOLIUM</span>
                                     </div>
                                     <div class="hud-corner hud-tl"></div>
                                     <div class="hud-corner hud-tr"></div>
@@ -1658,7 +1680,7 @@
                                     <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] overflow-hidden flex items-center justify-center">
                                         <div class="hud-scanline"></div>
 
-                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[11px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
                                             <span class="flex items-center gap-1.5">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
                                                 LANDSAT 8/9 SATELLITE
@@ -1666,7 +1688,7 @@
                                             <span class="text-slate-300">LST · 100m THERMAL (30m RESAMPLED)</span>
                                         </div>
 
-                                        <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
+                                        <img loading="lazy" decoding="async" src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-400 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
                                     </div>
 
                                     <div class="relative z-10 p-6 sm:p-8 flex flex-col flex-grow">
@@ -1680,7 +1702,7 @@
 
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
-                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="text-slate-400 select-none">&gt;</span>
                                                 <span class="typewriter-fx text-teal-300" data-phrases='["Satellite Thermal Mapping App", "Surface Temperature & Green Space"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
@@ -1711,27 +1733,27 @@
                                         </div>
 
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                            <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800/60 pb-2">
                                                 <span>GIS.TELEMETRY</span>
                                                 <span class="text-teal-400">● LIVE</span>
                                             </div>
 
                                             <div class="space-y-2 my-auto">
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 0);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-emerald-400">Raster Math</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[11px] text-emerald-400">Raster Math</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 1);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-teal-400">CRS Sync</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[11px] text-teal-400">CRS Sync</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('heat', null, 2);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-purple-400">Coast Mask</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[11px] text-purple-400">Coast Mask</span>
                                                 </button>
                                             </div>
 
-                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                            <div class="text-[11px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-800/60">
                                                 <span>Select node</span>
                                                 <span class="text-teal-400">&larr;</span>
                                             </div>
@@ -1740,8 +1762,8 @@
                                         <div id="arch-drawer-heat" onclick="event.stopPropagation(); toggleArchDrawer('heat');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/98 p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
                                                 <div class="flex items-center gap-2">
-                                                    <span id="arch-badge-heat" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
-                                                    <h4 id="arch-title-heat" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Radiometric Calibration</h4>
+                                                    <span id="arch-badge-heat" class="text-teal-400 font-mono text-[11px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h3 id="arch-title-heat" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Landsat 8/9 Radiometric Calibration</h3>
                                                 </div>
                                                 <div class="flex items-center gap-1.5">
                                                     <button type="button" onclick="selectArchNode('heat', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 Raster</button>
@@ -1757,7 +1779,7 @@
 
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
                                                 <span id="flow-snippet-heat" class="text-teal-300 truncate"></span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                                <span class="text-slate-400 text-[11px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1776,7 +1798,7 @@
                                                     <span class="text-xs font-mono text-purple-400">30m GeoTIFF</span>
                                                 </div>
                                             </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                            <p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-3xl">
                                                 Processes multispectral satellite rasters in Python with Rasterio to calculate land surface temperatures and render interactive microclimate heat overlays.
                                             </p>
                                         </div>
@@ -1784,7 +1806,7 @@
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-3 text-[11px] text-slate-400">
                                                 <span><strong class="text-purple-400">Landsat 8/9</strong> Thermal Bands</span>
-                                                <span class="text-slate-700">·</span>
+                                                <span class="text-slate-400">·</span>
                                                 <span><strong class="text-emerald-400">Folium</strong> GIS Layers</span>
                                             </div>
 
@@ -1812,7 +1834,7 @@
                                             <span class="text-teal-400 font-bold">03 //</span>
                                             <span class="text-slate-100 font-semibold">MORPH SPATIAL MESH</span>
                                         </span>
-                                        <span class="text-slate-500 text-[10px] hidden sm:inline">A* MESH ROUTER · DEM</span>
+                                        <span class="text-slate-400 text-[11px] hidden sm:inline">A* MESH ROUTER · DEM</span>
                                     </div>
                                     <div class="hud-corner hud-tl"></div>
                                     <div class="hud-corner hud-tr"></div>
@@ -1822,7 +1844,7 @@
                                     <div class="relative z-10 w-full bg-slate-950 border-b border-slate-800/80 aspect-video sm:aspect-[21/9] grid grid-cols-2 gap-1 p-1 overflow-hidden">
                                         <div class="hud-scanline"></div>
 
-                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[10px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
+                                        <div class="hud-telemetry-bar absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none font-mono text-[11px] text-teal-300 bg-slate-950/92 border border-teal-500/30 px-3 py-1 rounded">
                                             <span class="flex items-center gap-1.5">
                                                 <span class="w-1.5 h-1.5 rounded-sm bg-teal-400 animate-pulse"></span>
                                                 THREE.JS r170 · MIN-HEAP A*
@@ -1830,10 +1852,12 @@
                                             <span class="text-slate-400 hidden sm:inline">10,000 INSTANCED DEM VOXELS</span>
                                         </div>
 
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                        <video muted loop playsinline preload="metadata" class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                                <track kind="captions" srclang="en" label="No audio (visual demo)" src="data:text/vtt;charset=utf-8,WEBVTT%0A">
                                             <source src="morph-demo.mp4" type="video/mp4">
                                         </video>
-                                        <video autoplay muted loop playsinline class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                        <video muted loop playsinline preload="metadata" class="w-full h-full object-cover rounded-lg pointer-events-none">
+                                                <track kind="captions" srclang="en" label="No audio (visual demo)" src="data:text/vtt;charset=utf-8,WEBVTT%0A">
                                             <source src="morph-demo2.mp4" type="video/mp4">
                                         </video>
                                     </div>
@@ -1843,7 +1867,7 @@
                                             <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-3 max-w-3xl">
+                                        <p class="text-sm text-slate-400 leading-relaxed mb-3 max-w-3xl">
                                             Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable procedural elevation profiles.
                                         </p>
                                         <p class="text-[11px] font-mono text-slate-400 leading-relaxed mb-6 max-w-3xl">
@@ -1852,7 +1876,7 @@
 
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
-                                                <span class="text-slate-500 select-none">&gt;</span>
+                                                <span class="text-slate-400 select-none">&gt;</span>
                                                 <span class="typewriter-fx text-teal-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; 10k InstancedMesh"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
@@ -1883,27 +1907,27 @@
                                         </div>
 
                                         <div onclick="event.stopPropagation();" class="telemetry-sidebar hidden sm:flex flex-col justify-between border-l border-slate-800/70 bg-slate-900/25 p-4 text-left transition-all duration-500">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/60 pb-2">
+                                            <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800/60 pb-2">
                                                 <span>MESH.TELEMETRY</span>
                                                 <span class="text-teal-400">● LIVE</span>
                                             </div>
 
                                             <div class="space-y-2 my-auto">
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 0);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
-                                                    <span class="text-[10px] text-teal-400">Instancing</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_01</span>
+                                                    <span class="text-[11px] text-teal-400">Instancing</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 1);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
-                                                    <span class="text-[10px] text-purple-400">Min-Heap A*</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_02</span>
+                                                    <span class="text-[11px] text-purple-400">Min-Heap A*</span>
                                                 </button>
                                                 <button type="button" onclick="event.stopPropagation(); toggleArchDrawer('morph', null, 2);" class="interactive w-full text-left transition flex items-center justify-between group bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
-                                                    <span class="text-[10px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
-                                                    <span class="text-[10px] text-rose-400">Failover</span>
+                                                    <span class="text-[11px] text-slate-300 group-hover:text-teal-300">SYS.DIAG_03</span>
+                                                    <span class="text-[11px] text-rose-400">Failover</span>
                                                 </button>
                                             </div>
 
-                                            <div class="text-[10px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                            <div class="text-[11px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-800/60">
                                                 <span>Select node</span>
                                                 <span class="text-teal-400">&larr;</span>
                                             </div>
@@ -1912,8 +1936,8 @@
                                         <div id="arch-drawer-morph" onclick="event.stopPropagation(); toggleArchDrawer('morph');" class="arch-drawer-slide absolute inset-0 w-full bg-slate-950/98 p-4 sm:p-5 flex flex-col justify-center z-20 font-sans shadow-2xl">
                                             <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2" onclick="event.stopPropagation();">
                                                 <div class="flex items-center gap-2">
-                                                    <span id="arch-badge-morph" class="text-teal-400 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
-                                                    <h4 id="arch-title-morph" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Single-Draw-Call GPU Voxel Instancing</h4>
+                                                    <span id="arch-badge-morph" class="text-teal-400 font-mono text-[11px] uppercase tracking-widest px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded">SYS.DIAG_01</span>
+                                                    <h3 id="arch-title-morph" class="text-white text-xs sm:text-sm font-semibold tracking-tight">Single-Draw-Call GPU Voxel Instancing</h3>
                                                 </div>
                                                 <div class="flex items-center gap-1.5">
                                                     <button type="button" onclick="selectArchNode('morph', 0)" data-diag-tab="0" class="diag-tab-btn diag-tab-active interactive">01 GPU</button>
@@ -1929,7 +1953,7 @@
 
                                             <div class="flow-inspector-bar" onclick="event.stopPropagation();">
                                                 <span id="flow-snippet-morph" class="text-teal-300 truncate"></span>
-                                                <span class="text-slate-500 text-[10px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
+                                                <span class="text-slate-400 text-[11px] shrink-0 hidden sm:inline">switch tabs above · click backdrop to close</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1948,7 +1972,7 @@
                                                     <span class="text-xs font-mono text-purple-400">1 Draw Call</span>
                                                 </div>
                                             </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
+                                            <p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-3xl">
                                                 Modular ES6 Three.js engine pairing a zero-GC typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and live DEM terrain morphing.
                                             </p>
                                         </div>
@@ -1956,7 +1980,7 @@
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-3 text-[11px] text-slate-400">
                                                 <span><strong class="text-teal-400">10,000</strong> Instanced Voxels</span>
-                                                <span class="text-slate-700">·</span>
+                                                <span class="text-slate-400">·</span>
                                                 <span><strong class="text-purple-400">&lt;1ms</strong> Global A*</span>
                                             </div>
 
@@ -1990,17 +2014,17 @@
                             <!-- Clean Typographic Header -->
                             <div class="flex flex-wrap items-baseline justify-between gap-3 mb-4 pb-3 border-b border-slate-800/80">
                                 <div class="flex items-baseline gap-3">
-                                    <h3 class="text-xl font-bold text-white tracking-tight">Skills &amp; Credentials</h3>
-                                    <span class="text-xs font-mono text-slate-500">/ interactive index</span>
+                                    <h2 class="text-xl font-bold text-white tracking-tight">Skills &amp; Credentials</h2>
+                                    <span class="text-xs font-mono text-slate-400">/ interactive index</span>
                                 </div>
                                 <div class="flex items-center gap-4 font-mono text-xs">
                                     <button id="net-filter-all" onclick="setConstellationFilter('all')" class="interactive mag-link text-teal-400 font-semibold transition">All</button>
                                     <span class="text-slate-800 select-none">/</span>
-                                    <button id="net-filter-ai" onclick="setConstellationFilter('ai')" class="interactive mag-link text-slate-500 hover:text-slate-300 transition">AI &amp; QA</button>
+                                    <button id="net-filter-ai" onclick="setConstellationFilter('ai')" class="interactive mag-link text-slate-400 hover:text-slate-300 transition">AI &amp; QA</button>
                                     <span class="text-slate-800 select-none">/</span>
-                                    <button id="net-filter-geo" onclick="setConstellationFilter('geo')" class="interactive mag-link text-slate-500 hover:text-slate-300 transition">Geospatial</button>
+                                    <button id="net-filter-geo" onclick="setConstellationFilter('geo')" class="interactive mag-link text-slate-400 hover:text-slate-300 transition">Geospatial</button>
                                     <span class="text-slate-800 select-none">/</span>
-                                    <button id="net-filter-webgl" onclick="setConstellationFilter('webgl')" class="interactive mag-link text-slate-500 hover:text-slate-300 transition">3D &amp; Web</button>
+                                    <button id="net-filter-webgl" onclick="setConstellationFilter('webgl')" class="interactive mag-link text-slate-400 hover:text-slate-300 transition">3D &amp; Web</button>
                                 </div>
                             </div>
 
@@ -2012,58 +2036,58 @@
                                     
                                     <div data-node-id="nasa" data-node-group="geo" onclick="selectGraphNode('nasa')" onmouseenter="previewGraphNode('nasa')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-teal-400 w-10 shrink-0">CERT</span>
+                                            <span class="text-[11px] text-teal-400 w-10 shrink-0">CERT</span>
                                             <span class="font-semibold whitespace-nowrap">NASA ARSET</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">Remote Sensing Fundamentals</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Remote Sensing Fundamentals</span>
                                     </div>
 
                                     <div data-node-id="google_ai" data-node-group="ai" onclick="selectGraphNode('google_ai')" onmouseenter="previewGraphNode('google_ai')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-teal-400 w-10 shrink-0">CERT</span>
+                                            <span class="text-[11px] text-teal-400 w-10 shrink-0">CERT</span>
                                             <span class="font-semibold whitespace-nowrap">Google AI</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">Professional Certificate</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Professional Certificate</span>
                                     </div>
 
                                     <div data-node-id="qa_acc" data-node-group="ai" onclick="selectGraphNode('qa_acc')" onmouseenter="previewGraphNode('qa_acc')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-purple-400 w-10 shrink-0">EXP</span>
+                                            <span class="text-[11px] text-purple-400 w-10 shrink-0">EXP</span>
                                             <span class="font-semibold whitespace-nowrap">LLM &amp; Multimodal QA</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">4+ Yrs · 1,500+ Audits/mo</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">4+ Yrs · 1,500+ Audits/mo</span>
                                     </div>
 
                                     <div data-node-id="webgl" data-node-group="webgl" onclick="selectGraphNode('webgl')" onmouseenter="previewGraphNode('webgl')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-slate-500 w-10 shrink-0">3D</span>
+                                            <span class="text-[11px] text-slate-400 w-10 shrink-0">3D</span>
                                             <span class="font-semibold whitespace-nowrap">Three.js · WebGL</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">3D Scenes &amp; Camera Tours</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">3D Scenes &amp; Camera Tours</span>
                                     </div>
 
                                     <div data-node-id="fastapi" data-node-group="webgl" onclick="selectGraphNode('fastapi')" onmouseenter="previewGraphNode('fastapi')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-slate-500 w-10 shrink-0">API</span>
+                                            <span class="text-[11px] text-slate-400 w-10 shrink-0">API</span>
                                             <span class="font-semibold whitespace-nowrap">Python · FastAPI</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">Backend Data Endpoints</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Backend Data Endpoints</span>
                                     </div>
 
                                     <div data-node-id="rasterio" data-node-group="geo" onclick="selectGraphNode('rasterio')" onmouseenter="previewGraphNode('rasterio')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-slate-500 w-10 shrink-0">GEO</span>
+                                            <span class="text-[11px] text-slate-400 w-10 shrink-0">GEO</span>
                                             <span class="font-semibold whitespace-nowrap">Rasterio · Folium</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">Thermal Imagery &amp; Maps</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Thermal Imagery &amp; Maps</span>
                                     </div>
 
                                     <div data-node-id="chromadb" data-node-group="ai" onclick="selectGraphNode('chromadb')" onmouseenter="previewGraphNode('chromadb')" class="ledger-row interactive flex-1 px-2.5 py-2 flex items-center justify-between gap-3 cursor-pointer text-slate-300 hover:text-white hover:bg-slate-900/50 transition-colors">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-[10px] text-slate-500 w-10 shrink-0">DATA</span>
+                                            <span class="text-[11px] text-slate-400 w-10 shrink-0">DATA</span>
                                             <span class="font-semibold whitespace-nowrap">ChromaDB · Streamlit</span>
                                         </div>
-                                        <span class="text-[11px] text-slate-500 whitespace-nowrap">Embeddings &amp; Dashboards</span>
+                                        <span class="text-[11px] text-slate-400 whitespace-nowrap">Embeddings &amp; Dashboards</span>
                                     </div>
 
                                 </div>
@@ -2076,10 +2100,10 @@
                                         <div class="min-w-0 flex-1">
                                             <div class="flex items-baseline gap-2.5 font-mono">
                                                 <span id="inspector-title" class="text-xs font-bold text-white whitespace-nowrap">Daniel Perez</span>
-                                                <span class="text-slate-700">/</span>
+                                                <span class="text-slate-400">/</span>
                                                 <span id="inspector-metric" class="text-[11px] text-teal-400 whitespace-nowrap">Core Stack</span>
                                             </div>
-                                            <p id="inspector-desc" class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">
+                                            <p id="inspector-desc" class="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
                                                 Hover or click any skill to view how it connects across projects.
                                             </p>
                                         </div>
@@ -2184,7 +2208,7 @@
         <footer class="mt-20 pt-8 border-t border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-400">
             <div>© 2026 Daniel Perez</div>
             <div class="flex items-center gap-6">
-                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link text-slate-500 hover:text-teal-400">
+                <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link text-slate-400 hover:text-teal-400">
                     [ Terminal ]
                 </button>
                 <a href="https://github.com/0DataDan" target="_blank" rel="noopener noreferrer" class="interactive mag-link hover:text-teal-400">GitHub ↗</a>
@@ -2195,7 +2219,7 @@
     </div>
 
     <!-- === START: 04 // GLOBAL COMMAND PALETTE HTML === -->
-    <div id="cmd-palette-overlay" aria-hidden="true">
+    <div id="cmd-palette-overlay" aria-hidden="true" inert>
         <div id="cmd-palette-container" role="dialog" aria-modal="true">
             <div id="cmd-input-wrapper">
                 <span id="cmd-prompt-prefix">guest@0datadan:<strong>~</strong>$</span>
@@ -2565,7 +2589,7 @@
         row.className = "flex items-baseline gap-3 whitespace-pre-wrap break-all";
 
         const lineNum = document.createElement('span');
-        lineNum.className = "text-slate-600 select-none text-[10px] w-5 shrink-0";
+        lineNum.className = "text-slate-400 select-none text-[11px] w-5 shrink-0";
         const displayNum = ((lineIdx % lines.length) + 1 + (cycleCount - 1) * lines.length) % 100;
         lineNum.textContent = String(displayNum).padStart(2, '0');
 
@@ -2645,7 +2669,7 @@
         if (idx === currentSlideIdx) {
           tab.className = "deck-nav-item nav-active interactive flex items-baseline gap-2";
         } else {
-          tab.className = "deck-nav-item text-slate-500 hover:text-slate-300 interactive flex items-baseline gap-2";
+          tab.className = "deck-nav-item text-slate-400 hover:text-slate-300 interactive flex items-baseline gap-2";
         }
       });
 
@@ -2724,8 +2748,12 @@
       pillState.set(pill, { curX: 0, curY: 0, curRot: 0, curScale: 1 });
     });
 
+    const __terrainReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     function animateTerrainAndDOM() {
-      requestAnimationFrame(animateTerrainAndDOM);
+      if (!__terrainReducedMotion) {
+        requestAnimationFrame(animateTerrainAndDOM);
+      }
+      if (document.hidden) return;
       const t = performance.now() * 0.001;
 
       for (let i = clickWaves.length - 1; i >= 0; i--) {
@@ -3071,7 +3099,9 @@
       requestAnimationFrame(animateMagneticTrail);
     }
 
-    animateMagneticTrail();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      animateMagneticTrail();
+    }
   })();
 </script>
 
@@ -3079,6 +3109,15 @@
 <script>
   (function() {
     const typewriters = document.querySelectorAll('.typewriter-fx');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      typewriters.forEach(tw => {
+        try {
+          const phrases = JSON.parse(tw.dataset.phrases || '[]');
+          if (phrases.length) tw.textContent = phrases[0];
+        } catch (e) {}
+      });
+      return;
+    }
     typewriters.forEach(tw => {
       try {
         const phrases = JSON.parse(tw.getAttribute('data-phrases'));
@@ -3244,7 +3283,7 @@
           if (k === activeGraphFilter) {
             btn.className = "interactive mag-link text-teal-400 font-semibold transition";
           } else {
-            btn.className = "interactive mag-link text-slate-500 hover:text-slate-300 transition";
+            btn.className = "interactive mag-link text-slate-400 hover:text-slate-300 transition";
           }
         });
 
@@ -3371,9 +3410,26 @@
           ctx.fillText(n.label, lx, ly);
         });
 
-        requestAnimationFrame(renderConstellation);
+        if (__constellationActive && !document.hidden && !__constellationReduced) {
+          __constellationRaf = requestAnimationFrame(renderConstellation);
+        } else {
+          __constellationRaf = null;
+        }
       }
+      const __constellationReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let __constellationActive = false;
+      let __constellationRaf = null;
       renderConstellation();
+      const __constEl = document.getElementById('constellation-canvas');
+      if (__constEl && 'IntersectionObserver' in window && !__constellationReduced) {
+        new IntersectionObserver((entries) => {
+          __constellationActive = entries[0].isIntersecting;
+          if (__constellationActive && !__constellationRaf) renderConstellation();
+        }, { rootMargin: '120px 0px' }).observe(__constEl);
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && __constellationActive && !__constellationRaf) renderConstellation();
+        });
+      }
     }
   })();
 </script>
@@ -3611,9 +3667,9 @@
       gridEl.innerHTML = data.stages.map((st, idx) => `
         <div class="flow-node ${idx === 2 ? 'flow-node-active' : ''}" style="opacity:1;transform:translateY(0);">
           <div class="flow-dot"></div>
-          <h5 class="text-teal-300 font-mono text-[10px] uppercase tracking-wider mb-1">${st.head}</h5>
-          <p class="text-slate-400 text-[10px] leading-snug mb-2">${st.body}</p>
-          <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[9px] space-y-0.5">
+          <h4 class="text-teal-300 font-mono text-[11px] uppercase tracking-wider mb-1">${st.head}</h4>
+          <p class="text-slate-400 text-[11px] leading-snug mb-2">${st.body}</p>
+          <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 text-left font-mono text-[11px] space-y-0.5">
             ${st.metrics.map(m => `<div class="flex justify-between text-slate-400"><span>${m[0]}</span> <span class="${m[2]}">${m[1]}</span></div>`).join('')}
           </div>
         </div>
@@ -4396,7 +4452,7 @@
       border: 0;
       padding: 2px 0;
       cursor: pointer;
-      color: #64748b;
+      color: #94a3b8;
       font-size: 10px;
       letter-spacing: 0.08em;
       transition: color 0.2s ease;
@@ -4606,9 +4662,9 @@
         }
         const item = PROOF_MAP[key];
         output.innerHTML =
-          '<span class="text-slate-500">shipped in </span>' +
+          '<span class="text-slate-400">shipped in </span>' +
           '<span class="text-white font-semibold">' + item.project + '</span>' +
-          '<span class="text-slate-600"> — </span>' +
+          '<span class="text-slate-400"> — </span>' +
           '<span class="text-slate-300">' + item.detail + '</span>';
         link.href = item.url;
         link.textContent = item.cta;
@@ -4834,5 +4890,62 @@
       requestAnimationFrame(tick);
     })();
   </script>
+
+<!-- PERFORMANCE BUDGET (OFFSCREEN VIDEO PAUSE) & KEYBOARD DECK NAV -->
+<script>
+  (function() {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const videos = document.querySelectorAll('video');
+    if (videos.length && 'IntersectionObserver' in window) {
+      const vidObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const v = entry.target;
+          if (entry.isIntersecting && !reducedMotion && !document.hidden) {
+            v.play().catch(() => {});
+          } else {
+            v.pause();
+          }
+        });
+      }, { rootMargin: '150px 0px', threshold: 0.15 });
+      videos.forEach((v) => vidObserver.observe(v));
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) videos.forEach((v) => v.pause());
+      });
+    }
+
+    const slides = Array.from(document.querySelectorAll('.project-deck-stage .deck-slide'));
+    slides.forEach((slide, idx) => {
+      if (!slide.hasAttribute('tabindex')) slide.setAttribute('tabindex', '0');
+      slide.addEventListener('keydown', (e) => {
+        if (e.target !== slide) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (typeof window.switchProjectSlide === 'function') window.switchProjectSlide(idx);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const next = (idx + 1) % slides.length;
+          if (typeof window.switchProjectSlide === 'function') window.switchProjectSlide(next);
+          slides[next].focus();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const prev = (idx - 1 + slides.length) % slides.length;
+          if (typeof window.switchProjectSlide === 'function') window.switchProjectSlide(prev);
+          slides[prev].focus();
+        }
+      });
+    });
+    const cmdOverlay = document.getElementById('cmd-palette-overlay');
+    if (cmdOverlay) {
+      const syncInert = () => {
+        cmdOverlay.inert = cmdOverlay.getAttribute('aria-hidden') === 'true';
+      };
+      syncInert();
+      new MutationObserver(syncInert).observe(cmdOverlay, {
+        attributes: true,
+        attributeFilter: ['aria-hidden']
+      });
+    }
+  })();
+</script>
 </body>
 </html>
