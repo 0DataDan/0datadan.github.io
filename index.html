@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Daniel Perez — AI data evaluation and interactive 3D/geospatial web development. Featuring NOVA Observatory, Urban Heat Explorer, and MORPH.">
-    <link rel="canonical" href="https://0datadan.github.io/">
+    <link rel="canonical" href="https://danielperez.app/">
     <!-- Open Graph / Social Share -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://0datadan.github.io/">
+    <meta property="og:url" content="https://danielperez.app/">
     <meta property="og:title" content="Daniel Perez — AI Evaluation &amp; Spatial Web Engineering">
     <meta property="og:description" content="Interactive 3D web apps, satellite remote sensing workflows, and AI output evaluation.">
-    <meta property="og:image" content="https://0datadan.github.io/og-preview.jpg">
+    <meta property="og:image" content="https://danielperez.app/og-preview.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Daniel Perez — AI Evaluation &amp; Spatial Web Engineering">
     <meta name="twitter:description" content="Interactive 3D web apps, satellite remote sensing workflows, and AI output evaluation.">
-    <meta name="twitter:image" content="https://0datadan.github.io/og-preview.jpg">
+    <meta name="twitter:image" content="https://danielperez.app/og-preview.jpg">
     <title>Daniel Perez | Portfolio</title>
     
     <!-- Dynamic Blinking Terminal Favicon -->
@@ -1894,7 +1894,7 @@
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://0datadan.github.io/morph/" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
+                                                <a href="https://danielperez.app/morph/" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-300 hover:text-teal-400 cta-live-pill">
                                                     Live App <span>↗</span>
                                                 </a>
                                                 <a href="https://github.com/0DataDan/morph" target="_blank" rel="noopener noreferrer" class="interactive mag-link text-slate-400 hover:text-teal-400">
@@ -2223,6 +2223,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-400">
+                <span>Prefer direct email?</span>
+                <button type="button" onclick="window.revealAndCopyEmail && window.revealAndCopyEmail(this)" class="interactive mag-link px-3 py-1.5 rounded border border-slate-800 bg-slate-900/50 text-slate-300 hover:text-teal-400 hover:border-teal-500/40 transition-colors">
+                    [ Reveal &amp; Copy Email ]
+                </button>
+            </div>
         </section>
         <!-- === STOP: 03 // CONTACT TERMINAL SECTION === -->
 
@@ -2231,6 +2238,9 @@
             <div class="flex items-center gap-6">
                 <button type="button" onclick="window.openCommandPalette && window.openCommandPalette()" class="interactive mag-link text-slate-400 hover:text-teal-400">
                     [ Terminal ]
+                </button>
+                <button type="button" onclick="window.revealAndCopyEmail && window.revealAndCopyEmail(this)" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                    [ Email ]
                 </button>
                 <a href="https://github.com/0DataDan" target="_blank" rel="noopener noreferrer" class="interactive mag-link hover:text-teal-400">GitHub ↗</a>
                 <a href="https://www.linkedin.com/in/daniel-perez1/" target="_blank" rel="noopener noreferrer" class="interactive mag-link hover:text-teal-400">LinkedIn ↗</a>
@@ -3931,7 +3941,7 @@
             ? { email: sender, message, _subject: `Portfolio Terminal Uplink from ${sender}` }
             : {
                 access_key: ENDPOINT_CONFIG,
-                subject: `[0datadan.github.io] Terminal Uplink from ${sender}`,
+                subject: `[danielperez.app] Terminal Uplink from ${sender}`,
                 from_name: sender,
                 email: sender,
                 replyto: sender,
@@ -4016,7 +4026,7 @@
       }},
       { id: 'morph', cmd: 'open morph', desc: 'Launch MORPH Spatial Mesh Live App ↗', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(1);
-          window.open('https://0datadan.github.io/morph/', '_blank');
+          window.open('https://danielperez.app/morph/', '_blank');
       }},
       { id: 'heat', cmd: 'open heat', desc: 'Launch Urban Heat Explorer Live Demo ↗', action: () => {
           if (window.switchProjectSlide) window.switchProjectSlide(2);
@@ -4667,7 +4677,7 @@
         webgl: {
           project: "MORPH Spatial Mesh",
           detail: "Real-time procedural 3D mesh deformation & interactive shaders",
-          url: "https://0datadan.github.io/morph/",
+          url: "https://danielperez.app/morph/",
           cta: "Launch ↗"
         }
       };
@@ -4968,5 +4978,19 @@
     }
   })();
 </script>
+    <script>
+      window.revealAndCopyEmail = function (btn) {
+        const addr = ['contact', 'danielperez.app'].join('@');
+        const show = (text) => {
+          btn.textContent = text;
+          btn.setAttribute('aria-label', addr);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(addr).then(() => show(`Copied · ${addr}`)).catch(() => show(addr));
+        } else {
+          show(addr);
+        }
+      };
+    </script>
 </body>
 </html>
