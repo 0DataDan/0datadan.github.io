@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daniel Perez — AI data evaluation and interactive 3D/geospatial web development. Featuring NOVA Observatory, Urban Heat Explorer, and MORPH.">
+    <link rel="canonical" href="https://0datadan.github.io/">
+    <!-- Open Graph / Social Share -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://0datadan.github.io/">
+    <meta property="og:title" content="Daniel Perez — AI Evaluation &amp; Spatial Web Engineering">
+    <meta property="og:description" content="Interactive 3D web apps, satellite remote sensing workflows, and AI output evaluation.">
+    <meta property="og:image" content="https://0datadan.github.io/og-preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Daniel Perez — AI Evaluation &amp; Spatial Web Engineering">
+    <meta name="twitter:description" content="Interactive 3D web apps, satellite remote sensing workflows, and AI output evaluation.">
+    <meta name="twitter:image" content="https://0datadan.github.io/og-preview.jpg">
     <title>Daniel Perez | Portfolio</title>
     
     <!-- Dynamic Blinking Terminal Favicon -->
@@ -393,6 +407,10 @@
             transform: translateX(104%);
             opacity: 0;
             pointer-events: none;
+            background-color: rgba(2, 6, 23, 0.98) !important;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
         }
         .arch-expanded .arch-drawer-slide {
@@ -412,14 +430,20 @@
         /* CSS Flowchart Pipeline Connectors */
         .flowchart-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             gap: 0.75rem;
             position: relative;
+            width: 100%;
+            min-width: 0;
+        }
+        .flowchart-grid > * {
+            min-width: 0;
+            overflow-wrap: break-word;
         }
         @media (min-width: 768px) {
             .flowchart-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1rem;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 0.75rem;
             }
             /* Horizontal connector line behind the nodes */
             .flowchart-grid::before {
@@ -1142,6 +1166,21 @@
     .project-deck-stage .deck-slide.is-stacked-behind {
       cursor: pointer !important;
     }
+    .project-deck-stage .deck-slide.is-stacked-behind .card-back .code-viewport-split {
+      opacity: 0 !important;
+      transition: opacity 0.2s ease !important;
+    }
+    .project-deck-stage .card-back {
+      overflow: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .animate-ping, .animate-pulse, .blinking-cursor {
+        animation: none !important;
+      }
+      .hud-scanline {
+        display: none !important;
+      }
+    }
     .project-deck-stage .deck-slide.is-stacked-behind:hover .glass-content {
       filter: brightness(0.95) !important;
       box-shadow: 0 -4px 20px rgba(45, 212, 191, 0.25);
@@ -1361,15 +1400,15 @@
             <!-- Unboxed, Pure Terminal Typewriter Line -->
             <div class="mt-1 mb-6 flex items-center gap-2 font-mono text-xs sm:text-sm text-teal-400">
                 <span class="text-slate-500 select-none">&gt;</span>
-                <span class="typewriter-fx text-teal-300" data-phrases='["Python · Rasterio · Folium · Streamlit", "Three.js · WebGL · FastAPI", "Multimodal AI Evaluation & QA", "Satellite Remote Sensing Workflows"]'></span>
+                <span class="typewriter-fx text-teal-300" data-phrases='["AI Output Evaluation & QA", "Three.js · WebGL · Spatial UI", "Python · Rasterio · Folium · Streamlit", "Satellite Remote Sensing Workflows"]'></span>
                 <span class="w-1.5 h-3.5 bg-teal-400 animate-pulse inline-block"></span>
             </div>
 
             <!-- Always-Visible Bio with Smooth Syntax Illumination -->
             <div id="bio-container">
                 <div class="mb-6 border-l-2 border-slate-800/60 pl-5 ml-1 transition-colors duration-700 ease-out group-hover:border-teal-500/40">
-                    <p class="text-lg font-medium max-w-2xl leading-relaxed text-slate-500 transition-colors duration-700 ease-out group-hover:text-slate-100">
-                        Background in AI data evaluation and spatial web development. I specialize in building interactive 3D web applications that translate complex spatial datasets and satellite remote sensing workflows into responsive, hardware-accelerated tools.
+                    <p class="text-lg font-medium max-w-2xl leading-relaxed text-slate-300 transition-colors duration-700 ease-out group-hover:text-white">
+                        I evaluate AI outputs for a living, and I apply the same discipline to AI-assisted development: build fast, then test, measure, and document what actually works. Focused on interactive 3D web tools, geospatial workflows, and ML evaluation.
                     </p>
                 </div>
             </div>
@@ -1386,7 +1425,7 @@
                 </div>
                 <div class="sm:px-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">3 LIVE</div>
-                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">3D &amp; Spatial Apps</div>
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">Deployed Web Apps</div>
                 </div>
                 <div class="sm:pl-4">
                     <div class="text-sm sm:text-base font-bold text-teal-400 tracking-tight">2 CERTS</div>
@@ -1471,14 +1510,14 @@
                                             <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-teal-500/10 border border-teal-400/35 text-teal-300 whitespace-nowrap">v2 · Hand-Tracking</span>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                            Interactive 3D solar system and star map built with Three.js and FastAPI. Upgraded in v2 with real-time webcam hand-tracking for two-hand cosmic zoom, pinch-to-orbit navigation, and point-to-target object selection.
+                                        <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                            Interactive 3D solar system and star map built with Three.js. Started with a FastAPI backend, then migrated to static <code class="text-teal-300/90">catalog.json</code> on Vercel for zero-cost hosting—upgraded in v2 with webcam hand-tracking for two-hand zoom, pinch-to-orbit, and point-to-target selection.
                                         </p>
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-teal-300" data-phrases='["Spatial Hand-Tracking & Gesture Controls", "2-Hand Zoom · Pinch Orbit · Point Target", "Full-Stack 3D WebGL & FastAPI"]'></span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["Spatial Hand-Tracking & Gesture Controls", "2-Hand Zoom · Pinch Orbit · Point Target", "Three.js WebGL · Static JSON on Vercel"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
@@ -1570,19 +1609,19 @@
                                                     <button id="arch-btn-nova" type="button" onclick="event.stopPropagation(); toggleArchDrawer('nova', this)" class="interactive text-[11px] font-mono text-teal-300 transition-all bg-transparent border-0 p-0 text-slate-400 hover:text-teal-400">
                                                         [ + Arch ]
                                                     </button>
-                                                    <span class="text-xs font-mono text-purple-400">4,280 LOC</span>
+                                                    <span class="text-xs font-mono text-slate-400">Three.js · Static JSON</span>
                                                 </div>
                                             </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                                Combines a FastAPI backend with a Three.js frontend to load star data, animate planet orbits, and smoothly move the 3D camera between stops on the guided tour.
+                                            <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                                Started with a FastAPI backend serving star and planet catalogs, then moved to static JSON on Vercel to host it for free. Resolves world-space coordinates via <code class="text-teal-300/90">getWorldPosition()</code> so camera tours track nested orbiting bodies accurately.
                                             </p>
                                         </div>
 
                                         <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono mt-auto pt-4 border-t border-slate-800/80">
-                                            <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                                                <span><strong class="text-purple-400">142</strong> Debug Runs</span>
+                                            <div class="flex items-center gap-3 text-[11px] text-slate-300">
+                                                <span><strong class="text-teal-400">World-Space</strong> Matrix Targeting</span>
                                                 <span class="text-slate-700">·</span>
-                                                <span><strong class="text-emerald-400">60 FPS</strong> Smooth 3D</span>
+                                                <span><strong class="text-emerald-400">Static JSON</strong> Zero-Cost Deploy</span>
                                             </div>
 
                                             <div class="flex items-center gap-6 ml-auto">
@@ -1624,7 +1663,7 @@
                                                 <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
                                                 LANDSAT 8/9 SATELLITE
                                             </span>
-                                            <span class="text-slate-400">SURFACE TEMP · 30m RESOLUTION</span>
+                                            <span class="text-slate-300">LST · 100m THERMAL (30m RESAMPLED)</span>
                                         </div>
 
                                         <img src="urban-heat-demo.gif" alt="Urban Heat Explorer" class="w-full h-full object-cover object-top pointer-events-none" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-slate-500 font-mono text-xs p-6 text-center\'>urban-heat-demo.gif</div>';">
@@ -1635,8 +1674,8 @@
                                             <h2 class="text-2xl font-bold text-white tracking-tight">Urban Heat Explorer</h2>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                            Uses Landsat 8/9 satellite imagery to map surface temperatures, vegetation cover, and heat islands across major cities.
+                                        <p class="text-sm text-slate-300 leading-relaxed mb-6 max-w-3xl">
+                                            Maps urban heat islands and vegetation cover from Landsat 8/9 Collection 2 imagery using Rasterio and Folium. Applies USGS radiometric calibration to thermal infrared bands (100m native, resampled to 30m) to derive Land Surface Temperature (LST) and compare canopy cooling across city zones.
                                         </p>
 
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
@@ -2462,15 +2501,15 @@
     // Grounded, Easy-to-Read Code Lines for Backside Viewports
     const rollingCodeLines = {
       nova: [
-        { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "* as THREE ", c: "text-white" }, { t: "from ", c: "text-purple-400 font-semibold" }, { t: "'three'", c: "text-emerald-400" }, { t: ";", c: "text-slate-400" }] },
-        { num: "02", tokens: [{ t: "// Load star positions and planet data from FastAPI", c: "text-slate-400" }] },
-        { num: "03", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "response = ", c: "text-white" }, { t: "await ", c: "text-purple-400" }, { t: "fetch", c: "text-teal-300" }, { t: "('/api/planets');", c: "text-emerald-400" }] },
-        { num: "04", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "planets = ", c: "text-white" }, { t: "await ", c: "text-purple-400" }, { t: "response.json();", c: "text-teal-300" }] },
-        { num: "05", tokens: [{ t: "function ", c: "text-purple-400 font-semibold" }, { t: "updateCameraTour", c: "text-teal-300" }, { t: "(targetPlanet) {", c: "text-white" }] },
-        { num: "06", tokens: [{ t: "  camera.position.lerp(targetPlanet.position, ", c: "text-white" }, { t: "0.05", c: "text-amber-300" }, { t: ");", c: "text-white" }] },
-        { num: "07", tokens: [{ t: "  controls.target.copy(targetPlanet.position);", c: "text-white" }] },
-        { num: "08", tokens: [{ t: "  renderer.render", c: "text-teal-300" }, { t: "(scene, camera);", c: "text-white" }] },
-        { num: "09", tokens: [{ t: "} ", c: "text-white" }, { t: "// [OK] 3D scene running at 60 FPS", c: "text-emerald-400" }] }
+        { num: "01", tokens: [{ t: "// Static catalog migrated from FastAPI for free Vercel hosting", c: "text-slate-400" }] },
+        { num: "02", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "catalog = ", c: "text-white" }, { t: "await ", c: "text-purple-400" }, { t: "fetch", c: "text-teal-300" }, { t: "('./catalog.json').then(r => r.json());", c: "text-emerald-400" }] },
+        { num: "03", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "worldTarget = ", c: "text-white" }, { t: "new ", c: "text-purple-400" }, { t: "THREE.Vector3();", c: "text-amber-300" }] },
+        { num: "04", tokens: [{ t: "function ", c: "text-purple-400 font-semibold" }, { t: "focusOrbitalBody", c: "text-teal-300" }, { t: "(mesh, dt) {", c: "text-white" }] },
+        { num: "05", tokens: [{ t: "  // Resolve nested group transforms into world coordinates", c: "text-slate-400" }] },
+        { num: "06", tokens: [{ t: "  mesh.getWorldPosition(worldTarget);", c: "text-white" }] },
+        { num: "07", tokens: [{ t: "  const ", c: "text-purple-400 font-semibold" }, { t: "alpha = ", c: "text-white" }, { t: "1 - Math.exp(-4.5 * dt);", c: "text-amber-300" }] },
+        { num: "08", tokens: [{ t: "  controls.target.lerp(worldTarget, alpha);", c: "text-white" }] },
+        { num: "09", tokens: [{ t: "}", c: "text-white" }] }
       ],
       morph: [
         { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "{ MinHeap } ", c: "text-white" }, { t: "from ", c: "text-purple-400 font-semibold" }, { t: "'./src/minHeap.js'", c: "text-amber-300" }, { t: ";", c: "text-slate-400" }] },
@@ -3083,10 +3122,10 @@
       { id: 'qa_acc', label: 'LLM QA (4+ Yrs)', group: 'ai', angle: -Math.PI * 0.50, dist: 0.72, radius: 5, align: 'center', labelPos: 'top', metric: '99% QA · 1,500+/mo', desc: 'Over 4 years of multimodal dataset auditing and model output validation.', projectSlide: null },
       { id: 'nasa', label: 'NASA ARSET', group: 'geo', angle: -Math.PI * 0.80, dist: 0.78, radius: 5, align: 'left', labelPos: 'top', metric: 'Certification', desc: 'Satellite remote sensing fundamentals, thermal bands, and Earth observation.', projectSlide: 2 },
       { id: 'google_ai', label: 'Google AI', group: 'ai', angle: -Math.PI * 0.20, dist: 0.78, radius: 5, align: 'right', labelPos: 'top', metric: 'Certification', desc: 'Prompt engineering, model evaluation, and AI Studio workflows.', projectSlide: null },
-      { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', angle: Math.PI * 0.12, dist: 0.82, radius: 5, align: 'right', labelPos: 'bottom', metric: '3D Graphics', desc: 'Interactive 3D starfields, instanced voxel terrains, and smooth camera tours.', projectSlide: 1 },
-      { id: 'fastapi', label: 'FastAPI', group: 'webgl', angle: Math.PI * 0.36, dist: 0.75, radius: 4.8, align: 'center', labelPos: 'bottom', metric: 'Backend API', desc: 'Python REST endpoints serving planet and tour data to NOVA Observatory.', projectSlide: 0 },
+      { id: 'webgl', label: 'Three.js · WebGL', group: 'webgl', angle: Math.PI * 0.14, dist: 0.74, radius: 5, align: 'center', labelPos: 'bottom', metric: '3D Graphics', desc: 'Interactive 3D starfields, instanced voxel terrains, and smooth camera tours.', projectSlide: 1 },
+      { id: 'fastapi', label: 'FastAPI', group: 'webgl', angle: Math.PI * 0.36, dist: 0.75, radius: 4.8, align: 'center', labelPos: 'bottom', metric: 'Backend API', desc: 'Built initial Python REST API for NOVA before migrating catalog data to static JSON.', projectSlide: 0 },
       { id: 'chromadb', label: 'ChromaDB', group: 'ai', angle: Math.PI * 0.64, dist: 0.75, radius: 4.8, align: 'center', labelPos: 'bottom', metric: 'Vector Data', desc: 'Document embeddings, semantic search, and interactive Streamlit dashboards.', projectSlide: null },
-      { id: 'rasterio', label: 'Rasterio · Folium', group: 'geo', angle: Math.PI * 0.88, dist: 0.82, radius: 5, align: 'left', labelPos: 'bottom', metric: 'Geospatial', desc: 'Processing Landsat thermal imagery into interactive city heat maps.', projectSlide: 2 }
+      { id: 'rasterio', label: 'Rasterio · Folium', group: 'geo', angle: Math.PI * 0.86, dist: 0.74, radius: 5, align: 'center', labelPos: 'bottom', metric: 'Geospatial', desc: 'Processing Landsat thermal imagery into interactive city heat maps.', projectSlide: 2 }
     ];
 
     const edges = [
@@ -3307,17 +3346,25 @@
             : `rgba(45, 212, 191, ${p.alpha})`;
           ctx.fill();
 
-          ctx.font = `${isFocus ? '600 ' : ''}10px "JetBrains Mono", monospace`;
-          ctx.fillStyle = isFocus
-            ? '#ffffff'
-            : `rgba(203, 213, 225, ${p.alpha * 0.88})`;
+          ctx.font = `${isFocus ? '600 ' : ''}11px "JetBrains Mono", monospace`;
           ctx.textAlign = n.align || 'center';
 
           let lx = p.px;
           if (n.align === 'left') lx -= 6;
           if (n.align === 'right') lx += 6;
 
-          const ly = n.labelPos === 'bottom' ? p.py + r + 14 : p.py - r - 8;
+          const ly = n.labelPos === 'bottom' ? p.py + r + 16 : p.py - r - 9;
+
+          const tw = ctx.measureText(n.label).width;
+          let bx = lx - tw / 2;
+          if (ctx.textAlign === 'left') bx = lx;
+          if (ctx.textAlign === 'right') bx = lx - tw;
+          ctx.fillStyle = 'rgba(2, 6, 23, 0.84)';
+          ctx.fillRect(bx - 4, ly - 10, tw + 8, 13);
+
+          ctx.fillStyle = isFocus
+            ? '#ffffff'
+            : `rgba(226, 232, 240, ${p.alpha * 0.94})`;
           ctx.fillText(n.label, lx, ly);
         });
 
@@ -3661,10 +3708,10 @@
         bootContainer.classList.remove("hidden");
 
         const steps = [
-          { el: b1, delay: 80,  status: "MOUNTING...",  html: '<span class="text-teal-400">[ OK ]</span> Mounted /dev/contact-uplink' },
-          { el: b2, delay: 400, status: "HANDSHAKE...", html: '<span class="text-teal-400">[ OK ]</span> Verified TLS 1.3 cipher suite' },
-          { el: b3, delay: 720, status: "RESOLVING...", html: '<span class="text-teal-400">[ OK ]</span> Bound host 0datadan.github.io:443' },
-          { el: b4, delay: 1040, status: "INITIALIZING", html: '<span class="text-purple-400">[ &gt;&gt; ]</span> Launching interactive shell v2.4...' }
+          { el: b1, delay: 80,  status: "LOADING...",   html: '<span class="text-teal-400">[ OK ]</span> Loaded contact interface' },
+          { el: b2, delay: 360, status: "IDENTITY...",  html: '<span class="text-teal-400">[ OK ]</span> Daniel Perez (@0DataDan)' },
+          { el: b3, delay: 640, status: "ENDPOINT...",  html: '<span class="text-teal-400">[ OK ]</span> Direct message form ready' },
+          { el: b4, delay: 920, status: "READY",        html: '<span class="text-purple-400">[ &gt;&gt; ]</span> Ready for input' }
         ];
 
         steps.forEach((step) => {
@@ -3791,7 +3838,7 @@
       appendLog(`$ send-message --to daniel --from "${sender}" --msg "${message.slice(0, 46)}${message.length > 46 ? '...' : ''}"`);
       await sleep(260);
 
-      appendLog("[1/3] Opening TLS 1.3 socket to 0datadan.github.io:443...");
+      appendLog("[1/3] Preparing message payload for Daniel Perez...");
       await sleep(380);
 
       appendLog(`[2/3] Serializing UTF-8 frame (${bytes} bytes) & dispatching packet...`);
@@ -4430,7 +4477,7 @@
         if (nearBottom) {
           activeIdx = buttons.length - 1;
         } else {
-          const triggerY = window.innerHeight * 0.38;
+          const triggerY = window.innerHeight * 0.50;
           for (let i = 0; i < buttons.length; i++) {
             const rect = buttons[i].el.getBoundingClientRect();
             if (rect.top <= triggerY) activeIdx = i;
