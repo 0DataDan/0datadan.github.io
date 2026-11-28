@@ -1973,7 +1973,7 @@
                                                 </div>
                                             </div>
                                             <p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-3xl">
-                                                Modular ES6 Three.js engine pairing a zero-GC typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and live DEM terrain morphing.
+                                                Modular ES6 Three.js engine pairing a pre-allocated typed-array Binary Min-Heap A* solver with Wireworld cellular automata, damped Z-up OrbitControls, and real-time procedural elevation morphing.
                                             </p>
                                         </div>
 
@@ -1981,11 +1981,20 @@
                                             <div class="flex items-center gap-3 text-[11px] text-slate-400">
                                                 <span><strong class="text-teal-400">10,000</strong> Instanced Voxels</span>
                                                 <span class="text-slate-400">·</span>
-                                                <span><strong class="text-purple-400">&lt;1ms</strong> Global A*</span>
+                                                <span><strong class="text-purple-400">0.03–1.13 ms</strong> Global A*</span>
                                             </div>
 
-                                            <div class="flex items-center gap-6 ml-auto">
-                                                <a href="https://github.com/0DataDan/morph" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                            <div class="flex flex-wrap items-center gap-4 ml-auto">
+                                                <a href="https://github.com/0DataDan/morph/blob/main/src/minHeap.js" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    minHeap.js <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph/blob/main/src/astar.js" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    astar.js <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph/blob/main/benchmark.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-400 hover:text-teal-400">
+                                                    benchmark.html <span>↗</span>
+                                                </a>
+                                                <a href="https://github.com/0DataDan/morph" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="interactive mag-link text-slate-300 hover:text-teal-400">
                                                     GitHub Repo <span>&rarr;</span>
                                                 </a>
                                             </div>
@@ -2540,14 +2549,14 @@
       ],
       morph: [
         { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "{ MinHeap } ", c: "text-white" }, { t: "from ", c: "text-purple-400 font-semibold" }, { t: "'./src/minHeap.js'", c: "text-amber-300" }, { t: ";", c: "text-slate-400" }] },
-        { num: "02", tokens: [{ t: "// Zero-GC typed arrays for O(log N) DEM pathfinding", c: "text-slate-400" }] },
+        { num: "02", tokens: [{ t: "// Pre-allocated typed arrays for O(log N) A* pathfinding", c: "text-slate-400" }] },
         { num: "03", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "gScore = ", c: "text-white" }, { t: "new ", c: "text-purple-400" }, { t: "Float32Array", c: "text-amber-300" }, { t: "(TOTAL_CELLS);", c: "text-white" }] },
         { num: "04", tokens: [{ t: "const ", c: "text-purple-400 font-semibold" }, { t: "slopeDelta = ", c: "text-white" }, { t: "Math.abs", c: "text-teal-300" }, { t: "(nextElev - currElev);", c: "text-white" }] },
         { num: "05", tokens: [{ t: "let ", c: "text-purple-400 font-semibold" }, { t: "cost = ", c: "text-white" }, { t: "1.0 ", c: "text-amber-300" }, { t: "+ (slopeDelta * ", c: "text-white" }, { t: "14.0", c: "text-amber-300" }, { t: ") + altPenalty;", c: "text-white" }] },
         { num: "06", tokens: [{ t: "if ", c: "text-purple-400 font-semibold" }, { t: "(tentativeG < gScore[nIdx]) {", c: "text-white" }] },
         { num: "07", tokens: [{ t: "  gScore[nIdx] = tentativeG; parent[nIdx] = curr.idx;", c: "text-white" }] },
         { num: "08", tokens: [{ t: "  heap.push", c: "text-amber-300" }, { t: "({ x: nx, y: ny, g: tentativeG, f: tentativeG + h });", c: "text-white" }] },
-        { num: "09", tokens: [{ t: "} ", c: "text-white" }, { t: "// [OK] 10,000 instanced voxels · <1ms global failover", c: "text-amber-400" }] }
+        { num: "09", tokens: [{ t: "} ", c: "text-white" }, { t: "// [OK] 0.03–1.13 ms median · 2.8×–3.7× vs linear scan", c: "text-amber-400" }] }
       ],
       heat: [
         { num: "01", tokens: [{ t: "import ", c: "text-purple-400 font-semibold" }, { t: "rasterio, folium, numpy ", c: "text-white" }, { t: "as ", c: "text-purple-400 font-semibold" }, { t: "np", c: "text-teal-300" }] },
@@ -3508,12 +3517,12 @@
       {
         badge: "SYS.DIAG_01",
         title: "Single-Draw-Call GPU Voxel Instancing",
-        snippet: "const mesh = new THREE.InstancedMesh(geometry, material, 10000); // 1 GPU draw call",
+        snippet: "const mesh = new THREE.InstancedMesh(geometry, material, TOTAL_CELLS); // 1 GPU draw call",
         stages: [
           {
             head: "1. Problem // Draw-Call Bottleneck",
-            body: "Rendering 10,000 individual 3D terrain blocks as separate meshes stalls the CPU-to-GPU pipeline under 15 FPS.",
-            metrics: [["Grid Size", "100 x 100 Voxels", "text-amber-400"], ["Target", "60 FPS + Bloom", "text-purple-400"]]
+            body: "Rendering 10,000 individual 3D terrain blocks as separate meshes saturates the CPU-to-GPU draw-call budget.",
+            metrics: [["Grid Size", "100 x 100 Voxels", "text-amber-400"], ["Post-FX", "UnrealBloomPass", "text-purple-400"]]
           },
           {
             head: "2. Root Cause // Per-Mesh Overhead",
@@ -3523,29 +3532,29 @@
           {
             head: "3. Solution // InstancedMesh + TypedArrays",
             body: "Packed all 10,000 pillars into one InstancedMesh driven by flat Float32Array elevation and spring-physics buffers.",
-            metrics: [["Draw Calls", "1 (Instanced)", "text-amber-400"], ["Terrain Swap", "Live Z-Morph", "text-purple-400"], ["Pipeline", "r170 + OutputPass", "text-teal-300"]]
+            metrics: [["Draw Calls", "1 (Instanced)", "text-amber-400"], ["Terrain Swap", "Live Z-Morph", "text-purple-400"], ["Pipeline", "ACES + OutputPass", "text-teal-300"]]
           }
         ]
       },
       {
         badge: "SYS.DIAG_02",
-        title: "O(log N) Binary Min-Heap DEM Pathfinder",
-        snippet: "cost = 1.0 + Math.abs(nextElev - currElev) * 14.0 + Math.max(0, nextElev - 0.5) * 1.8;",
+        title: "Benchmarking & Fixing a MinHeap Invariant Bug",
+        snippet: "if (left < len && this.data[left].f < smallestF) { smallest = left; smallestF = this.data[left].f; }",
         stages: [
           {
-            head: "1. Problem // Solver Stutter",
-            body: "Sorting an open-set array inside the A* loop scales at O(N log N) per step and allocates Map/Set objects per strike.",
-            metrics: [["Bottleneck", "openSet.sort()", "text-rose-400"], ["Impact", "Frame Drops", "text-amber-400"]]
+            head: "1. Problem // Benchmark Anomaly",
+            body: "Benchmarking against Dijkstra showed Min-Heap A* expanding more nodes on Coastal Basin (6,348 vs 6,000) with suboptimal 177–279 cell paths.",
+            metrics: [["Anomaly", "A* > Dijkstra Nodes", "text-rose-400"], ["Buggy Paths", "177–279 Cells", "text-amber-400"]]
           },
           {
-            head: "2. Root Cause // Naive Priority Queue",
-            body: "Full-grid reroutes across 10,000 cells need sub-millisecond node pops without triggering garbage collection pauses.",
-            metrics: [["Complexity", "O(N^2 log N)", "text-rose-400"], ["Allocations", "Per-Run Maps", "text-purple-400"]]
+            head: "2. Root Cause // Broken Hole-Sinking",
+            body: "MinHeap._sinkDown() compared children against this.data[smallest].f instead of cached node.f, breaking the heap invariant past depth 1.",
+            metrics: [["File", "src/minHeap.js", "text-purple-400"], ["Heuristic", "Consistent (step>=1)", "text-rose-400"]]
           },
           {
-            head: "3. Solution // MinHeap + Pre-Allocated Buffers",
-            body: "Built a dedicated Binary Min-Heap paired with reusable Float32Array/Int32Array buffers for <1ms valley routing.",
-            metrics: [["Queue Ops", "O(log N) Push/Pop", "text-amber-400"], ["Solve Time", "< 0.8 ms Global", "text-purple-400"], ["GC Spikes", "Zero", "text-teal-300"]]
+            head: "3. Solution // Fixed Invariant + 300-Run Harness",
+            body: "Comparing against smallestF = node.f restored optimal 59–133 cell paths and verified 2.8x–3.7x speedup over linear-scan A*.",
+            metrics: [["Median Solve", "0.03–1.13 ms", "text-amber-400"], ["vs Linear A*", "2.8x–3.7x Faster", "text-purple-400"], ["vs Dijkstra", "-25% to -95% Nodes", "text-teal-300"]]
           }
         ]
       },
@@ -3567,7 +3576,7 @@
           {
             head: "3. Solution // Global Valley Synthesis",
             body: "Monitors RX pulse arrival; if integrity hits 0%, fires a global TX→RX A* pass that discounts intact traces (0.35x).",
-            metrics: [["Reuse Cost", "0.35x Intact Wire", "text-amber-400"], ["Terrain", "4 Real DEM Presets", "text-purple-400"], ["Recovery", "Autonomous", "text-teal-300"]]
+            metrics: [["Reuse Cost", "0.35x Intact Wire", "text-amber-400"], ["Terrain", "4 Terrain Profiles", "text-purple-400"], ["Recovery", "Autonomous", "text-teal-300"]]
           }
         ]
       }
