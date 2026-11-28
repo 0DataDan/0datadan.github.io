@@ -1843,14 +1843,17 @@
                                             <h2 class="text-2xl font-bold text-white tracking-tight">MORPH Spatial Mesh</h2>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-3xl">
-                                            Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable topographic DEM terrains.
+                                        <p class="text-sm text-slate-500 leading-relaxed mb-3 max-w-3xl">
+                                            Interactive 3D WebGL spatial mesh router with real-time elevation-weighted A* failover, cellular signal propagation, and switchable procedural elevation profiles.
+                                        </p>
+                                        <p class="text-[11px] font-mono text-slate-400 leading-relaxed mb-6 max-w-3xl">
+                                            Benchmarked (100&times;100 grid, 4 terrains): 0.03&ndash;1.13 ms median solve &middot; 2.8&times;&ndash;3.7&times; faster than linear-scan A* &middot; 25%&ndash;95% fewer expansions than Dijkstra.
                                         </p>
 
                                         <div class="mt-auto pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
                                             <div class="flex items-center gap-1.5 font-mono text-[11px] text-teal-400">
                                                 <span class="text-slate-500 select-none">&gt;</span>
-                                                <span class="typewriter-fx text-teal-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; DEM Terrain"]'></span>
+                                                <span class="typewriter-fx text-teal-300" data-phrases='["3D WebGL Spatial Mesh Router", "O(log N) Min-Heap A* &amp; 10k InstancedMesh"]'></span>
                                                 <span class="w-1 h-3 bg-teal-400 animate-pulse inline-block"></span>
                                             </div>
 
